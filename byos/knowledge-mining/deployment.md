@@ -1,12 +1,12 @@
-# Knowledge Mining Openhack 
+# AI-Powered Knowledge Mining OpenHack 
 
 ## Setting up Permissions
 
-Before continuing ensure you understand the permissions needed to run the Open Hack on your Azure subscription.
+Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.
 
 **Initial Setup** 
 
-To perform the setup and deployment to prepare for the Open Hack you must be be assigned to the Owner role on the Azure subscription(s).
+To perform the setup and deployment to prepare for the OpenHack you must be be assigned to the Owner role on the Azure subscription(s).
 
 To validate this, navigate to the <a href="https://portal.azure.com" target="_blank">Azure Portal</a>. Click on **All Services** -> **Subscriptions** -> **Access Control (IAM)**.
 
@@ -14,16 +14,16 @@ Enter the email address in the **Check access** text box to view the current per
 
 ![Check access dialog](images/check-access.png "Check access dialog displays a textbox to enter an email address.")
 
-**Performing the Open Hack** 
+**Performing the OpenHack** 
 
-Each attendee in the Open Hack will be assigned the **Owner** role on a resource group unique to their team. This is covered later in this document in the deployment section.
+Each attendee in the OpenHack will be assigned the **Owner** role on a resource group unique to their team. This is covered later in this document in the deployment section.
 
 
 
 ## Common Azure Resources 
 
-The following is a list of common Azure resources that are deployed and utilized during the Open Hack. 
-Ensure that these services are not blocked by Azure Policy.  As this is an Open Hack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
+The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
+Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 
 | Azure resource           | Resource Providers |
@@ -39,7 +39,7 @@ Ensure that these services are not blocked by Azure Policy.  As this is an Open 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. Ensure they have adequate permissions to perform software installation. 
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. Ensure they have adequate permissions to perform software installation. 
 
 ## Deployment Instructions 
 

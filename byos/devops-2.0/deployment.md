@@ -2,7 +2,7 @@
 
 ## Setting up Permissions
 
-Before continuing ensure you understand the permissions needed to run the Open Hack on your Azure subscription.  
+Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.  
 
 This lab deploys to a single resource group within a subscription.  To deploy this lab environment, ensure the account you use to execute the script is at a minimum in the Azure Contributor Role. 
 
@@ -36,7 +36,7 @@ You can deploy this lab using local azure cli (bash) or using Azure CloudShell. 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. 
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. 
 Ensure they have adequate permissions to perform software installation. 
 Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
 

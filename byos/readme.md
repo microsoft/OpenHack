@@ -1,7 +1,7 @@
-![Microsoft Open Hack](images/open-hack.png "Microsoft Open Hack")
+![Microsoft OpenHack](images/open-hack.png "Microsoft OpenHack")
 
 
-# Microsoft Open Hack 
+# Microsoft OpenHack 
 
 ## Instructions for deploying to your own subscription
 
@@ -19,7 +19,7 @@ This document outlines the steps necessary to allow customers to use their own A
 Setup of environment may take extensive time depending on the OpenHack topic you are running. For safe measure, please start running the OpenHack on your Azure subscription(s) at least 48 hours before the kickoff of the event. 
 
 
-## Open Hack Specific Guidance
+## OpenHack Specific Guidance
 
 - [App Modernization with NoSQL](app-modernization-no-sql/deployment.md)
 - [DevOps 2.0](devops-2.0/deployment.md)
