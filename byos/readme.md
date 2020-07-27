@@ -1,4 +1,4 @@
-![Microsoft OpenHack](images/open-hack.png "Microsoft OpenHack")
+![Microsoft OpenHack](images/OpenHack.png "Microsoft OpenHack")
 
 
 # Microsoft OpenHack 
