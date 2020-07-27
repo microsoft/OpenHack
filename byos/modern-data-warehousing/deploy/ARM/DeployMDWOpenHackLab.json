@@ -1,0 +1,214 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "SqlAdminLogin": {
+      "type": "string"
+    },
+    "SqlAdminLoginPassword": {
+      "type": "securestring",
+      "minLength": 8
+    },
+    "VMAdminUsername": {
+      "type": "string"
+    },
+    "VMAdminPassword": {
+      "type": "securestring",
+      "minLength": 8
+    },
+    "RentalsBackupStorageAccountName": {
+      "type": "string"
+    },
+    "RentalsBackupStorageContainerName": {
+      "type": "string"
+    },
+    "RentalsBackupFileName": {
+      "type": "string"
+    },
+    "RentalsDatabaseName": {
+      "type": "string"
+    },
+    "RentalsCsvFolderName": {
+      "type": "string"
+    },
+    "CatalogJsonFileName": {
+      "type": "string"
+    },
+    "SalesDacPacPath": {
+      "type": "string"
+    },
+    "StreamingDacPacPath": {
+      "type": "string"
+    },
+    "BackupStorageContainerSAS": {
+      "type": "securestring",
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "SQLFictitiousCompanyNamePrefix": {
+      "type": "string",
+      "defaultValue": "OHDataOnPremSQL"
+    },
+    "CSVFictitiousCompanyNamePrefix": {
+      "type": "string",
+      "defaultValue": "OHDataOnPremFil"
+    },
+    "CloudFictitiousCompanyNamePrefix": {
+      "type": "string",
+      "defaultValue": "ohmdw"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deploySqlAzureLinkedTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://ohmdwstor.blob.core.windows.net/deployscripts/DeploySQLAzure.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "AdminLogin": {
+            "value": "[parameters('SqlAdminLogin')]"
+          },
+          "AdminLoginPassword": {
+            "value": "[parameters('SqlAdminLoginPassword')]"
+          },
+          "SalesDacPacPath": {
+            "value": "[parameters('SalesDacPacPath')]"
+          },
+          "StreamingDacPacPath": {
+            "value": "[parameters('StreamingDacPacPath')]"
+          },
+          "DacPacContainerSAS": {
+            "value": "[concat('?', parameters('BackupStorageContainerSAS'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "namePrefix": {
+            "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deploySqlVMLinkedTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://ohmdwstor.blob.core.windows.net/deployscripts/DeploySQLVM.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('VMAdminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('VMAdminPassword')]"
+          },
+          "sqlAuthenticationLogin": {
+            "value": "[parameters('SqlAdminLogin')]"
+          },
+          "sqlAuthenticationPassword": {
+            "value": "[parameters('SqlAdminLoginPassword')]"
+          },
+          "BackupStorageAccountName": {
+            "value": "[parameters('RentalsBackupStorageAccountName')]"
+          },
+          "BackupStorageContainerName": {
+            "value": "[parameters('RentalsBackupStorageContainerName')]"
+          },
+          "BackupStorageContainerSAS": {
+            "value": "[parameters('BackupStorageContainerSAS')]"
+          },
+          "BackupFileName": {
+            "value": "[parameters('RentalsBackupFileName')]"
+          },
+          "DatabaseName": {
+            "value": "[parameters('RentalsDatabaseName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "namePrefix": {
+            "value": "[parameters('SQLFictitiousCompanyNamePrefix')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deployCosmosLinkedTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://ohmdwstor.blob.core.windows.net/deployscripts/DeployCosmosDB.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "namePrefix": {
+            "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "deployFileVMLinkedTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://ohmdwstor.blob.core.windows.net/deployscripts/DeployFileVM.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": {
+            "value": "[parameters('VMAdminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('VMAdminPassword')]"
+          },
+          "BackupStorageAccountName": {
+            "value": "[parameters('RentalsBackupStorageAccountName')]"
+          },
+          "BackupStorageContainerName": {
+            "value": "[parameters('RentalsBackupStorageContainerName')]"
+          },
+          "BackupStorageContainerSAS": {
+            "value": "[parameters('BackupStorageContainerSAS')]"
+          },
+          "RentalsCsvFolderName": {
+            "value": "[parameters('RentalsCsvFolderName')]"
+          },
+          "CatalogJsonFileName": {
+            "value": "[parameters('CatalogJsonFileName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "namePrefix": {
+            "value": "[parameters('CSVFictitiousCompanyNamePrefix')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "deployCosmosLinkedTemplate"
+      ]
+    }
+  ],
+  "outputs": {}
+}

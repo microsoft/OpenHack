@@ -1,0 +1,8 @@
+This is a placeholder file.
+
+The SAS has been intentionally omitted from source control.
+
+The lab_backup_sas.txt, or the SAS it contains,
+is delivered with the MDW OpenHack materials provided
+to lead coaches for use while deploying the labs for
+MDW OpenHack events.
