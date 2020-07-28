@@ -52,13 +52,13 @@ For deployment, you will run a powershell script that executes an ARM template t
    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
    ```
 
-2. Make sure you have the latest PowerShell Azure module installed by executing the following command:
+2. Make sure you have the latest PowerShell Azure module installed by executing the following command, if prompted, click **Yes to All**:
 
     ```PowerShell
     Install-Module -Name Az -AllowClobber -Scope CurrentUser
     ```
 
-3. If you installed an update, **close** the PowerShell ISE window, then **re-open** it. This ensures that the latest version of the Az module is used.
+3. If you installed an update, **close** the PowerShell ISE window, then redo **Step 1.**. This ensures that the latest version of the Az module is used.
 
 4. Execute the following to sign in to the Azure account that has the **Owner** role assignment.
 
@@ -76,7 +76,7 @@ For deployment, you will run a powershell script that executes an ARM template t
 
 6.  Press **F5** to run the script, this will do the following:
 
-   * Create resource group entitled **KMOpenHackRG-[location]** where XX is the two-digit team number and location is the location you entered or have in the script.  For example, team 2 in southcentralus would have rg **KMOpenHackRG-02-southcentralus**
+   * Create resource group entitled **KMOpenHackRG[XX]-[location]** where XX is the two-digit team number and location is the location you entered or have in the script.  For example, team 2 in southcentralus would have rg **KMOpenHackRG02-southcentralus**
 
 ### Manual step - Assigning Users to Each Resource Group 
 
