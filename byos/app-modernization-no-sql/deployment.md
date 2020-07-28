@@ -76,7 +76,7 @@ For deployment, you will run a powershell script that executes an ARM template t
     Connect-AzAccount
     ```
 
-5. Open the `nosql-deployment\deployAll.ps1` PowerShell script in the PowerShell ISE window and update the following variables:
+5. Open the `app-modernization-no-sql\deploy\deployAll.ps1` PowerShell script in the PowerShell ISE window and update the following variables:
 
     > **Note**: The hosted Azure subscriptions do not support deploying SQL Server to all locations. You can use the Create Resource form in the portal while signed in as a class user, select SQL Database, select new SQL Server, then select locations in the dropdown list until you've identified the ones that don't cause a "this location is not supported" alert.  Use those locations during deployment.
 
