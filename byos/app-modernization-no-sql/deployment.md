@@ -54,7 +54,7 @@ Attendees will be required to install software on the workstations that they are
 
 ## Deployment Instructions 
 
-For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owwers to the resource group.
+For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owners to the resource group.
 
 1. Open a **PowerShell ISE** window, run the following command, if prompted, click **Yes to All**:
 
