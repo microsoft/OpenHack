@@ -73,7 +73,7 @@ Attendees will be required to install software on the workstations that they are
     Connect-AzAccount
     ```
 
-5. Open the `serverless-deployment\deployAll.ps1` PowerShell script in the PowerShell ISE window.  There is **nothing** to update, but if you wanted you ***could*** set the location and not require the read-in from the prompt.:
+5. Open the `serverless\deploy\deployAll.ps1` PowerShell script in the PowerShell ISE window.  There is **nothing** to update, but if you wanted you ***could*** set the location and not require the read-in from the prompt.:
 
     ```PowerShell
     $region = Read-Host "What Region Resources be deployed to (i.e. centralus, southcentralus, japaneast, etc)?";
@@ -82,7 +82,7 @@ Attendees will be required to install software on the workstations that they are
     ```
 
 6.  Press **F5** to run the script, this will do the following:
-
+> *Note: if you receive an error that `azuredeploy.json` cannot be found, make sure the current directory of the Console window of **ISE** is the `serverless\deploy` folder.*
    * Create resource group entitled **ServerlessOpenHackRGXX-[location]** where XX is the two-digit team number and location is the location you entered or have in the script.  For example, team 2 in southcentralus would have rg ServerlessOpenHackRG02-southcentralus
    * Deploy two storage accounts with containers [sohsalesxxxxxxxxx] and [sohvmdiagxxxxxxxxx]
    * Deploy a VPN [soh-vnet]
@@ -130,9 +130,9 @@ Attendees will be required to install software on the workstations that they are
     * route messages to functions or other responding events
     * aggregate data for reporting, etc.
 
-* Cosmos Db and/or Azure Tables 
-    * CosmosDb will be a lot easier in the later challenges, so recommend using CosmosDb
-    * They will need to be able to create tables and respond to events against Cosmosdb
+* Cosmos DB and/or Azure Tables 
+    * Cosmos DB will be a lot easier in the later challenges, so recommend using Cosmos DB
+    * They will need to be able to create tables and respond to events against Cosmos DB
 
 * APIM 
     * participants will create an API management gateway to group internal and external apis 
@@ -170,7 +170,7 @@ Attendees will be required to install software on the workstations that they are
 ## Other tools/resources: ##
 
 * DevOps 
-    * teams will need to setup a CI/CD pipeline, recommened use of DevOps to deploy functions to to Azure
+    * teams will need to setup a CI/CD pipeline, recommend use of DevOps to deploy functions to to Azure
 OR
 * GitHub
     * use a github pipeline to deploy to azure
