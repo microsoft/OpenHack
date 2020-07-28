@@ -114,7 +114,7 @@ For deployment, you will run a powershell script that executes an ARM template t
     3. Open the App Service whose name starts with "openhackweb-".
     4. Select **Deployment Center** in the left-hand menu. Most likely, the deployment status will display as "Failed". Select **Sync** to initiate a new build from the connected GitHub repo. If the status shows as Failed again, select the Logs link to view the latest logs.
 
-![The Deployment Center blade is displayed.](images/portal-web-app-deployment-center.png "Deployment Center")
+   ![The Deployment Center blade is displayed.](images/portal-web-app-deployment-center.png "Deployment Center")
 
 ## Deployment artifacts / Validation
 
