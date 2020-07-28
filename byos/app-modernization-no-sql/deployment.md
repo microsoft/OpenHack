@@ -103,7 +103,7 @@ For deployment, you will run a powershell script that executes an ARM template t
 
 7. If you receive an error during the ARM template deployment for `Resource Microsoft.Web/sites/sourcecontrols`, with an error code of `ResourceDeploymentFailure` and message stating `The resource operation completed with terminal provisioning state 'Failed'.`, this means the automated web app deployment from GitHub failed. This is most likely due to a timeout during the NuGet package restore process.
 
-    ![The ARM template deployment failure is shown.](media/arm-deployment-failure-web.png "Deployment failure")
+<!-- missing image file  ![The ARM template deployment failure is shown.](media/arm-deployment-failure-web.png "Deployment failure") -->
 
     If you see this message, perform the following steps:
 
@@ -112,7 +112,7 @@ For deployment, you will run a powershell script that executes an ARM template t
     3. Open the App Service whose name starts with "openhackweb-".
     4. Select **Deployment Center** in the left-hand menu. Most likely, the deployment status will display as "Failed". Select **Sync** to initiate a new build from the connected GitHub repo. If the status shows as Failed again, select the Logs link to view the latest logs.
 
-    ![The Deployment Center blade is displayed.](media/portal-web-app-deployment-center.png "Deployment Center")
+<!-- missing image file ![The Deployment Center blade is displayed.](media/portal-web-app-deployment-center.png "Deployment Center") -->
 
 ## Deployment artifacts / Validation
 
