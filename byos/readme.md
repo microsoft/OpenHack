@@ -25,5 +25,5 @@ Setup of environment may take extensive time depending on the OpenHack topic you
 - [DevOps 2.0](devops-2.0/deployment.md)
 - [Knowledge Mining](knowledge-mining/deployment.md)
 - [Modern Data Warehousing](modern-data-warehousing/deployment.md)
-- [Power Platform](power-platform.md/deployment.md)
+- [Power Platform](power-platform/deployment.md)
 - [Serverless](serverless/deployment.md)
