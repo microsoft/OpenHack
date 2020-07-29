@@ -22,7 +22,11 @@ Each attendee in the OpenHack will be assigned the **Owner** role on a resource 
 
 ## Common Azure Resources 
 
+<<<<<<< HEAD
 The following is a list of common Azure resources that are deployed and utilized during the Open Hack. 
+=======
+The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
+>>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 
@@ -52,13 +56,13 @@ For deployment, you will run a powershell script that executes an ARM template t
    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
    ```
 
-2. Make sure you have the latest PowerShell Azure module installed by executing the following command:
+2. Make sure you have the latest PowerShell Azure module installed by executing the following command, if prompted, click **Yes to All**:
 
     ```PowerShell
     Install-Module -Name Az -AllowClobber -Scope CurrentUser
     ```
 
-3. If you installed an update, **close** the PowerShell ISE window, then **re-open** it. This ensures that the latest version of the Az module is used.
+3. If you installed an update, **close** the PowerShell ISE window, then redo **Step 1.**. This ensures that the latest version of the Az module is used.
 
 4. Execute the following to sign in to the Azure account that has the **Owner** role assignment.
 
@@ -76,7 +80,7 @@ For deployment, you will run a powershell script that executes an ARM template t
 
 6.  Press **F5** to run the script, this will do the following:
 
-   * Create resource group entitled **KMOpenHackRG-[location]** where XX is the two-digit team number and location is the location you entered or have in the script.  For example, team 2 in southcentralus would have rg **KMOpenHackRG-02-southcentralus**
+   * Create resource group entitled **KMOpenHackRG[XX]-[location]** where XX is the two-digit team number and location is the location you entered or have in the script.  For example, team 2 in southcentralus would have rg **KMOpenHackRG02-southcentralus**
 
 ### Manual step - Assigning Users to Each Resource Group 
 
