@@ -22,11 +22,7 @@ Each attendee in the OpenHack will be assigned the **Owner** role on a resource 
 
 ## Common Azure Resources 
 
-<<<<<<< HEAD
 The following is a list of common Azure resources that are deployed and utilized during the Open Hack. 
-=======
-The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
->>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 
