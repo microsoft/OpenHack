@@ -1,17 +1,17 @@
 
-# Modern Data Warehouse Open Hack
+# Modern Data Warehouse OpenHack
 
 ## Setting up Permissions 
 
-Before continuing ensure you understand the permissions needed to run the Open Hack on your Azure subscription.
+Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.
 
 Attendees should have Azure subscription permissions which allow the creation of resources in their resource group. Additionally, attendees should have sufficient subscription permissions to create service principals in Azure AD and to register applications in Azure AD. Typically, all that is required is a user account with `Owner` role on their resource group.
 
 ## Common Azure Resources
 
-The following is a list of common Azure resources that are deployed and utilized during the Open Hack. 
+The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
 
-Ensure that these services are not blocked by Azure Policy.  As this is an Open Hack, the services that attendees can utilize are not limited to this list so subscriptions with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
+Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptions with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 | Azure resource           | Resource Providers |
 | ------------------------ | --------------------------------------- |
@@ -27,7 +27,7 @@ Ensure that these services are not blocked by Azure Policy.  As this is an Open 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. Ensure they have adequate permissions to perform software installation.
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. Ensure they have adequate permissions to perform software installation.
 
 ## Deployment Instructions 
 

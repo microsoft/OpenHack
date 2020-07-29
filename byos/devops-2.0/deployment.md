@@ -2,7 +2,7 @@
 
 ## Setting up Permissions
 
-Before continuing ensure you understand the permissions needed to run the Open Hack on your Azure subscription.  
+Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.  
 
 This lab deploys to a single resource group within a subscription.  To deploy this lab environment, ensure the account you use to execute the script is at a minimum in the Azure Contributor Role. 
 
@@ -36,7 +36,7 @@ You can deploy this lab using local azure cli (bash) or using Azure CloudShell. 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. 
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. 
 Ensure they have adequate permissions to perform software installation. 
 Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
 
@@ -44,7 +44,7 @@ Attendees require internet access outside of any corpnet VPNs they can cause sec
 
 For deployment, there is only one step: 
 
-You will run a shell ** script deploy.sh ** with appropriate parameter values that builds out the required resources using Azure CLI calls under the security context of the shell.  
+You will run a shell script **deploy.sh** with appropriate parameter values that builds out the required resources using Azure CLI calls under the security context of the shell.  
 
 deploy.sh has only two parameters: -l (location), and -s (suffix).   
 
@@ -62,6 +62,22 @@ This is useful to keep the preceding naming pattern, but differentiate deploymen
 bash deploy.sh -l eastus -s 1  # Team 1 
 bash deploy.sh -l eastus -s 2  # Team 2
 ```
+
+&nbsp;
+> ---
+> If you get an error with extra carriage return characters:
+```sh
+deploy.sh: line 2: $'\r': command not found
+...
+deploy.sh: line 34: syntax error near unexpected token `$'in\r'''
+deploy.sh: line 34: `    case "${arg}" in
+```
+> run the following command to remove the erroneous characters: 
+```sh
+sed -i 's/\r//g' deploy.sh
+```
+> &nbsp;
+> ---
 
 The result will be two resource groups in the same sub in eastus with the following name pattern:
  - openhack1rg

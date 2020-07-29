@@ -1,14 +1,14 @@
-# Application Modernization with NoSQL Open Hack
+# Application Modernization with NoSQL OpenHack
 
 ## Permissions 
 
 ## Setting up Permissions
 
-Before continuing ensure you understand the permissions needed to run the Open Hack on your Azure subscription.
+Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.
 
 **Initial Setup** 
 
-To perform the setup and deployment to prepare for the Open Hack you must be be assigned to the Owner role on the Azure subscription(s).
+To perform the setup and deployment to prepare for the OpenHack you must be be assigned to the Owner role on the Azure subscription(s).
 
 To validate this, navigate to the <a href="https://portal.azure.com" target="_blank">Azure Portal</a>. Click on **All Services** -> **Subscriptions** -> **Access Control (IAM)**.
 
@@ -16,14 +16,14 @@ Enter the email address in the **Check access** text box to view the current per
 
 ![Check access dialog](images/check-access.png "Check access dialog displays a textbox to enter an email address.")
 
-**Performing the Open Hack** 
+**Performing the OpenHack** 
 
-Each attendee in the Open Hack will be assigned the **Owner** role on a resource group unique to their team. This is covered later in this document in the deployment section.
+Each attendee in the OpenHack will be assigned the **Owner** role on a resource group unique to their team. This is covered later in this document in the deployment section.
 
 ## Common Azure Resources 
 
-The following is a list of common Azure resources that are deployed and utilized during the Open Hack. 
-Ensure that these services are not blocked by Azure Policy.  As this is an Open Hack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
+The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
+Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptins with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 
 | Azure resource           | Resource Providers |
@@ -50,11 +50,11 @@ Ensure that these services are not blocked by Azure Policy.  As this is an Open 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. Ensure they have adequate permissions to perform software installation. 
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. Ensure they have adequate permissions to perform software installation. 
 
 ## Deployment Instructions 
 
-For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owwers to the resource group.
+For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owners to the resource group.
 
 1. Open a **PowerShell ISE** window, run the following command, if prompted, click **Yes to All**:
 
@@ -76,7 +76,7 @@ For deployment, you will run a powershell script that executes an ARM template t
     Connect-AzAccount
     ```
 
-5. Open the `nosql-deployment\deployAll.ps1` PowerShell script in the PowerShell ISE window and update the following variables:
+5. Open the `app-modernization-no-sql\deploy\deployAll.ps1` PowerShell script in the PowerShell ISE window and update the following variables:
 
     > **Note**: The hosted Azure subscriptions do not support deploying SQL Server to all locations. You can use the Create Resource form in the portal while signed in as a class user, select SQL Database, select new SQL Server, then select locations in the dropdown list until you've identified the ones that don't cause a "this location is not supported" alert.  Use those locations during deployment.
 
@@ -85,7 +85,9 @@ For deployment, you will run a powershell script that executes an ARM template t
     $sqlAdministratorLogin = "openhackadmin"
     # Enter the SQL Server password (i.e. Password123)
     $sqlAdministratorLoginPassword = "Password123"
+    ```
 
+    ```PowerShell
     #Additionally, you can just set the variables for location if you would prefer, rather than reading them from during the script execution by changing the following lines:
     $location1 = Read-Host "What is the first location to deploy to (i.e. eastus)?";  
     $location2 = Read-Host "What is the second location to deploy to (i.e. westus)?"
@@ -103,7 +105,11 @@ For deployment, you will run a powershell script that executes an ARM template t
 
 7. If you receive an error during the ARM template deployment for `Resource Microsoft.Web/sites/sourcecontrols`, with an error code of `ResourceDeploymentFailure` and message stating `The resource operation completed with terminal provisioning state 'Failed'.`, this means the automated web app deployment from GitHub failed. This is most likely due to a timeout during the NuGet package restore process.
 
+<<<<<<< HEAD
 <!-- missing image file  ![The ARM template deployment failure is shown.](media/arm-deployment-failure-web.png "Deployment failure") -->
+=======
+    ![The ARM template deployment failure is shown.](images/arm-deployment-failure-web.png "Deployment failure") 
+>>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 
     If you see this message, perform the following steps:
 
@@ -112,7 +118,11 @@ For deployment, you will run a powershell script that executes an ARM template t
     3. Open the App Service whose name starts with "openhackweb-".
     4. Select **Deployment Center** in the left-hand menu. Most likely, the deployment status will display as "Failed". Select **Sync** to initiate a new build from the connected GitHub repo. If the status shows as Failed again, select the Logs link to view the latest logs.
 
+<<<<<<< HEAD
 <!-- missing image file ![The Deployment Center blade is displayed.](media/portal-web-app-deployment-center.png "Deployment Center") -->
+=======
+   ![The Deployment Center blade is displayed.](images/portal-web-app-deployment-center.png "Deployment Center")
+>>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 
 ## Deployment artifacts / Validation
 

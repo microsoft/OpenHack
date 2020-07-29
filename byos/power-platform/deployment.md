@@ -17,7 +17,11 @@ Dynamics 365 + Power Platform OpenHack:
 
     -   Dynamics 365 Healthcare Accelerator ([installed via AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview))
 
+<<<<<<< HEAD:byos/power-platform/deploy.md
     -   [PowerPlatformOpenHacks.zip (Managed Solution)](deployment/PowerPlatformOpenHackThings.zip?raw=true)
+=======
+    -   [PowerPlatformOpenHacks.zip (Managed Solution)](deploy/PowerPlatformOpenHackThings.zip?raw=true)
+>>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16:byos/power-platform/deployment.md
 
         -   *Contains*:
 
@@ -120,7 +124,11 @@ each environment:
 
     -   Dynamics 365 Healthcare Accelerator ([installed via AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview))
 
+<<<<<<< HEAD:byos/power-platform/deploy.md
     -   [PowerPlatformOpenHacks.zip (Managed Solution)](deployment/PowerPlatformOpenHackThings.zip?raw=true)
+=======
+    -   [PowerPlatformOpenHacks.zip (Managed Solution)](deploy/PowerPlatformOpenHackThings.zip?raw=true)
+>>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16:byos/power-platform/deployment.md
 
         -   *Contains*:
 
