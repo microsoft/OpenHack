@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 ![Microsoft OpenHack](images/OpenHack.png "Microsoft Open Hack")
-=======
-![Microsoft OpenHack](images/OpenHack.png "Microsoft OpenHack")
->>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 
 
 # Microsoft OpenHack 
@@ -29,9 +25,5 @@ Setup of environment may take extensive time depending on the OpenHack topic you
 - [App Modernization with NoSQL](app-modernization-no-sql/deployment.md)
 - [DevOps 2.0](devops-2.0/deployment.md)
 - [Modern Data Warehousing](modern-data-warehousing/deployment.md)
-<<<<<<< HEAD
-- [Power Platform](power-platform.md/deployment.md)
-=======
 - [Power Platform](power-platform/deployment.md)
->>>>>>> 559b2d00786e8922dd06cfc6ceea35778e243a16
 - [Serverless](serverless/deployment.md)
