@@ -22,8 +22,8 @@ Setup of environment may take extensive time depending on the OpenHack topic you
 ## OpenHack Specific Guidance
 
 - [AI-Powered Knowledge Mining](knowledge-mining/deployment.md)
-- [Containers](containers/deployment.md)
 - [App Modernization with NoSQL](app-modernization-no-sql/deployment.md)
+- [Containers](containers/deployment.md)
 - [DevOps 2.0](devops-2.0/deployment.md)
 - [Modern Data Warehousing](modern-data-warehousing/deployment.md)
 - [Power Platform](power-platform/deployment.md)
