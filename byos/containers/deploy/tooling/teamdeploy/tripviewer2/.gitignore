@@ -1,0 +1,6 @@
+.vs
+*.sln
+[Oo]bj/
+[Bb]in/
+
+*.csproj.user

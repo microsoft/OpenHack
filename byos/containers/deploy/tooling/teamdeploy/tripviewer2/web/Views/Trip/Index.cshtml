@@ -1,0 +1,147 @@
+﻿
+@using Simulator.DataObjects;
+@model IEnumerable<TripPoint>
+@{
+    ViewData["Title"] = "Trips";
+    var mapKey = ViewData["MapKey"];
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script type='text/javascript'>
+    var map, directionsManager;
+
+    var stepDistance = 0.10; //The distance in Miles along the route to retrieve locations.
+
+    function GetMap()
+    {
+        map = new Microsoft.Maps.Map('#myMap', {});
+
+        //Load the directions and spatial math modules.
+        Microsoft.Maps.loadModule(['Microsoft.Maps.Directions', 'Microsoft.Maps.SpatialMath'], function () {
+            //Create an instance of the directions manager.
+            directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+
+            @*var startpoint = @($"{Model.FirstOrDefault().Latitude},{Model.FirstOrDefault().Longitude}");
+            var endpoint = @($"{Model.Last().Latitude},{Model.Last().Longitude}");*@
+
+            //Create waypoints to route between.
+            var startWaypoint = new Microsoft.Maps.Directions.Waypoint({ address: '@($"{Model.FirstOrDefault().Latitude},{Model.FirstOrDefault().Longitude}")' });
+            directionsManager.addWaypoint(startWaypoint);
+
+            var endWaypoint = new Microsoft.Maps.Directions.Waypoint({ address: '@($"{Model.Last().Latitude},{Model.Last().Longitude}")' });
+            directionsManager.addWaypoint(endWaypoint);
+
+            //Add event handler to directions manager.
+            Microsoft.Maps.Events.addHandler(directionsManager, 'directionsUpdated', directionsUpdated);
+
+            //Calculate directions.
+            directionsManager.calculateDirections();
+        });
+    }
+
+    function directionsUpdated(e) {
+        //Remove any previously calculated locations from the map.
+        map.entities.clear();
+
+        //Get the current route index.
+        var route = directionsManager.getCurrentRoute();
+
+        if (route && route.routePath && route.routePath.length > 0) {
+
+            //Create an array to store the calculated locations, add the starting location.
+            var locationsAlongPath = [route.routePath[0]];
+
+            //Calculate the length of the route.
+            var routeLength = Microsoft.Maps.SpatialMath.getLengthOfPath(route.routePath, Microsoft.Maps.SpatialMath.DistanceUnits.Miles)
+
+            var numSteps = Math.floor(routeLength / stepDistance);
+            var loc;
+
+            for (var i = 1; i <= numSteps; i++) {
+                loc = Microsoft.Maps.SpatialMath.getLocationAlongPath(route.routePath, stepDistance * i, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+                locationsAlongPath.push(loc);
+            }
+
+            //Add the last location on the route.
+            locationsAlongPath.push(route.routePath[route.routePath.length - 1]);
+
+            //Do something with the calculates locations. Lets show red pushpins for now.
+            //for (var i = 0, len = locationsAlongPath.length; i < len; i++) {
+            //    map.entities.push(new Microsoft.Maps.Pushpin(locationsAlongPath[i], { color: 'red' }))
+            //}
+        }
+        }
+
+        function showDetail() {
+            var x = document.getElementById("myInfoPanel");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=@(mapKey)' async defer></script>
+</head>
+<body>
+   @* @{ Html.RenderPartial("RenderMap"); }*@
+    <div>
+        <h2>View Last Trip</h2>
+        <button onclick="showDetail()">Toggle Detail</button>
+    </div>
+    <div id="myMap" style="position:relative;width:800px;height:600px;"></div>
+    <div id="myInfoPanel" style="display:none;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Latitude)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Longitude)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RecordedTimeStamp)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Speed)
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Latitude)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Longitude)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RecordedTimeStamp)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Speed)
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

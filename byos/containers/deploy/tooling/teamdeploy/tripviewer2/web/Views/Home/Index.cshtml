@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<h2>Openhack</h2>
+<p>Welcome to your team's Trip viewer website running on your AKS cluster.  
+    The <a href="/Trip"> trip page </a> will replay the trips being sent via the simulator on your cluster.  
+    The <a href="/UserProfile"> profile page </a> will show the total number of trips and distance traveled for the user of those simulated trips.
+    Both of these pages are one way to verify that all of your APIs are functioning.
+</p>
+<p>Check out these useful links for your team:</p>
+
+<p>Once your ingress is set up, you should be able to utilize the following links to each API healthcheck endpoint:</p>
+<ul>
+    <li>
+        <a target="_blank" href="/api/user/healthcheck" title="User Node API Healthcheck">User API (Node.js)</a>
+    </li>
+    <li>
+        <a target="_blank" href="/api/user-java/healthcheck" title="User Java API Healthcheck">User API (Java)</a>
+    </li>
+    <li>
+        <a target="_blank" href="/api/trips/healthcheck" title="Trips API Healthcheck">Trips API (Golang)</a>
+    </li>
+    <li>
+        <a target="_blank" href="/api/poi/healthcheck" title="POI API Healthcheck">POI API (dotnet 2.1)</a>
+    </li>
+</ul>
+<div id="UserProfileInfo">
+    @*@await Html.PartialAsync("/Views/UserProfile/Index.cshtml");*@
+
+    @*<partial name="/Views/UserProfile/Index.cshtml" />*@
+</div>
+

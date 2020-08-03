@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Simulator.DataObjects.User>
+
+@{
+    ViewData["Title"] = "DriverProfiles";
+}
+<script>
+    function ProcessRequest(id) {
+        $.ajax({
+            url: '/UserProfile/ProcessRequest/' + id,
+            type: 'GET',
+            success: function (data) {
+                $('#'+id).html(data);
+            },
+            error: function (jqxhr, textStatus, errorThrown) {
+                $(window).hideWaitScreen();
+                if (confirm(errorThrown)) {
+                    window.location.reload();
+                }
+            }
+        });
+    }
+</script>
+
+<h2>Driver Profile</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.ProfilePictureUri)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ranking)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalDistance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalTrips)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.HardStops)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HardAccelerations)
+            </th>
+            <th>New Quote Requests</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+
+                <td>
+                    <img src="@Url.Content(Model.First().ProfilePictureUri)" alt="test" height="100" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ranking)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalDistance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalTrips)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.HardStops)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HardAccelerations)
+                </td>
+                <td>
+                    
+                    <div class="info" id="@item.Id"><button class="btn btn-primary" onclick="ProcessRequest('@item.Id')">ProcessRequest</button></div>
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

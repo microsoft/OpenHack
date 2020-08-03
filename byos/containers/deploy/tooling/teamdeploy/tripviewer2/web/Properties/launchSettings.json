@@ -1,0 +1,30 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60306/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "TEAM_API_ENDPOINT": "http://akstraefikopenhacklr86.westus2.cloudapp.azure.com",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "WCF_ENDPOINT": "http://localhost:53215",
+        "BING_MAPS_KEY": ""
+      }
+    },
+    "TripViewer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:60307/"
+    }
+  }
+}

@@ -1,0 +1,124 @@
+﻿@model IEnumerable<Simulator.DataObjects.TripPoint>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TripId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Speed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecordedTimeStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sequence)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rpm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShortTermFuelBank)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LongTermFuelBank)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThrottlePosition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RelativeThrottlePosition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Runtime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DistanceWithMalfunctionLight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EngineLoad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EngineFuelRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TripId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Latitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Longitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Speed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecordedTimeStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sequence)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rpm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShortTermFuelBank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LongTermFuelBank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThrottlePosition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelativeThrottlePosition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Runtime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DistanceWithMalfunctionLight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EngineLoad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EngineFuelRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+           
+        </tr>
+}
+    </tbody>
+</table>

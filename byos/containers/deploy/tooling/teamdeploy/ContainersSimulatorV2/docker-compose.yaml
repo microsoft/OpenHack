@@ -1,0 +1,99 @@
+version: '2.1'
+
+services:
+  simulator:
+    image: simulator
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+  
+  prometheus:
+    image: prometheus-sim
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
+    ports:
+      - 9090:9090 
+    volumes:
+      - ./prometheus/compose/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana-sim
+    build:
+      context: .
+      dockerfile: Dockerfile.grafana
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      - GRAFANA_URL=prometheus
+    ports:
+      - 3000:3000
+
+  #used for testing
+  tripviewer:
+    image: tripinsights/tripviewer:1.0
+    ports: 
+      - 5000:80
+    environment:
+      - USERPROFILE_API_ENDPOINT=http://userprofile
+      - TRIPS_API_ENDPOINT=http://trips
+      - ASPNETCORE_ENVIRONMENT=Development
+  
+  poi:
+    image: tripinsights/poi:1.0
+    ports:
+      - 5001:80
+    environment:
+      - SQL_PASSWORD=localtestpw123@
+      - SQL_SERVER=sqltestdb
+      - SQL_USER=sa
+      - ASPNETCORE_ENVIRONMENT=Local
+
+  userprofile:
+    image: tripinsights/userprofile:1.0
+    ports:
+      - 5002:80
+    environment:
+      - SQL_PASSWORD=localtestpw123@
+      - SQL_SERVER=sqltestdb
+      - SQL_USER=sa
+
+  user-java:
+    image: tripinsights/user-java:1.0
+    ports:
+      - 5003:80
+    environment:
+      - PORT=80
+      - SQL_PASSWORD=localtestpw123@
+      - SQL_SERVER=sqltestdb
+      - SQL_USER=sa
+
+  trips:
+    image: tripinsights/trips:1.0
+    ports:
+      - 5004:80
+    environment:
+      - PORT=80
+      - SQL_PASSWORD=localtestpw123@
+      - SQL_SERVER=sqltestdb
+      - SQL_USER=sa
+      - DOCS_URI=http://temp 
+  
+  sqltestdb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+      - 1433:1433 
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=localtestpw123@
+
+  ohnginx:
+    image: nginx
+    ports:
+      - 5005:80
+    environment:
+        - NGINX_PORT=80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf

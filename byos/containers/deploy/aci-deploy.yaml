@@ -1,0 +1,49 @@
+apiVersion: 2018-10-01
+location: eastus
+name: SIM_NAME
+properties:
+  containers:
+  - name: simulator
+    properties:
+      image: REGISTRY/simulator:TAG
+      resources:
+        requests:
+          cpu: 2
+          memoryInGb: 1.5
+      ports:
+      - port: 80
+  - name: prometheus
+    properties:
+      image: REGISTRY/prometheus-sim:TAG
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 9090
+  - name: grafana
+    properties:
+      image: REGISTRY/grafana-sim:TAG
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 3000
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: '80'
+    - protocol: tcp
+      port: '9090'
+    - protocol: tcp
+      port: '3000'
+    dnsNameLabel: simulatorACR_NAME
+  imageRegistryCredentials:
+  - server: ACR_NAME.azurecr.io
+    username: ACR_NAME
+    password: ACR_PASS
+tags: null
+type: Microsoft.ContainerInstance/containerGroups

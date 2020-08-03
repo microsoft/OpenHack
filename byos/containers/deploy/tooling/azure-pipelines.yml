@@ -1,0 +1,147 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - tooling/teamdeploy/*
+
+pr:
+- master
+
+resources:
+- repo: self
+
+variables:
+  - group: pipeline-variables-group
+
+stages:
+- stage: CreateRG
+  displayName: Create Azure resource groups
+  jobs:
+  - job: CreateRG
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: AzureResourceGroupDeployment@2
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'testDeploy-$(tag)'
+        location: $(location)
+        templateLocation: 'Linked artifact'
+        csmFile: 'azureDeployRG.json'
+    - task: AzureResourceGroupDeployment@2
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'ProctorVMRG-$(tag)'
+        location: $(location)
+        templateLocation: 'Linked artifact'
+        csmFile: 'azureDeployRG.json'
+    - task: AzureResourceGroupDeployment@2
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'teamResources-$(tag)'
+        location: $(location)
+        templateLocation: 'Linked artifact'
+        csmFile: 'azureDeployRG.json'
+
+- stage: TestBuild
+  displayName: Test Build and push stage
+  jobs:  
+  - job: TestBuild
+    displayName: Test Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(testImageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+- stage: Deploy
+  displayName: Deploy
+  jobs:  
+  - job: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: AzureResourceGroupDeployment@2
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'testDeploy-$(tag)'
+        location: $(location)
+        simulatorLocation: $(simulatorLocation)
+        templateLocation: 'Linked artifact'
+        csmFile: 'azuredeploy.pipeline.json'
+        csmParametersFile: 'azuredeploy.params.json'
+        overrideParameters: '-TenantId "$(tenantId)" -azureUserName "$(spUsername)" -azurePassword "$(spPassword)" -imageName "$(registryName)/$(testImageRepository):$(tag)" -resourceGroupName "teamResources-$(tag)" -proctorResourceGroup "proctorVMRG-$(tag)" -location "$(location)" -simulatorLocation "$(simulatorLocation)"'
+        deploymentMode: 'Incremental'
+
+- stage: Validate
+  displayName: Validate Deployments
+  jobs:  
+  - job: Validate
+    displayName: Validate
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        scriptLocation: 'scriptPath'
+        scriptPath: '$(Build.SourcesDirectory)/tooling/validate-deployment.sh'
+        arguments: $(tag)
+
+- stage: Push
+  displayName: Push stage
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:  
+  - job: Push
+    displayName: Push
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+- stage: PostCleanup
+  displayName: Cleanup
+  condition: always()
+  jobs:  
+  - job: Cleanup
+    displayName: Cleanup
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: AzureResourceGroupDeployment@2
+        inputs:
+          azureSubscription: $(APSAzureSub)
+          action: 'DeleteRG'
+          resourceGroupName: 'ProctorVMRG-$(tag)'
+      - task: AzureResourceGroupDeployment@2
+        inputs:
+          azureSubscription: $(APSAzureSub)
+          action: 'DeleteRG'
+          resourceGroupName: 'testDeploy-$(tag)'
+      - task: AzureResourceGroupDeployment@2
+        inputs:
+          azureSubscription: $(APSAzureSub)
+          action: 'DeleteRG'
+          resourceGroupName: 'teamResources-$(tag)'
