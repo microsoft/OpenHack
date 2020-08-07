@@ -6,9 +6,7 @@ To deploy this lab environment use an account that has at least Azure Contributo
 
 **Initial Setup** 
 
-To initiate a deployment, download the `TeamDeploy` folder content to the same folder as bash script `deployBYOS.sh`, and run the script with the parameters provided below.   The script uses relative paths to execute other scripts within the content folder.
-
-> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already.
+To initiate a deployment, clone the OpenHacks repository and change directory to 'openhack/byos/containers', and run the script **deploy.sh** with the parameters provided below in the [Deployment Instructions Section](#deployment-instructions).  The script uses relative paths to execute other scripts within the content folder.
 
 The current deployment stack requires the following tooling and versions:
 
@@ -17,7 +15,14 @@ The current deployment stack requires the following tooling and versions:
     - bcp
 - dig v9.10.3 (or higher)
 
-You can deploy this lab using local azure cli (bash/WSL), via VSCode, or using Azure CloudShell. If you use your local AZ CLI client, ensure you have latest AZ CLI, SQLCMD, and DIG extensions installed.  For reasons, outlined above, Azure CloudShell has all required tools loaded by default, so this is often an easier method. 
+You can deploy this lab using local azure cli on a machine with bash or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), via VSCode, or using Azure CloudShell. If you use your local AZ CLI client, ensure you have latest AZ CLI, SQLCMD, and DIG extensions installed. For reasons, outlined above, Azure CloudShell has all required tools loaded by default, so this is often an easier method. 
+
+
+> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already. From within cloud shell you can clone the repo using the following command:
+
+```bash
+git clone https://github.com/microsoft/openhack 
+```
 
 ## Deployed Azure Resources 
 

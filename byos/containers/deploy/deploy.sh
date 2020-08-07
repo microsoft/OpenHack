@@ -99,13 +99,13 @@ then
    
     echo "Deploying application images..." 
     echo "insurance:1.0..."
-    az acr build --registry $registryName --no-wait --image insurance:1.0   ./tooling/teamdeploy/insuranceapp-monitoring/ -f ./tooling/teamdeploy/insuranceapp-monitoring/Dockerfile
+    az acr build --registry $registryName --no-wait --image insurance:1.0 insuranceapp-monitoring
     
-    echo "wcfservice:1.0..."
-    az acr build --registry $registryName --no-wait --image wcfservice:1.0  ./tooling/teamdeploy/WinLegacyApp/WinLegacyApp/ -f ./tooling/teamdeploy/WinLegacyApp/Dockerfile --platform Windows 
-    
+    echo "wcfservice:1.0...X"
+    az acr build --registry $registryName --image wcfservice:1.0 WinLegacyApp --platform Windows --no-wait
+
     echo "tripviewer2:1.0..."
-    az acr build --registry $registryName --no-wait --image tripviewer2:1.0 ./tooling/teamdeploy/tripviewer2/             -f ./tooling/teamdeploy/tripviewer2/Dockerfile  
+    az acr build --registry $registryName --no-wait --image tripviewer2:1.0 tripviewer2
 
     # Replace hard coded localhost in simulator webpage
     FQDN='simulator'${registryName}'.'${region}'.azurecontainer.io'
@@ -113,13 +113,13 @@ then
 
     echo "Deploying ContainerSimulatorV2 artifacts..."
     echo "simulator:1.0..."
-    az acr build --registry $registryName --no-wait --image simulator:1.0      ./tooling/teamdeploy/ContainersSimulatorV2/ -f ./tooling/teamdeploy/ContainersSimulatorV2/Dockerfile
+    az acr build --registry $registryName --no-wait --image simulator:1.0  ContainersSimulatorV2
 
     echo "prometheus-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image prometheus-sim:1.0 ./tooling/teamdeploy/ContainersSimulatorV2/prometheus/ -f ./tooling/teamdeploy/ContainersSimulatorV2/Dockerfile.prometheus 
+    az acr build --registry $registryName --no-wait --image prometheus-sim:1.0 prometheus
 
     echo "grafana-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image grafana-sim:1.0    ./tooling/teamdeploy/ContainersSimulatorV2/grafana/ -f ./tooling/teamdeploy/ContainersSimulatorV2/Dockerfile.grafana    
+    az acr build --registry $registryName --no-wait --image grafana-sim:1.0 grafana   
 fi
 
 # Create VNET
