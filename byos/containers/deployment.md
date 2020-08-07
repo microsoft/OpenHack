@@ -6,7 +6,7 @@ To deploy this lab environment use an account that has at least Azure Contributo
 
 **Initial Setup** 
 
-To initiate a deployment, clone the OpenHacks repository and change directory to 'openhack/byos/containers', and run the script **deploy.sh** with the parameters provided below in the [Deployment Instructions Section](#deployment-instructions).  The script uses relative paths to execute other scripts within the content folder.
+To initiate a deployment, clone the OpenHacks repository and change directory to 'openhack/byos/containers/deploy', and run the script **deploy.sh** with the parameters provided below in the [Deployment Instructions Section](#deployment-instructions).  The script uses relative paths to execute other scripts within the content folder.
 
 The current deployment stack requires the following tooling and versions:
 
@@ -23,6 +23,7 @@ You can deploy this lab using local azure cli on a machine with bash or [Windows
 ```bash
 git clone https://github.com/microsoft/openhack 
 ```
+
 
 ## Deployed Azure Resources 
 
@@ -43,6 +44,20 @@ Attendees require internet access outside of any corpnet VPNs they can cause sec
 
 ## Deployment Instructions 
 
+Prior to executing the script below, ensure you have selected the correct Azure subscription. 
+
+The following command will list the subscriptions you have access to. If you are not running in Azure Cloud Shell execute 'az login' first. 
+
+```bash
+az account list
+```
+
+After identifying the available subscriptions. Run the following and replace [subscription name] with either your subscription name or subscriptio ID.
+
+```bash 
+az account set --subscription [subscription name]
+```
+
 On deployment, two resource groups will be created with resources in each.   The Team Resource Group contains the stage artifacts on which the challenge is run.    The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
 
 For deployment, there is only one step: 
@@ -62,32 +77,32 @@ Consider the following minimal parameter execution:
 
 ```sh
 # full default
-wsl ./deploy.sh  
+./deploy.sh  
 ```
 ```sh
 # specify region
-wsl ./deploy.sh -r "<deploymentregion>" 
+./deploy.sh -r "<deploymentregion>" 
 ```
 
 ```sh
 # specify region, and custom resource group name
-wsl ./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>"
+./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>"
 ```
 
 ```sh
 # specify region, custom resource group name, and suffix 
-wsl ./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>" -s "2" 
+./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>" -s "2" 
 ```
 
 Considering the examples above, the inclusion of a suffix parameter augments both the Team Resource Group name and the Proctor Resource Group name by appending the suffix value.   This is useful when building out several identical stages, individually configured for each team - as such:
 
 ```sh
 # a build for team 1 and 2 in eastus region using default resource group name
-bash deploy.sh -r "eastus" -s "1"  # Build challenge stage for Team 1: teamResources1, proctorResources1
-bash deploy.sh -r "eastus" -s "2"  # Build challenge stage for Team 2: teamResources2, proctorResources2
+./deploy.sh -r "eastus" -s "1"  # Build challenge stage for Team 1: teamResources1, proctorResources1
+./deploy.sh -r "eastus" -s "2"  # Build challenge stage for Team 2: teamResources2, proctorResources2
 
 ```
 
-> Note: This script builds out significant premium workloads at low scale, but will often take 25-30 minutes on average to execute.  
+> Note: This script will often take 10-20 minutes on average to execute.  
 > 
 > Some Azure services are not available in all locations.  Check with Azure Regions to ensure the resources required below are available in a given region prior to deployment.
