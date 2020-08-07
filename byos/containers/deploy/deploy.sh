@@ -109,17 +109,17 @@ then
 
     # Replace hard coded localhost in simulator webpage
     FQDN='simulator'${registryName}'.'${region}'.azurecontainer.io'
-    sed -i -e 's localhost '${FQDN}' g' ./tooling/teamdeploy/ContainersSimulatorV2/views/index.html
+    sed -i -e 's localhost '${FQDN}' g' ContainersSimulatorV2/views/index.html
 
     echo "Deploying ContainerSimulatorV2 artifacts..."
     echo "simulator:1.0..."
     az acr build --registry $registryName --no-wait --image simulator:1.0  ContainersSimulatorV2
 
     echo "prometheus-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image prometheus-sim:1.0 prometheus
+    az acr build --registry $registryName --no-wait --image prometheus-sim:1.0 ContainersSimulatorV2/prometheus
 
     echo "grafana-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image grafana-sim:1.0 grafana   
+    az acr build --registry $registryName --no-wait --image grafana-sim:1.0 ContainersSimulatorV2/grafana   
 fi
 
 # Create VNET
