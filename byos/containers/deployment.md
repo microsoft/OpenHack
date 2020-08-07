@@ -58,6 +58,12 @@ After identifying the available subscriptions. Run the following and replace [su
 az account set --subscription [subscription name]
 ```
 
+Set the script with execute permissions.
+
+```bash
+chmod +x deploy.sh
+```
+
 On deployment, two resource groups will be created with resources in each.   The Team Resource Group contains the stage artifacts on which the challenge is run.    The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
 
 For deployment, there is only one step: 
