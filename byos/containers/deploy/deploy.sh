@@ -180,7 +180,7 @@ do
         for i in "${failed[@]}"
         do
             echo "Logs for failed build $i:"
-            echo "$(az acr task logs -r $registryName -n $i)"
+            echo "$(az acr task logs -r $registryName --run-id $i)"
         done
         exit 1
     fi
