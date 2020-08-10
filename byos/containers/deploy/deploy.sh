@@ -113,13 +113,13 @@ then
 
     echo "Deploying ContainerSimulatorV2 artifacts..."
     echo "simulator:1.0..."
-    az acr build --registry $registryName --no-wait --image simulator:1.0  ContainersSimulatorV2
+    az acr build --registry $registryName --image simulator:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile --no-wait
 
     echo "prometheus-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image prometheus-sim:1.0 ContainersSimulatorV2/prometheus
+    az acr build --registry $registryName --image prometheus-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.prometheus --no-wait
 
     echo "grafana-sim:1.0..."
-    az acr build --registry $registryName --no-wait --image grafana-sim:1.0 ContainersSimulatorV2/grafana   
+    az acr build --registry $registryName --image grafana-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.grafana --no-wait 
 fi
 
 # Create VNET
