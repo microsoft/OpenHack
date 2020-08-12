@@ -38,6 +38,8 @@ The following documents outline the permissions needed for each OpenHack, the mo
 
 ## OpenHack Portal Differences
 
+In a BYOS OpenHack, the Azure subscriptions are managed completely out of the Opsgility environment. The following outlines the differences you will experience in the Cloud Sandbox/Coach Portal and the attendee portal in a BYOS OpenHack environment.
+
 ### Cloud Sandbox (Coach Portal)
 
 The differences you will encounter on the Cloud Sandbox is as a Tech Lead or a Lead PM/Coach:
@@ -48,3 +50,10 @@ The differences you will encounter on the Cloud Sandbox is as a Tech Lead or a L
 ### Attendee Portal
 
 The difference you will encounter on the Attendee portal is you will not see the **View Lab Environment** tab with your Azure user credentials. Access to the Azure subscription in managed on the Azure AD tenant you will use for the BYOS environent.
+
+
+
+## Questions?
+
+- OpenHack program: <a href="mailto:askopenhack@microsoft.com">Contact us askopenhack@microsoft.com</a>
+- Opsgility Portals <a href="mailto:openhacks@opsgility.com">Contact us at openhacks@opsgility.com</a>
