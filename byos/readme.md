@@ -55,5 +55,5 @@ The difference you will encounter on the Attendee portal is you will not see the
 
 ## Questions?
 
-- OpenHack Program: <a href="mailto:AskOpenHack@microsoft.com">Contact us askohack@microsoft.com</a>
-- Opsgility Portals <a href="mailto:OpenHacks@opsgility.com">Contact us at openhacks@opsgility.com</a>
+- OpenHack Program: <a href="mailto:askohack@microsoft.com">Contact us AskOpenHack@microsoft.com</a>
+- Opsgility Portals <a href="mailto:openhacks@opsgility.com">Contact us at OpenHacks@opsgility.com</a>
