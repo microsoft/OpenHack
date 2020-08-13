@@ -198,27 +198,16 @@ do
 done
 
 echo "Creating simulator..."
-# Create simulator
+chmod +x  ./ContainersSimulatorV2/deploy-aci.sh
+
+
+ACR_PASS="$(az acr credential show -n $registryName --query 'passwords[0].value' --output tsv)"
+./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryName.azurecr.io 1.0 $registryName $ACR_PASS
+simulatorfqdn=$(az container show -n $simulatorName -g $teamRG --query 'ipAddress.fqdn' --out tsv)
+
 if [ $? == 0 ];
 then
-    ACR_PASS="$(az acr credential show -n $registryName --query 'passwords[0].value' --output tsv)"
-	
-	sed -i -e 's/SIM_NAME/'${simulatorName}'/g' ./aci-deploy.yaml
-	sed -i -e 's/REGISTRY/'${registryName}'.azurecr.io/g' ./aci-deploy.yaml
-	sed -i -e 's/TAG/1.0/g' ./aci-deploy.yaml
-	sed -i -e 's/ACR_NAME/'${registryName}'/g' ./aci-deploy.yaml
-	sed -i -e 's ACR_PASS '${ACR_PASS}' g' ./aci-deploy.yaml
-
-	az container create --resource-group $teamRG --location $region --file --file ./aci-deploy.yaml
-
-    simulatorfqdn=$(az container show -n $simulatorName -g $teamRG --query 'ipAddress.fqdn' --out tsv)
-	
-    if [ $? == 0 ];
-    then
-        echo "Simulator v2 deployed to ACI successfully at" + $simulatorfqdn
-    else
-        echo "Failed to deploy simulator v2 to ACI."
-    fi
+    echo "Simulator v2 deployed to ACI successfully at $simulatorfqdn"
 else
-    echo "Failed to create simulator v2."
+    echo "Failed to deploy simulator v2 to ACI."
 fi

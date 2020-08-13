@@ -21,6 +21,11 @@ The current deployment stack requires the following tooling and versions:
 
 You can deploy this lab using local azure cli (bash) or using Azure CloudShell. If you use your local AZ CLI client, ensure you have latest AZ CLI, SQLCMD, and DIG extensions installed.  For reasons, outlined above, Azure CloudShell has all required tools loaded by default, so this is often an easier method. 
 
+
+### Manual step ### 
+
+After deployment, manually add appropriate users with owner access on the appropriate resource group for their team, so that they will have ability to create and deploy resources in that resource group.
+
 ## Common Azure Resources 
 
 | Azure resource           | Pricing tier/SKU       | Purpose                                 | Registered Resource Providers |

@@ -8,39 +8,15 @@ To deploy this lab environment use an account that has at least Azure Contributo
 
 To initiate a deployment, clone the OpenHacks repository and change directory to 'openhack/byos/containers/deploy', and run the script **deploy.sh** with the parameters provided below in the [Deployment Instructions Section](#deployment-instructions).  The script uses relative paths to execute other scripts within the content folder.
 
-The current deployment stack requires the following tooling and versions:
-
-- Azure CLI v2.3.0 (or higher) ([Installation instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli))
-- sqlcmd v17.5.0001.2 Linux (or higher) ([Installaton instructions](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-setup-tools))
-    - bcp
-- dig v9.10.3 (or higher)
-
-You can deploy this lab using local azure cli on a machine with bash or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), via VSCode, or using Azure CloudShell. If you use your local AZ CLI client, ensure you have latest AZ CLI, SQLCMD, and DIG extensions installed. For reasons, outlined above, Azure CloudShell has all required tools loaded by default, so this is often an easier method. 
+You can deploy this lab using local Azure CLI on a Linux machine, or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), or using Azure CloudShell. If you use your local AZ CLI client, ensure you have [latest AZ CLI installed](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).  
 
 
-> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already. From within cloud shell you can clone the repo using the following command:
+> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling installed already. From within cloud shell you can clone the repo using the following command:
 
 ```bash
 git clone https://github.com/microsoft/openhack 
 ```
 
-
-## Deployed Azure Resources 
-
-| Azure resource           | Pricing tier/SKU       | Purpose                                 | Registered Resource Providers |
-| ------------------------ | ---------------------- | --------------------------------------- | ----------------------------- |
-| Azure SQL Database       | Standard S3: 100 DTUs  | mydrivingDB                             | Microsoft.Sql                 |
-| Azure Kubernetes Service | Basic                  | Private container service               | Microsoft.ContainerService    |
-| Azure Container Registry | Basic                  | Private container registry              | Microsoft.ContainerRegistry   |
-| Azure Container Instance | 1 CPU core/1.5 GiB RAM | DataLoad container                      | NA                            |
-
-> Note:  Resource Provider Registration can be found at https://portal.azure.com/_yourtenantname_.onmicrosoft.com/resource/subscriptions/_yoursubscriptionid_/resourceproviders
-
-## Attendee Computers
-
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. 
-Ensure they have adequate permissions to perform software installation. 
-Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
 
 ## Deployment Instructions 
 
@@ -64,7 +40,7 @@ Set the script with execute permissions.
 chmod +x deploy.sh
 ```
 
-On deployment, two resource groups will be created with resources in each.   The Team Resource Group contains the stage artifacts on which the challenge is run.    The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
+On deployment, two resource groups will be created with resources in each. The Team Resource Group contains the stage artifacts on which the challenge is run. The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
 
 For deployment, there is only one step: 
 
@@ -78,6 +54,7 @@ deploy.sh has the following parameters:
 |  -s       | Team Suffix                                        | _Team4       |
 |  -t       | Azure Resource Group Name (default: teamResources) | TeamRG_Team4 |
 
+You should run the script once per team using a unique Team Suffix each time.
 
 Consider the following minimal parameter execution: 
 
@@ -112,3 +89,29 @@ Considering the examples above, the inclusion of a suffix parameter augments bot
 > Note: This script will often take 10-20 minutes on average to execute.  
 > 
 > Some Azure services are not available in all locations.  Check with Azure Regions to ensure the resources required below are available in a given region prior to deployment.
+
+### Manual step ### 
+
+After deployment, manually add appropriate users with owner access on the appropriate resource group for their team, so that they will have ability to create and deploy resources in that resource group.
+
+
+## Deployed Azure Resources 
+
+The following are resources are deployed as part of the deployment scripts (per team). Throughout the hack, there will be many other resources created. 
+
+
+| Azure resource           | Pricing tier/SKU       | Purpose                                 | Registered Resource Providers |
+| ------------------------ | ---------------------- | --------------------------------------- | ----------------------------- |
+| Azure SQL Database       | Standard S3: 100 DTUs  | mydrivingDB                             | Microsoft.Sql                 |
+| Azure Kubernetes Service | Basic                  | Private container service               | Microsoft.ContainerService    |
+| Azure Container Registry | Basic                  | Private container registry              | Microsoft.ContainerRegistry   |
+| Azure Container Instance | 1 CPU core/1.5 GiB RAM | DataLoad container                      | Microsoft.ContainerInstance   |
+| Azure Virtual Machine    | Standard DS1           | Data Loader                             | Microsoft.Compute             |
+
+> Note:  Resource Provider Registration can be found at https://portal.azure.com/_yourtenantname_.onmicrosoft.com/resource/subscriptions/_yoursubscriptionid_/resourceproviders
+
+## Attendee Computers
+
+Attendees will be required to install software on the workstations that they are performing the Open Hack on. 
+Ensure they have adequate permissions to perform software installation. 
+Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
