@@ -7,7 +7,7 @@ import (
 	"github.com/golang/glog"
 	"time"
 
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 type simtype int

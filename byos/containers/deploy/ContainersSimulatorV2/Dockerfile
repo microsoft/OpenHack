@@ -1,5 +1,5 @@
 #build stage
-FROM golang:1.12.6 AS builder
+FROM golang:1.14.7 AS builder
 WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 go test -timeout 30s -test.coverprofile /tmp/go-code-cover .

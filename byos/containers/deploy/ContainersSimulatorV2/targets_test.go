@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func Test_staticTargeter(t *testing.T) {

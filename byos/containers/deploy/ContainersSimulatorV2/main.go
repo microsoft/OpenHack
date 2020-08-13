@@ -9,7 +9,7 @@ import (
 
 	"github.com/golang/glog"
 	prometheusMiddleware "github.com/iris-contrib/middleware/prometheus"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -165,11 +165,8 @@ func genSims(config SimConfig, getRandomUser func() *UserProfile, getRandomTrip 
 	}
 }
 
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	flag.Parse()
 	// Set up prometheus metric server
 	opsProcessed := promauto.NewCounterVec(
 		prometheus.CounterOpts{

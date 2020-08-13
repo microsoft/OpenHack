@@ -10,7 +10,7 @@ import (
 	"github.com/brianvoe/gofakeit"
 
 	"github.com/prometheus/client_golang/prometheus"
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 var (

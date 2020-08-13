@@ -2,7 +2,7 @@ package main
 
 import (
 	prometheusMiddleware "github.com/iris-contrib/middleware/prometheus"
-	"github.com/kataras/iris/httptest"
+	"github.com/kataras/iris/v12/httptest"
 	"testing"
 )
 

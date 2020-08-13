@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/golang/glog"
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"sync"
 	"time"
 )

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	vegeta "github.com/tsenart/vegeta/lib"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func TestSims_RunSim(t *testing.T) {
