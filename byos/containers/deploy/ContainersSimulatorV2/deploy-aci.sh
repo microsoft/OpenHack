@@ -6,6 +6,7 @@ TAG=$5
 ACR_NAME=$6
 ACR_PASS=$7
 
+cat ./ContainersSimulatorV2/aci-deploy-template.yaml > ./ContainersSimulatorV2/aci-deploy.yaml
 sed -i -e 's/SIM_NAME/'${NAME}'/g' ./ContainersSimulatorV2/aci-deploy.yaml
 sed -i -e 's/REGISTRY/'${REGISTRY}'/g' ./ContainersSimulatorV2/aci-deploy.yaml
 sed -i -e 's/TAG/'${TAG}'/g' ./ContainersSimulatorV2/aci-deploy.yaml
