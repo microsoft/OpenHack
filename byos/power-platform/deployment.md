@@ -3,70 +3,42 @@
 # Environment Setup
 
 There are three available options for obtaining an environment to
-complete the Dynamics 365 + Power Platform OpenHack: provide attendees a
-pre-configured environment, advise attendees on how to spin up a 30-day
-trial environment, or have them bring their own subscription (BYOS).
+complete the Dynamics 365 + Power Platform OpenHack: 
+1. Provide attendees a pre-configured environment
+2. Advise attendees on [how to spin up a 30-day
+trial environment](#option-2-30-day-trial-environment)
+3. Have them bring their own subscription (BYOS).
+
 This document will focus on the latter two.
 
 ## Bill of Materials
 
 The following are required in order to successfully complete the
 Dynamics 365 + Power Platform OpenHack:
-
+-   Subscriptions (Trials subscriptions will work)
+    -   M365 E3 subscription (*non-Microsoft tenant recommended*)
+    -   Power BI Pro subscription
+    -   AI Builder subscription
 -   Solutions
-
     -   Dynamics 365 Healthcare Accelerator ([installed via AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview))
-
     -   [PowerPlatformOpenHacks.zip (Managed Solution)](deployment/PowerPlatformOpenHackThings.zip?raw=true)
-
         -   *Contains*:
-
             -   Dynamics 365 Views for Appointment EMR entity
-
             -   Field name changes for Appointment EMR entity
-
             -   Site Map edits for D365 Healthcare Accelerator
-
         -   To install: In Dynamics 365, go to Advanced Settings
             Solutions Import
-
--   Subscriptions (Trials subscriptions will work)
-
-    -   Office 365 E3 subscription
-
-    -   Power BI Pro subscription
-
-    -   AI Builder subscription
-
 -   Applications
-
     -   Power BI Desktop
 
-> Note: The D365 Healthcare Accelerator may take up to an hour to install.
-It also comes with sample data that may not install on the first try. To
-install the sample data, simply follow these steps:
+## Option 2: 30-day Trial Environment
 
-1.  Go to admin.powerplatform.com
-
-2.  Admin centers Dynamics 365
-
-3.  Select the appropriate environment then click Solutions
-
-    ![](images/image1.png)
-
-1.  Find Dynamics 365 Electronic Medical Records and Dynamics Healthcare
-    Accelerator Sample Data
-
-    ![](images/image2.png)
-
-1.  Make sure both are installed.
-
-## How to set up a Dynamics 365 Trial and create your Power Platform tenant
+### How to set up a Dynamics 365 Trial and create your Power Platform tenant
 
 1.  Open a web browser and navigate to trials.dynamics.com and click
-    "Sign up here".
+    **"Sign up here"** (Don't click "Get Started").
 
-    *\*If you are already logged in with another Microsoft 365 account, you
+    > Note: *If you are already logged in with another Microsoft 365 account, you
     may need to open an incognito browser.*
 
     ![](images/image3.png)
@@ -108,8 +80,29 @@ install the sample data, simply follow these steps:
 
     ![](images/image9.png)
 
+### Installing Dynamics Health Care Accelerator
+1. Install the [Dynamics 365 Healthcare Accelerator from AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview) into the tenant and environment you created in the previous section. 
+    > Note: The D365 Healthcare Accelerator may take up to an hour to install.  It also comes with sample data that may not install on the first try.
 
-## Bring You Own Subscription 
+1.  Go to admin.powerplatform.com
+
+1.  Select the appropriate environment then click **Resources >> Dynamics 365 apps**
+
+1.  Find Dynamics 365 Electronic Medical Records and Dynamics Healthcare
+    Accelerator Sample Data
+
+    ![](images/image2.png)
+
+1.  Make sure both are installed.
+
+### Installing Power Platform OpenHack Content
+
+1. Import the **PowerPlatformOpenHacks.zip** (Managed Solution) extracted from the [PowerPlatformOpenHackThings.zip](deployment/PowerPlatformOpenHackThings.zip?raw=true) by going to Advanced Settings >> Solutions in Dynamics.
+
+    ![](images/Dynamics-AdvancedSettings.jpg)
+![](images/Dynamics-Solutions.jpg)
+
+## Option 3: Bring You Own Subscription 
 
 If you decide to bring your own subscription, you will need two
 environments (one for Dev, one for "Prod") to complete the OpenHack
