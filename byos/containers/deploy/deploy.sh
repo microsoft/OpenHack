@@ -211,3 +211,7 @@ then
 else
     echo "Failed to deploy simulator v2 to ACI."
 fi
+
+echo "sqlServerPassword     = "${sqlServerPassword}
+
+
