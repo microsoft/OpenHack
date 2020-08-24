@@ -1,0 +1,49 @@
+apiVersion: 2018-10-01
+location: eastus
+name: simulator-app-registryfas1136
+properties:
+  containers:
+  - name: simulator
+    properties:
+      image: registryfas1136.azurecr.io/simulator:1.0
+      resources:
+        requests:
+          cpu: 2
+          memoryInGb: 1.5
+      ports:
+      - port: 80
+  - name: prometheus
+    properties:
+      image: registryfas1136.azurecr.io/prometheus-sim:1.0
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 9090
+  - name: grafana
+    properties:
+      image: registryfas1136.azurecr.io/grafana-sim:1.0
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 3000
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: '80'
+    - protocol: tcp
+      port: '9090'
+    - protocol: tcp
+      port: '3000'
+    dnsNameLabel: simulatorregistryfas1136
+  imageRegistryCredentials:
+  - server: registryfas1136.azurecr.io
+    username: registryfas1136
+    password: t5jH+1Fe2PVSQZ8MIO5Iv5le2kB0St5n
+tags: null
+type: Microsoft.ContainerInstance/containerGroups

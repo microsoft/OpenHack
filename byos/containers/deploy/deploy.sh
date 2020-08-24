@@ -7,7 +7,7 @@ declare resourceGroupName="teamResources"
 declare suffix=""
 declare proctorRG="proctorResources"
 declare randstr=""
-
+declare createAdUsers=""
 
 # Initialize parameters specified from command line
 while getopts ":c:s:l:i:q:r:u:p:t:g:o:" arg; do
@@ -20,6 +20,9 @@ while getopts ":c:s:l:i:q:r:u:p:t:g:o:" arg; do
         ;;
         s)
             suffix=${OPTARG}
+        ;;
+        a)
+            createAdUsers=${OPTARG}
         ;;
     esac
 done
@@ -108,6 +111,9 @@ then
     az acr build --registry $registryName --no-wait --image tripviewer2:1.0 tripviewer2
 
     # Replace hard coded localhost in simulator webpage
+    # Create from template first so we don't overwrite
+    cat ./ContainersSimulatorV2/views/index-template.html > ./ContainersSimulatorV2/views/index.html
+
     FQDN='simulator'${registryName}'.'${region}'.azurecontainer.io'
     sed -i -e 's localhost '${FQDN}' g' ContainersSimulatorV2/views/index.html
 
@@ -142,6 +148,7 @@ fi
 # Create Azure SQL Server instance
 echo "Creating Azure SQL Server instance..."
 az sql server create -l $region -g $teamRG -n $sqlServerName -u $sqlServerUsername -p $sqlServerPassword
+
 
 if [ $? == 0 ];
 then
@@ -211,3 +218,7 @@ then
 else
     echo "Failed to deploy simulator v2 to ACI."
 fi
+
+
+echo "SQL Server User Name: $sqlServerUsername Password; $sqlServerPassword"
+echo "Simulator url:$simulatorfqdn"
