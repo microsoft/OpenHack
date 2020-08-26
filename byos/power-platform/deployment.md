@@ -63,7 +63,7 @@ install the sample data, simply follow these steps:
 
 ## How to set up a Dynamics 365 Trial and create your Power Platform tenant
 
-1.  Open a web browser and navigate to trials.dynamics.com and click
+1.  Open a web browser and navigate to [trials.dynamics.com](https://trials.dynamics.com/) and click
     "Sign up here".
 
     *\*If you are already logged in with another Microsoft 365 account, you
