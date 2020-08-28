@@ -17,7 +17,7 @@ import (
 )
 
 func newApp(simulator Simulator, prom *prometheusMiddleware.Prometheus) *iris.Application {
-	app := iris.Default()
+	app := iris.New()
 	app.RegisterView(iris.HTML("./views", ".html").Reload(true))
 
 	app.Use(prom.ServeHTTP)
@@ -181,6 +181,6 @@ func main() {
 	app := newApp(simulator, prom)
 	port := os.Getenv("PORT")
 
-	app.Run(iris.Addr(fmt.Sprintf(":%s", port)))
+	app.Listen(fmt.Sprintf(":%s", port))
 	glog.Flush()
 }
