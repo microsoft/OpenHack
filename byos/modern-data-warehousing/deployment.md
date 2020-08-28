@@ -37,11 +37,13 @@ Attendees will be required to install software on the workstations that they are
    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
    ```
 
-2. Make sure you have the latest PowerShell Azure module installed by executing the following command:
+2. The latest version of the Azure PowerShell cmdlets do **NOT** work with this script. You will need to use an earlier version (noted below)
 
     ```PowerShell
-    Install-Module -Name Az -AllowClobber -Scope CurrentUser
+    Install-Module -Name Az -RequiredVersion 4.2.0 -Force -AllowClubber
     ```
+
+    > Note: If you need to uninstall first: [Uninstall the Azure PowerShell Module](https://docs.microsoft.com/en-us/powershell/azure/uninstall-az-ps?view=azps-4.6.0)
 
 3. If you installed an update, **close** the PowerShell ISE window, then **re-open** it. This ensures that the latest version of the Az module is used.
 
