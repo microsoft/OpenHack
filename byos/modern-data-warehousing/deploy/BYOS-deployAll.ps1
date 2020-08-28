@@ -1,11 +1,13 @@
+
+
 param(
     [string]$teamCount = "1",
-    [string]$DeploymentTemplateFile = ".\ARM\DeployMDWOpenHackLab.json",
-    [string]$DeploymentParameterFile = ".\ARM\DeployMDWOpenHackLab.parameters.json",
+    [string]$DeploymentTemplateFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.json",
+    [string]$DeploymentParameterFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.parameters.json",
     [string]$Location = "eastus",
     [securestring]$SqlAdminLoginPassword,
     [securestring]$VMAdminPassword,
-    [securestring]$BackupStorageContainerSAS
+    [securestring]$BackupStorageContainerSAScd
 )
 $teamCount = Read-Host "How many teams are hacking?";
 $region = Read-Host "What Region Resources be deployed to (i.e. centralus, southcentralus, japaneast, etc)?";
