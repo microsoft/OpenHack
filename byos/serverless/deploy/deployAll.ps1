@@ -30,3 +30,6 @@ for ($i = 1; $i -le $teamCount; $i++)
     }
     
 }
+
+#ensure that the subscription has the event-grid registration applied
+Register-AzResourceProvider -ProviderNamespace Microsoft.EventGrid  
