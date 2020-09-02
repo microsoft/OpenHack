@@ -48,11 +48,11 @@ You will run a shell script **deploy.sh** with appropriate parameter values that
 
 deploy.sh has the following parameters:
 
-| Parameter | Description                                        | Example      |
-| --------- | -------------------------------------------------- | ------------ |
-|  -r       | Azure region                                       | westus       |  
-|  -s       | Team Suffix                                        | _Team4       |
-|  -t       | Azure Resource Group Name (default: teamResources) | TeamRG_Team4 |
+| Parameter | Description                                            | Example      |
+| --------- | -------------------------------------------------------|------------- |
+|  -r       | Azure region                                           | westus       |  
+|  -s       | Team Suffix                                            | _Team4       |
+|  -t       | Azure Resource Group Name (default: teamResources)     | TeamRG_Team4 |
 
 You should run the script once per team using a unique Team Suffix each time.
 
@@ -77,6 +77,7 @@ Consider the following minimal parameter execution:
 ./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>" -s "2" 
 ```
 
+
 Considering the examples above, the inclusion of a suffix parameter augments both the Team Resource Group name and the Proctor Resource Group name by appending the suffix value.   This is useful when building out several identical stages, individually configured for each team - as such:
 
 ```sh
@@ -89,6 +90,14 @@ Considering the examples above, the inclusion of a suffix parameter augments bot
 > Note: This script will often take 10-20 minutes on average to execute.  
 > 
 > Some Azure services are not available in all locations.  Check with Azure Regions to ensure the resources required below are available in a given region prior to deployment.
+
+
+## Permissions for Challenge 4
+
+The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements.
+If you do not have access to create these user accounts in Azure AD you can use accounts from members of your team instead. 
+
+
 
 ### Manual step ### 
 

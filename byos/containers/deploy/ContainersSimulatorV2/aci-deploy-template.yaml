@@ -1,11 +1,11 @@
 apiVersion: 2018-10-01
 location: eastus
-name: simulator-app-registrycwy3531
+name: SIM_NAME
 properties:
   containers:
   - name: simulator
     properties:
-      image: registrycwy3531.azurecr.io/simulator:1.0
+      image: REGISTRY/simulator:TAG
       resources:
         requests:
           cpu: 2
@@ -14,7 +14,7 @@ properties:
       - port: 80
   - name: prometheus
     properties:
-      image: registrycwy3531.azurecr.io/prometheus-sim:1.0
+      image: REGISTRY/prometheus-sim:TAG
       resources:
         requests:
           cpu: 1
@@ -23,7 +23,7 @@ properties:
       - port: 9090
   - name: grafana
     properties:
-      image: registrycwy3531.azurecr.io/grafana-sim:1.0
+      image: REGISTRY/grafana-sim:TAG
       resources:
         requests:
           cpu: 1
@@ -40,10 +40,10 @@ properties:
       port: '9090'
     - protocol: tcp
       port: '3000'
-    dnsNameLabel: simulatorregistrycwy3531
+    dnsNameLabel: simulatorACR_NAME
   imageRegistryCredentials:
-  - server: registrycwy3531.azurecr.io
-    username: registrycwy3531
-    password: b6mUdW2fM1SXuZF0yQJ8VOZViyZ/4aTs
+  - server: ACR_NAME.azurecr.io
+    username: ACR_NAME
+    password: ACR_PASS
 tags: null
 type: Microsoft.ContainerInstance/containerGroups

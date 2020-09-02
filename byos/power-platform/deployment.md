@@ -21,7 +21,13 @@ Dynamics 365 + Power Platform OpenHack:
     -   AI Builder subscription
 -   Solutions
     -   Dynamics 365 Healthcare Accelerator ([installed via AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview))
+<<<<<<< HEAD
     -   [PowerPlatformOpenHacks.zip (Managed Solution)](deployment/PowerPlatformOpenHackThings.zip?raw=true)
+=======
+
+    -   [PowerPlatformOpenHacks.zip (Managed Solution)](deploy/PowerPlatformOpenHackThings.zip?raw=true)
+
+>>>>>>> upstream/main
         -   *Contains*:
             -   Dynamics 365 Views for Appointment EMR entity
             -   Field name changes for Appointment EMR entity
@@ -35,8 +41,13 @@ Dynamics 365 + Power Platform OpenHack:
 
 ### How to set up a Dynamics 365 Trial and create your Power Platform tenant
 
+<<<<<<< HEAD
 1.  Open a web browser and navigate to trials.dynamics.com and click
     **"Sign up here"** (Don't click "Get Started").
+=======
+1.  Open a web browser and navigate to [trials.dynamics.com](https://trials.dynamics.com/) and click
+    "Sign up here".
+>>>>>>> upstream/main
 
     > Note: *If you are already logged in with another Microsoft 365 account, you
     may need to open an incognito browser.*
@@ -102,7 +113,7 @@ each environment:
 
     -   Dynamics 365 Healthcare Accelerator ([installed via AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview))
 
-    -   [PowerPlatformOpenHacks.zip (Managed Solution)](deployment/PowerPlatformOpenHackThings.zip?raw=true)
+    -   [PowerPlatformOpenHacks.zip (Managed Solution)](deploy/PowerPlatformOpenHackThings.zip?raw=true)
 
         -   *Contains*:
 
