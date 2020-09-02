@@ -40,7 +40,7 @@ Attendees will be required to install software on the workstations that they are
 2. The latest version of the Azure PowerShell cmdlets do **NOT** work with this script. You will need to use an earlier version (noted below)
 
     ```PowerShell
-    Install-Module -Name Az -RequiredVersion 4.2.0 -Force -AllowClubber
+    Install-Module -Name Az -RequiredVersion 4.2.0 -Force -AllowClobber -SkipPublisherCheck
     ```
 
     > Note: If you need to uninstall first: [Uninstall the Azure PowerShell Module](https://docs.microsoft.com/en-us/powershell/azure/uninstall-az-ps?view=azps-4.6.0)
@@ -73,7 +73,13 @@ Attendees will be required to install software on the workstations that they are
     $containerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     ```
 
-8. Execute the following to deploy the environment (this process may take 10-15 minutes):
+8. If you have not already done so, you will need to download the `modern-data-warehousing` folder from the repository.  You can use the following command to clone the repo to the current directory:
+
+   ```shell
+   git clone https://github.com/microsoft/OpenHack.git
+   ```
+   
+9. Execute the following from the `moden-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
 
     ```powershell
      .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $sqlpwd -VMAdminPassword $vmpwd -BackupStorageContainerSAS $containerSAS
