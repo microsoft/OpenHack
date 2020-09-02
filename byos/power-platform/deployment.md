@@ -84,17 +84,6 @@ Dynamics 365 + Power Platform OpenHack:
 1. Install the [Dynamics 365 Healthcare Accelerator from AppSource](https://appsource.microsoft.com/en-us/product/dynamics-365/msemr.healthcarecommondatamodel?tab=Overview) into the tenant and environment you created in the previous section. 
     > Note: The D365 Healthcare Accelerator may take up to an hour to install.  It also comes with sample data that may not install on the first try.
 
-1.  Go to admin.powerplatform.com
-
-1.  Select the appropriate environment then click **Resources >> Dynamics 365 apps**
-
-1.  Find Dynamics 365 Electronic Medical Records and Dynamics Healthcare
-    Accelerator Sample Data
-
-    ![](images/image2.png)
-
-1.  Make sure both are installed.
-
 ### Installing Power Platform OpenHack Content
 
 1. Import the **PowerPlatformOpenHacks.zip** (Managed Solution) extracted from the [PowerPlatformOpenHackThings.zip](deployment/PowerPlatformOpenHackThings.zip?raw=true) by going to Advanced Settings >> Solutions in Dynamics.
