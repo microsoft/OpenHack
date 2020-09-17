@@ -219,6 +219,11 @@ else
     echo "Failed to deploy simulator v2 to ACI."
 fi
 
+echo "ACR Server: $registryName.azurecr.io"
+echo "ACR Registry: $registryName"
+echo "ACR Password: $ACR_PASS"
+echo "SQL Server: $sqlServerName"
+echo "SQL Server User Name: $sqlServerUsername"
+echo "SQL ServerPassword: $sqlServerPassword"
 
-echo "SQL Server User Name: $sqlServerUsername Password; $sqlServerPassword"
 echo "Simulator url:$simulatorfqdn"
