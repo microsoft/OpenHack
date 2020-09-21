@@ -6,7 +6,7 @@ Before continuing ensure you understand the permissions needed to run the OpenHa
 
 **Initial Setup** 
 
-To perform the setup and deployment to prepare for the OpenHack you must be be assigned to the Owner role on the Azure subscription(s).
+To perform the setup and deployment to prepare for the OpenHack you must be be assigned to the Contributor role on the Azure subscription(s).
 
 To validate this, navigate to the <a href="https://portal.azure.com" target="_blank">Azure Portal</a>. Click on **All Services** -> **Subscriptions** -> **Access Control (IAM)**.
 
@@ -16,7 +16,7 @@ Enter the email address in the **Check access** text box to view the current per
 
 **Performing the OpenHack** 
 
-Each attendee in the OpenHack will be assigned the **Owner** role on a resource group unique to their team. This is covered later in this document in the deployment section.
+Each attendee in the OpenHack will be assigned the **Contributor** role on a resource group unique to their team. This is covered later in this document in the deployment section.
 
 
 
