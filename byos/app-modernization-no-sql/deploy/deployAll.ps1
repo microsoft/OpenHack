@@ -34,7 +34,7 @@ for ($i = 1; $i -le $teamCount; $i++)
     $rg1 = Get-AzResourceGroup -Name $resourceGroup2Name
     if ($rg1.Name -ne '' -and $rg2.Name -ne '')
     {
-        $templateUri = "https://raw.githubusercontent.com/solliancenet/nosql-openhack/master/azuredeploy.json"
+        $templateUri = "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/app-modernization-no-sql/deploy/azuredeploy.json"
 
         Write-Output ("Starting RG Deployment")
         $outputs = New-AzResourceGroupDeployment `
