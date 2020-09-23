@@ -4,7 +4,7 @@
 
 There are three available options for obtaining an environment to
 complete the Dynamics 365 + Power Platform OpenHack: 
-1. Provide attendees a pre-configured environment
+1. Provide attendees a pre-configured environment  
 2. Advise attendees on [how to spin up a 30-day
 trial environment](#option-2-30-day-trial-environment)
 3. Have them bring their own subscription (BYOS).
@@ -115,9 +115,15 @@ each environment:
 
         -   To install: In Dynamics 365, go to Advanced Settings Solutions Import
 
+-   Supplemental Data
+
+    -   [OpenHackSampleData.zip (Managed Solution)](deploy/OpenHackSampleData.zip?raw=true)
+
+    -   To install: In Dynamics 365, go to Advanced Settings --> Data Management --> Imports --> Import Data (This might take a while)
+
 -   Subscriptions (Trials subscriptions will work)
 
-    -   Office 365 E3 subscription
+    -   Office 365 E3 subscription or E5 for Power BI Pro to be included
 
     -   Power BI Pro subscription
 
