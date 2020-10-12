@@ -7,8 +7,8 @@ In this OpenHack, you will perform tasks that require Global Admin/Company Admin
 
 ## Azure AD 
 
-- (Create a new Tenant)[https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant]
-- (Assocate tenant to an existing subscription)[https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory]
+- [Create a new Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant)
+- [Assocate tenant to an existing subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory)
 
 ## Environment Deployment
 
