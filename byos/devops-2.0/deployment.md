@@ -8,9 +8,10 @@ This lab deploys to a single resource group within a subscription.  To deploy th
 
 **Initial Setup** 
 
-To initiate a deployment, download both the ARM template (`azuredeploy.json`) and the bash script (`deploy.sh`) to the same directory in a bash shell.
+To initiate a deployment, clone this git repo or download the contents of *deploy* folder.  
+To run the deploy.sh command, see __Deployment instructions__ section below.
 
-> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already.
+> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling (az/sqlcmd/bcp/dig/etc.) installed already. However you will need to make sure the cloud shell does not time out during the deployment.
 
 The current deployment stack requires the following tooling and versions:
 
@@ -56,7 +57,7 @@ deploy.sh has only two parameters: -l (location), and -s (suffix).
 Run deploy.sh with a single parameter (`-l` for location). *e.g.* To deploy into `eastus`.  In this case, suffix will be a randomly generated suffix to ensure uniqueness. 
 
 ```sh
-bash deploy.sh -l eastus -s X  # where X is numbered suffix 
+bash deploy.sh -l eastus  
 
 ```
 Adding the addtional parameter applies a suffix: (`-s` for suffix), using numbers and letters only *e.g.* [^A-Za-z0-9]``.
