@@ -121,6 +121,6 @@ The following are resources are deployed as part of the deployment scripts (per 
 
 ## Attendee Computers
 
-Attendees will be required to install software on the workstations that they are performing the Open Hack on. 
+Attendees will be required to install software on the workstations that they are performing the OpenHack on. 
 Ensure they have adequate permissions to perform software installation. 
 Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
