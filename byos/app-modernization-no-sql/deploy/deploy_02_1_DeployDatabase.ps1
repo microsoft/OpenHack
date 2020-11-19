@@ -1,7 +1,4 @@
-#TODO: MAP THIS to the correct URL for branch merging!
-#$templateUri = "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/app-modernization-no-sql/deploy/azuresqldatabase.json"
-
-$templateUri = "https://raw.githubusercontent.com/opsgilitybrian/OpenHack/update-nosql-byos-deploy-process/byos/app-modernization-no-sql/deploy/azuresqldatabase.json";
+$templateUri = "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/app-modernization-no-sql/deploy/azuresqldatabase.json"
 
 $outputs = New-AzResourceGroupDeployment `
             -ResourceGroupName $resourceGroup1Name `

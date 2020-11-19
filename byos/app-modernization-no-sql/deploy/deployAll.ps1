@@ -58,7 +58,7 @@ for ($i = 1; $i -le $teamCount; $i++)
             Write-Output ("Database deployment completed.");
 
             # Import data to the Movies database: 
-            Write-Output ("Import data to Movies database is starting (takes upwards of 20 minutes");
+            Write-Output ("Import data to Movies database is starting (takes upwards of 20 minutes)");
 
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
             & "$DeployResourcesScriptPath\deploy_03_ImportData.ps1"
