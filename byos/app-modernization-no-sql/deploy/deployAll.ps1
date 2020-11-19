@@ -13,83 +13,80 @@ $sqlAdministratorLoginPassword = "Password123"
 
 for ($i = 1; $i -le $teamCount; $i++)
 {
-    $teamName = $i;
-    if ($i -lt 10)
+    try 
     {
-        $teamName = "0" + $i;
-    }
-    Write-Output ("Beginning Deployment - " + $teamName);
-    $suffix = -join ((48..57) + (97..122) | Get-Random -Count 13 | % {[char]$_})
-    $suffix2 = -join ((48..57) + (97..122) | Get-Random -Count 13 | % {[char]$_})
-    $databaseName = "Movies"
-    $sqlserverName = "openhacksql-" + $teamName + "-" + $suffix
+        $teamName = $i.ToString().PadLeft(2, '0');
+        Write-Output ("Beginning Deployment - " + $teamName);
 
-    $resourceGroup1Name = "nosql-" + $teamName + "-openhack1";
-    $resourceGroup2Name = "nosql-" + $teamName + "-openhack2";
-
-    New-AzResourceGroup -Name $resourceGroup1Name -Location $location1
-    New-AzResourceGroup -Name $resourceGroup2Name -Location $location2
-
-    $rg1 = Get-AzResourceGroup -Name $resourceGroup1Name
-    $rg1 = Get-AzResourceGroup -Name $resourceGroup2Name
-    if ($rg1.Name -ne '' -and $rg2.Name -ne '')
-    {
-        $templateUri = "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/app-modernization-no-sql/deploy/azuredeploy.json"
-
-        Write-Output ("Starting RG Deployment")
-        $outputs = New-AzResourceGroupDeployment `
-            -ResourceGroupName $resourceGroup1Name `
-            -location $location1 `
-            -TemplateUri $templateUri `
-            -secondResourceGroup $resourceGroup2Name `
-            -secondLocation $location2 `
-            -sqlserverName $sqlserverName `
-            -sqlAdministratorLogin $sqlAdministratorLogin `
-            -sqlAdministratorLoginPassword $(ConvertTo-SecureString -String $sqlAdministratorLoginPassword -AsPlainText -Force) `
-            -suffix $suffix `
-            -suffix2 $suffix2
-
-        Write-Output ("RG Deployment Completed, Import data starting")
-
-        $importRequest = New-AzSqlDatabaseImport -ResourceGroupName $resourceGroup1Name `
-            -ServerName $sqlserverName -DatabaseName $databaseName `
-            -DatabaseMaxSizeBytes "5000000" `
-            -StorageKeyType "SharedAccessKey" `
-            -StorageKey "?sp=rl&st=2019-11-26T21:16:46Z&se=2025-11-27T21:36:00Z&sv=2019-02-02&sr=b&sig=P15nBXR2bD2jBnHX92%2BwWRxMnvTeUl3EdBNhLXnZ95s%3D" `
-            -StorageUri "https://databricksdemostore.blob.core.windows.net/data/nosql-openhack/movies.bacpac" `
-            -Edition "Basic" -ServiceObjectiveName "Basic" `
-            -AdministratorLogin $sqlAdministratorLogin `
-            -AdministratorLoginPassword $(ConvertTo-SecureString -String $sqlAdministratorLoginPassword -AsPlainText -Force)
-
-        $importStatus = Get-AzSqlDatabaseImportExportStatus -OperationStatusLink $importRequest.OperationStatusLink
-
-        [Console]::Write("Importing database")
-        while ($importStatus.Status -eq "InProgress") {
-            $importStatus = Get-AzSqlDatabaseImportExportStatus -OperationStatusLink $importRequest.OperationStatusLink
-            [Console]::Write(".")
-            Start-Sleep -s 10
-        }
-
-        [Console]::WriteLine("")
-        $importStatus
-
-        Write-Output ("Import data completed")
+        #create variables for resource group names, database and server names, 
+        #and the suffixes to make resources unique
+        $resourceGroup1Name = "nosql-" + $teamName + "-openhack1";
+        $resourceGroup2Name = "nosql-" + $teamName + "-openhack2";
+        #unique strings for creating resources in the provisioned regions    
+        $suffix = -join ((48..57) + (97..122) | Get-Random -Count 13 | % {[char]$_});
+        $suffix2 = -join ((48..57) + (97..122) | Get-Random -Count 13 | % {[char]$_});
         
-        $webUrl = "https://openhackweb-" + $suffix + ".azurewebsites.net"
-        [Console]::WriteLine("Checking Website Availability")
-        $availabilityResult = Invoke-WebRequest $webUrl
-        
-        if($availabilityResult.StatusCode -eq 200) {
-            Write-Output ("Website is available")
-        }
-        else {
-            Write-Output("Website availability check failed for team: " + $teamName)
-        }
-    }
-    else
-    {
-        Write-Output("Deployment failed for team: " + $teamName)
-    }
+        $databaseName = "Movies";
+        $sqlserverName = "openhacksql-" + $teamName + "-" + $suffix;
 
-    Write-Output ("Deployment Completed - " + $teamName);
+        ## Create the Resource Groups ##  
+        $DeployRGsScriptPath = Split-Path $MyInvocation.InvocationName
+        & "$DeployRGsScriptPath\deploy_01_DeployResourceGroups.ps1";
+
+        $rg1 = Get-AzResourceGroup -Name $resourceGroup1Name;
+        $rg2 = Get-AzResourceGroup -Name $resourceGroup2Name;
+
+        # Write-Output $rg1;
+        # Write-Output $rg2;
+        
+        if ($rg1 -ne $null -and $rg2 -ne $null -and $rg1.Name -ne '' -and $rg2.Name -ne '')
+        {
+            #Create Eventhubs in each rg, sql server and app service plan and app service in RG1:  
+            Write-Output "Starting resource deployments";
+            
+            $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
+            & "$DeployResourcesScriptPath\deploy_02_DeployResources.ps1"
+
+            Write-Output ("Resource deployments completed and validated.");
+
+            #Create the Movies database
+            Write-Output ("Starting deployment of Movies database");
+
+            $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
+            & "$DeployResourcesScriptPath\deploy_02_1_DeployDatabase.ps1"
+
+            Write-Output ("Database deployment completed.");
+
+            # Import data to the Movies database: 
+            Write-Output ("Import data to Movies database is starting (takes upwards of 20 minutes)");
+
+            $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
+            & "$DeployResourcesScriptPath\deploy_03_ImportData.ps1"
+            
+            Write-Output ("Data import to the Movies database is complete"); 
+
+            #final validation checks
+            Write-Output ("Running final checks and validation scripts.");
+
+            $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
+            & "$DeployResourcesScriptPath\deploy_04_FinalValidation.ps1"
+
+            Write-Output ("Final checks completed and validated - " + $teamName); 
+
+            #report complete for team
+            Write-Output ("Deployment Completed Successfully - Team: " + $teamName);
+        }
+        else
+        {
+            #report error for incorrect RG deployment
+            Write-Output("Deployment failed for team: " + $teamName + ". Resource Groups could not be found.");
+        }
+    }
+    catch {
+        #report error, team deployment failure
+        Write-Output "An error was encountered, script could not complete:  $($PSItem.ToString())";
+    }
 }
+
+#report operation completed
+Write-Output "All resources are deployed.  Operation completed!";
