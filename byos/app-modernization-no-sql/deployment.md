@@ -58,7 +58,21 @@ For deployment, you will run a powershell script that executes an ARM template t
 
 ### Traditional Powershell ###
 
-If you want, you can just open a Powershell 7 Window
+Open a Powershell 7 Window, and ensure that you have the appropriate tools enabled.  
+
+Run the following command  
+
+```  
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```  
+
+If you don't have the latest Az modules installed, run the following command.  
+
+```  
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+```  
+
+>Important: **If you install the Az Modules, restart powershell before continuing.** 
 
 1. Navigate to the directory that contains the `deployAll.ps1` script with typical commands such as  
 
