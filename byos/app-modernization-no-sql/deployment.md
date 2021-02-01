@@ -54,67 +54,76 @@ Attendees will be required to install software on the workstations that they are
 
 ## Deployment Instructions 
 
-For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owners to the resource group.
+For deployment, you will run a powershell script that executes an ARM template to setup the appropriate Resource Group for each team.  You will then manually add team members as owners to the resource group.  
 
-1. Open a **PowerShell ISE** window, run the following command, if prompted, click **Yes to All**:
+### Traditional Powershell ###
 
-   ```PowerShell
-   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-   ```
+Open a Powershell 7 Window, and ensure that you have the appropriate tools enabled.  
 
-2. Make sure you have the latest PowerShell Azure module installed by executing the following command:
+Run the following command  
 
-    ```PowerShell
-    Install-Module -Name Az -AllowClobber -Scope CurrentUser
-    ```
+```  
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```  
 
-3. If you installed an update, **close** the PowerShell ISE window, then **re-open** it. This ensures that the latest version of the Az module is used.
+If you don't have the latest Az modules installed, run the following command.  
 
-4. Execute the following to sign in to the Azure account:
+```  
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+```  
 
-    ```PowerShell
+>Important: **If you install the Az Modules, restart powershell before continuing.** 
+
+1. Navigate to the directory that contains the `deployAll.ps1` script with typical commands such as  
+
+    ```  
+    cd C:\the-root-path\...\byos\app-modernization-no-sql\deploy
+    ```  
+    ![Get to the correct directory](images/image0001.png "Get to the correct directory.")  
+
+2. Ensure you are logged in.  
+
+    Run the following command to connect:  
+
+    ```  
     Connect-AzAccount
-    ```
+    ```  
 
-5. Open the `app-modernization-no-sql\deploy\deployAll.ps1` PowerShell script in the PowerShell ISE window and update the following variables:
+    Follow the prompts to connect with the code in your browser.  When you are done, the subscription you are on will be listed.  
 
-    > **Note**: The hosted Azure subscriptions do not support deploying SQL Server to all locations. You can use the Create Resource form in the portal while signed in as a class user, select SQL Database, select new SQL Server, then select locations in the dropdown list until you've identified the ones that don't cause a "this location is not supported" alert.  Use those locations during deployment.
+    ![Review your subscription](images/image0002.png "Make sure your subscription listed is the one you want to deploy to.")  
 
-    ```PowerShell
-    # Enter the SQL Server username (i.e. openhackadmin)
-    $sqlAdministratorLogin = "openhackadmin"
-    # Enter the SQL Server password (i.e. Password123)
-    $sqlAdministratorLoginPassword = "Password123"
-    ```
+3. Ensure you are in the correct subscription (if the subscription listed after connecting is not the one you want to use).  If you are in the correct subscription, go to step 4.  
 
-    ```PowerShell
-    #Additionally, you can just set the variables for location if you would prefer, rather than reading them from during the script execution by changing the following lines:
-    $location1 = Read-Host "What is the first location to deploy to (i.e. eastus)?";  
-    $location2 = Read-Host "What is the second location to deploy to (i.e. westus)?"
+    Run the command  
 
-    #to
-    $location1 = "eastus"; #or another region
-    $location2 = "westus"; #or another region
-    ```
+    ```  
+    Get-AzSubscription
+    ```  
 
-6. Press **F5** to run the script, this will do the following:
+    ![Find the subscription you want](images/image0003.png "Copy the id of the subscription you want to use")  
 
-   - Deploy the ARM template
-   - Restore the Azure SQL database from a `.bacpac` file
-   - Deploy the sample web app
+    Review the listed subscriptions to find the Id of the subscription you want to use.  
 
-7. If you receive an error during the ARM template deployment for `Resource Microsoft.Web/sites/sourcecontrols`, with an error code of `ResourceDeploymentFailure` and message stating `The resource operation completed with terminal provisioning state 'Failed'.`, this means the automated web app deployment from GitHub failed. This is most likely due to a timeout during the NuGet package restore process.
+    Copy the subscription id, then run the command
 
-<!-- missing image file  ![The ARM template deployment failure is shown.](media/arm-deployment-failure-web.png "Deployment failure") -->
+    ```  
+    Select-AzSubscription replace-with-your-sub-id
+    ```  
 
-    If you see this message, perform the following steps:
+    ![Ensure the correct subscription is listed](images/image0004.png "After running the command, your subscription is set")    
 
-    1. Log in to the Azure portal (<https://portal.azure.com>) with the account used for your deployment.
-    2. Open the `resourceGroup1Name` resource group (default is "nosql-XX-openhack1").
-    3. Open the App Service whose name starts with "openhackweb-".
-    4. Select **Deployment Center** in the left-hand menu. Most likely, the deployment status will display as "Failed". Select **Sync** to initiate a new build from the connected GitHub repo. If the status shows as Failed again, select the Logs link to view the latest logs.
+4. Run the script `deployAll.ps1`    
+    
+    You will only need to input the number of teams and the two regions you want to deploy to and the script.  
 
-<!-- missing image file ![The Deployment Center blade is displayed.](media/portal-web-app-deployment-center.png "Deployment Center") -->
+    ![Deploying the open hack using powershell](images/image0005.png "When the script runs you need to input the number of teams and the two locations")  
+    
+    >Note: The script will take some time to run, and if you have more than one team it will have to run multiple iterations.  If you are re-deploying, you will be prompted to replace existing resource groups.  This takes a bit longer.  
+
+    If the database import does not run synchronously, you will get an error on the final validation.  At this point, all resources are deployed, you just don't have data, so even though the deployment failed, you would just need to use script 3 to import the data and script 4 to then validate it worked (or just look at the website on the publicly exposed url).  
+
+    ![The output](images/image0006.png "The final output of the script is shown in this image")  
 
 ## Deployment artifacts / Validation
 
@@ -133,8 +142,6 @@ After deployment has completed, you should see the following resources:
 
 > [Download the zip file](https://databricksdemostore.blob.core.windows.net/data/nosql-openhack/DataGenerator.zip) for the data generator used in the OpenHack.
 
-
-## Additional ##
 ## Common Resources and Quotas needed
 
 Resources users will create/provision/interact with:

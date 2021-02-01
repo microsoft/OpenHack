@@ -31,7 +31,7 @@ for ($i = 1; $i -le $teamCount; $i++)
 
         ## Create the Resource Groups ##  
         $DeployRGsScriptPath = Split-Path $MyInvocation.InvocationName
-        & "$DeployRGsScriptPath\deploy_01_DeployResourceGroups.ps1";
+        & "$DeployRGsScriptPath\deploy_01_DeployResourceGroups.ps1" | Out-Null
 
         $rg1 = Get-AzResourceGroup -Name $resourceGroup1Name;
         $rg2 = Get-AzResourceGroup -Name $resourceGroup2Name;
@@ -45,7 +45,7 @@ for ($i = 1; $i -le $teamCount; $i++)
             Write-Output "Starting resource deployments";
             
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
-            & "$DeployResourcesScriptPath\deploy_02_DeployResources.ps1"
+            & "$DeployResourcesScriptPath\deploy_02_DeployResources.ps1" | Out-Null
 
             Write-Output ("Resource deployments completed and validated.");
 
@@ -53,7 +53,7 @@ for ($i = 1; $i -le $teamCount; $i++)
             Write-Output ("Starting deployment of Movies database");
 
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
-            & "$DeployResourcesScriptPath\deploy_02_1_DeployDatabase.ps1"
+            & "$DeployResourcesScriptPath\deploy_02_1_DeployDatabase.ps1" | Out-Null
 
             Write-Output ("Database deployment completed.");
 
@@ -61,7 +61,7 @@ for ($i = 1; $i -le $teamCount; $i++)
             Write-Output ("Import data to Movies database is starting (takes upwards of 20 minutes)");
 
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
-            & "$DeployResourcesScriptPath\deploy_03_ImportData.ps1"
+            & "$DeployResourcesScriptPath\deploy_03_ImportData.ps1" | Out-Null
             
             Write-Output ("Data import to the Movies database is complete"); 
 
@@ -69,7 +69,7 @@ for ($i = 1; $i -le $teamCount; $i++)
             Write-Output ("Running final checks and validation scripts.");
 
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
-            & "$DeployResourcesScriptPath\deploy_04_FinalValidation.ps1"
+            & "$DeployResourcesScriptPath\deploy_04_FinalValidation.ps1" | Out-Null
 
             Write-Output ("Final checks completed and validated - " + $teamName); 
 
