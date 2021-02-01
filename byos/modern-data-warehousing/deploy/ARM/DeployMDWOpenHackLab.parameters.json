@@ -5,23 +5,14 @@
         "SqlAdminLogin": {
             "value": "southridge"
         },
-        "SqlAdminLoginPassword": {
-            "value": ""
-        },
         "SalesDacPacPath": {
             "value": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudSales.bacpac"
         },
         "StreamingDacPacPath": {
             "value": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudStreaming.bacpac"
         },
-        "BackupStorageContainerSAS": {
-            "value": ""
-        },
         "VMAdminUsername": {
             "value": "openhackadmin"
-        },
-        "VMAdminPassword": {
-            "value": ""
         },
         "RentalsBackupStorageAccountName": {
             "value": "ohmdwstor"

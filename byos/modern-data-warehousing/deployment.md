@@ -62,15 +62,17 @@ Attendees will be required to install software on the workstations that they are
 6. Assign the `$sqlpwd` and `$vmpwd` variables in your PowerShell session as **Secure Strings**. Be sure to use a strong password for both. Follow [this link](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/faq#what-are-the-password-requirements-when-creating-a-vm) for Virtual Machine password requirements and [this link](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-2017#password-complexity) for SQL Server.
 
     ```powershell
-    $sqlpwd = "ThePasswordYouWantToUseForSQL" | ConvertTo-SecureString -AsPlainText -Force
-    $vmpwd = "ThePasswordYouWantToUseForTheVM" | ConvertTo-SecureString -AsPlainText -Force
+    $PlainPassword = "demo@pass123"
+    $SqlAdminLoginPassword = $PlainPassword | ConvertTo-SecureString -AsPlainText -Force
+    $VMAdminPassword = $PlainPassword | ConvertTo-SecureString -AsPlainText -Force
     ``` 
 
 7. Assign the `$containerSAS` variable in your PowerShell session also as a **Secure String**. This is a rwl SAS scoped to the dbbackups container:
 
     ```powershell
-    $sasToken = "[replace with SAS token receieved from the Opsgility team]"
+    $sasToken = "sv=2018-03-28&si=dbbackupspartitioned_deployment&sr=c&sig=%2FZEzCNA1OkeIbO07dTc5VU0ywEExYzRfM%2FiB8%2BlR9PM%3D"
     $containerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
+    $BackupStorageContainerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     ```
 
 8. If you have not already done so, you will need to download the `modern-data-warehousing` folder from the repository.  You can use the following command to clone the repo to the current directory:
@@ -82,7 +84,7 @@ Attendees will be required to install software on the workstations that they are
 9. Execute the following from the `moden-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
 
     ```powershell
-     .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $sqlpwd -VMAdminPassword $vmpwd -BackupStorageContainerSAS $containerSAS
+     .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword -BackupStorageContainerSAS $BackupStorageContainerSAS
     ```
 
 ### Manual step - Assigning Users to Each Resource Group 
