@@ -114,9 +114,9 @@ In this task, you will sign up for an Azure trial subscription that will use the
 This task requires that you have installed the Microsoft Azure Active Directory Module for Windows PowerShell on your deployment workstation.
 In this task you will run a PowerShell script to create user accounts and groups in your OpenHack Microsoft 365 subscription.
 
-1. Download the user creation script from [https://dev.azure.com/cseeest/OpenHack/_git/SCIOpenHack?path=%2Fresources%2Fsciohuserscreation.ps1&version=GBmaster](https://dev.azure.com/cseeest/OpenHack/_git/SCIOpenHack?path=%2Fresources%2Fsciohuserscreation.ps1&version=GBmaster)
+1. Download the user creation script from [https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts.zip](https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts.zip)
 
-1. Download the user CSV file from [https://dev.azure.com/cseeest/OpenHack/_git/SCIOpenHack?path=%2Fresources%2Fsciohusers.csv&version=GBmaster](https://dev.azure.com/cseeest/OpenHack/_git/SCIOpenHack?path=%2Fresources%2Fsciohusers.csv&version=GBmaster)
+1. Download the user CSV file from [https://github.com/microsoft/OpenHack/blob/main/byos/sci/sciohusers.csv](https://github.com/microsoft/OpenHack/blob/main/byos/sci/sciohusers.csv)
 
 1. Ensure both files are in the same folder on your deployment workstation.
 
