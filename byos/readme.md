@@ -67,6 +67,7 @@ The following documents outline the permissions needed for each OpenHack, the mo
 - [Serverless](serverless/deployment.md)
 - [Migration](migration/deployment.md)
 - [DevOps for Data Science](devops-for-data-science/deployment.md)
+- [Security, Compliance, and Identity](sci/sci-byos-env-setup.md)
 
 ## OpenHack Portal Differences
 
