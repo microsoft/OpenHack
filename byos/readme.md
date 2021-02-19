@@ -62,11 +62,11 @@ The following documents outline the permissions needed for each OpenHack, the mo
 - [App Modernization with NoSQL](app-modernization-no-sql/deployment.md)
 - [Containers](containers/deployment.md)
 - [DevOps 2.0](devops-2.0/deployment.md)
-- [Modern Data Warehousing](modern-data-warehousing/deployment.md)
-- [Power Platform](power-platform/deployment.md)
-- [Serverless](serverless/deployment.md)
-- [Migration](migration/deployment.md)
 - [DevOps for Data Science](devops-for-data-science/deployment.md)
+- [Dynamics 365 + Power Platform](power-platform/deployment.md)
+- [Migration](migration/deployment.md)
+- [Modern Data Warehousing](modern-data-warehousing/deployment.md)
+- [Serverless](serverless/deployment.md)
 - [Security, Compliance, and Identity](sci/sci-byos-env-setup.md)
 
 ## OpenHack Portal Differences
