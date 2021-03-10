@@ -70,7 +70,7 @@ Attendees will be required to install software on the workstations that they are
 7. Assign the `$containerSAS` variable in your PowerShell session also as a **Secure String**. This is a rwl SAS scoped to the dbbackups container:
 
     ```powershell
-    $sasToken = "sv=2018-03-28&si=dbbackupspartitioned_deployment&sr=c&sig=%2FZEzCNA1OkeIbO07dTc5VU0ywEExYzRfM%2FiB8%2BlR9PM%3D"
+    $sasToken = "sp=r&st=2021-03-10T20:27:20Z&se=2025-03-11T03:27:20Z&spr=https&sv=2020-02-10&sr=c&sig=5Zc%2BWeRVEkAqtT3eTq5Ka%2FO2Ei%2Bftr1mrt%2BEFelvuSg%3D"
     $containerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     $BackupStorageContainerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     ```
@@ -81,7 +81,7 @@ Attendees will be required to install software on the workstations that they are
    git clone https://github.com/microsoft/OpenHack.git
    ```
    
-9. Execute the following from the `moden-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
+9. Execute the following from the `modern-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
 
     ```powershell
      .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword -BackupStorageContainerSAS $BackupStorageContainerSAS
