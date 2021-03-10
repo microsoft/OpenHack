@@ -6,10 +6,10 @@
             "value": "southridge"
         },
         "SalesDacPacPath": {
-            "value": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudSales.bacpac"
+            "value": "https://openhackartifacts.blob.core.windows.net/mdw/CloudSales.bacpac"
         },
         "StreamingDacPacPath": {
-            "value": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudStreaming.bacpac"
+            "value": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
         },
         "VMAdminUsername": {
             "value": "openhackadmin"
