@@ -46,16 +46,16 @@
     },
     "SalesDacPacPath": {
       "type": "string",
-      "defaultValue": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudSales.bacpac"
+      "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudSales.bacpac"
     },
     "StreamingDacPacPath": {
       "type": "string",
-      "defaultValue": "https://ohmdwstor.blob.core.windows.net/dbbackupspartitioned/CloudStreaming.bacpac"
+      "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
     },
     "BackupStorageContainerSAS": {
       "type": "securestring",
       "minLength": 1,
-      "defaultValue": "sv=2018-03-28&si=dbbackupspartitioned_deployment&sr=c&sig=%2FZEzCNA1OkeIbO07dTc5VU0ywEExYzRfM%2FiB8%2BlR9PM%3D"
+      "defaultValue": "sp=r&st=2021-03-10T20:27:20Z&se=2025-03-11T03:27:20Z&spr=https&sv=2020-02-10&sr=c&sig=5Zc%2BWeRVEkAqtT3eTq5Ka%2FO2Ei%2Bftr1mrt%2BEFelvuSg%3D"
     },
     "location": {
       "type": "string",
