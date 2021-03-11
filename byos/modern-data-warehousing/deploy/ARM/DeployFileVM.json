@@ -117,10 +117,10 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/FileVMExtensionDriver.ps1",
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/RetrieveCSV.ps1",
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/DisableIEESC.ps1",
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/CreateAndPopulateCosmos.ps1"
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/FileVMExtensionDriver.ps1",
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/RetrieveCSV.ps1",
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DisableIEESC.ps1",
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/CreateAndPopulateCosmos.ps1"
               ]
             },
             "protectedSettings": {
@@ -141,43 +141,6 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines', variables('FilVirtualMachineName'))]"
-      ]
-    },
-    {
-      "name": "microsoft.antimalware-windows-20190215121511",
-      "apiVersion": "2015-01-01",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "incremental",
-        "templateLink": {
-          "uri": "https://gallery.azure.com/artifact/20161101/microsoft.antimalware-windows-arm.1.0.2/Artifacts/MainTemplate.json"
-        },
-        "parameters": {
-          "vmName": {
-            "value": "[variables('FilVirtualMachineName')]"
-          },
-          "location": {
-            "value": "[variables('location')]"
-          },
-          "RealtimeProtectionEnabled": {
-            "value": "true"
-          },
-          "ScheduledScanSettingsIsEnabled": {
-            "value": "false"
-          },
-          "ScheduledScanSettingsScanType": {
-            "value": "Quick"
-          },
-          "ScheduledScanSettingsDay": {
-            "value": "7"
-          },
-          "ScheduledScanSettingsTime": {
-            "value": "120"
-          }
-        }
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('FilVirtualMachineName'))]"
       ]
     },
     {
