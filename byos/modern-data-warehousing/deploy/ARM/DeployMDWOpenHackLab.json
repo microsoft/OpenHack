@@ -22,11 +22,11 @@
     },
     "RentalsBackupStorageAccountName": {
       "type": "string",
-      "defaultValue": "ohmdwstor"
+      "defaultValue": "openhackartifacts"
     },
     "RentalsBackupStorageContainerName": {
       "type": "string",
-      "defaultValue": "dbbackupspartitioned"
+      "defaultValue": "mdw"
     },
     "RentalsBackupFileName": {
       "type": "string",
@@ -38,7 +38,7 @@
     },
     "RentalsCsvFolderName": {
       "type": "string",
-      "defaultValue": "OnPremRentalsCSV"
+      "defaultValue": "onpremrentalscosmos"
     },
     "CatalogJsonFileName": {
       "type": "string",
