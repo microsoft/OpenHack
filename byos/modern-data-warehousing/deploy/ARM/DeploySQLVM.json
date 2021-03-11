@@ -137,9 +137,9 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "fileUris": [
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/DeploySQLVM.ps1",
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/DisableIEESC.ps1",
-                "https://ohmdwstor.blob.core.windows.net/deployscripts/SqlVMExtensionDriver.ps1"
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeploySQLVM.ps1",
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DisableIEESC.ps1",
+                "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/SqlVMExtensionDriver.ps1"
               ]
             },
             "protectedSettings": {
