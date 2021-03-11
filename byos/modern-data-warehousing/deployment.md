@@ -70,7 +70,7 @@ Attendees will be required to install software on the workstations that they are
 7. Assign the `$containerSAS` variable in your PowerShell session also as a **Secure String**. This is a rwl SAS scoped to the dbbackups container:
 
     ```powershell
-    $sasToken = "sp=r&st=2021-03-10T20:27:20Z&se=2025-03-11T03:27:20Z&spr=https&sv=2020-02-10&sr=c&sig=5Zc%2BWeRVEkAqtT3eTq5Ka%2FO2Ei%2Bftr1mrt%2BEFelvuSg%3D"
+    $sasToken = "sp=rl&st=2021-03-11T23:29:56Z&se=2026-03-12T06:29:56Z&spr=https&sv=2020-02-10&sr=c&sig=D5jy97qh7LmF6GxHNcWAl5AcjcXK7BOxW5HxeQlU3BM%3D"
     $containerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     $BackupStorageContainerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
     ```
