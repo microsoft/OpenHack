@@ -27,7 +27,7 @@
             "value": "OnPremRentals"
         },
         "RentalsCsvFolderName": {
-            "value": "onpremrentalscosmos"
+            "value": "onpremrentalscsv"
         },
         "CatalogJsonFileName": {
             "value": "movies_southridge.json"

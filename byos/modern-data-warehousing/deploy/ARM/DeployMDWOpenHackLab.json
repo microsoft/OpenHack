@@ -38,7 +38,7 @@
     },
     "RentalsCsvFolderName": {
       "type": "string",
-      "defaultValue": "onpremrentalscosmos"
+      "defaultValue": "onpremrentalscsv"
     },
     "CatalogJsonFileName": {
       "type": "string",
