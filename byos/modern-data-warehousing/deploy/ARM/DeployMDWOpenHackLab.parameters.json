@@ -15,10 +15,10 @@
             "value": "openhackadmin"
         },
         "RentalsBackupStorageAccountName": {
-            "value": "ohmdwstor"
+            "value": "openhackartifacts"
         },
         "RentalsBackupStorageContainerName": {
-            "value": "dbbackupspartitioned"
+            "value": "mdw"
         },
         "RentalsBackupFileName": {
             "value": "onpremrentals.bak"
@@ -27,7 +27,7 @@
             "value": "OnPremRentals"
         },
         "RentalsCsvFolderName": {
-            "value": "OnPremRentalsCSV"
+            "value": "onpremrentalscosmos"
         },
         "CatalogJsonFileName": {
             "value": "movies_southridge.json"
