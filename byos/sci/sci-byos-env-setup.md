@@ -185,7 +185,7 @@ There are no ARM template parameters to provide (resource names are hard-coded w
 Use the Microsoft Azure portal to create the resource group and deploy the custom template, or you may use the following commands:
 
 ```PowerShell
-$location = eastus"
+$location = "eastus"
 $resourceGroupName = "OpenHackRG"
 $deploymentName = "azuredeploy" + "-" + (Get-Date).ToUniversalTime().ToString('MMdd-HHmmss')
 
