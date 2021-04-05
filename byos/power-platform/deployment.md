@@ -36,8 +36,7 @@ To be successful and get the most out of this OpenHack and to avoid any delays w
 There are three available options for obtaining an environment to
 complete the Dynamics 365 + Power Platform OpenHack: 
 1. Provide attendees a pre-configured environment  
-2. Advise attendees on [how to spin up a 30-day
-trial environment](#option-2-30-day-trial-environment)
+2. Advise attendees on [how to spin up a 30-day trial environment](#option-2-30-day-trial-environment)
 3. Have them bring their own subscription (BYOS).
 
 This document will focus on the latter two.
@@ -132,4 +131,4 @@ each environment:
 
 -   Applications
 
-    -   Power BI Desktop
+    -   [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop/)
