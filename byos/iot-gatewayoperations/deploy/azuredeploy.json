@@ -4,7 +4,7 @@
      "parameters": {
      },
      "variables": {
-          "resourcePrefix": "iotgatewayops",
+          "resourcePrefix": "iotgwops",
           "storageAccountName": "[concat(variables('resourcePrefix'), uniqueString(resourceGroup().id))]"
      },
      "resources": [
