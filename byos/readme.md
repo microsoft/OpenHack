@@ -64,6 +64,7 @@ The following documents outline the permissions needed for each OpenHack, the mo
 - [DevOps 2.0](devops-2.0/deployment.md)
 - [DevOps for Data Science](devops-for-data-science/deployment.md)
 - [Dynamics 365 + Power Platform](power-platform/deployment.md)
+- [Iot Gateway Operations](iot-gatewayoperations/deployment.md)
 - [Migration](migration/deployment.md)
 - [Modern Data Warehousing](modern-data-warehousing/deployment.md)
 - [Serverless](serverless/deployment.md)
