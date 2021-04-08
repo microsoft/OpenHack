@@ -93,6 +93,8 @@ $resourceGroupName = $cosmos.ResourceGroupName
 
 $apiDate = GetUTDate
 
+Add-Type -AssemblyName System.Web
+
 $keys = Invoke-AzureRmResourceAction -Action listKeys `
     -ResourceType "Microsoft.DocumentDb/databaseAccounts" `
     -ApiVersion "2015-04-08" `
