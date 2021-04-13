@@ -1,4 +1,4 @@
-![Microsoft OpenHack](images/OpenHack.png "Microsoft Open Hack")
+![Microsoft OpenHack](images/OpenHack Lockup Graphic FY21.png "Microsoft OpenHack")
 
 
 # Microsoft OpenHack Bring your Own Subscription (BYOS)
