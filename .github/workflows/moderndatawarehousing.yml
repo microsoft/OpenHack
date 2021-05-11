@@ -14,6 +14,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:  
+    LAB_FOLDER: mdw-templates-tmp
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -26,6 +29,45 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # Setup the output archive environment
+      - name: Setup Build Environment
+        run: |
+          mkdir mdwoutput  # create output dir
+          sudo chmod -R 755 mdwoutput
+          
+      #Copy ARM Templates
+      - name: 'Copy ARM Templates'
+        run: |
+          cp -r ./byos/modern-data-warehousing/deploy/ARM/* mdwoutput
+
+      #CSV files and the deployment template aren't needed in that storage.  
+      #The Deployment template is leveraged from the repos [BYOS or Opsgility private] during deployments
+
+      #Copy Scripts
+      - name: 'Copy Scripts'
+        run: |
+          cp -r ./byos/modern-data-warehousing/deploy/Scripts/* mdwoutput
+
+      # Deploy to Production - Release
+      - name: 'Deploy Assets Production Storage'
+        run: |
+          DESTINATION="https://${{ secrets.MDW_STORAGE_ACCOUNT_NAME_PROD }}.blob.core.windows.net/${{ env.LAB_FOLDER }}${{ secrets.MDW_TEMPLATES_STORAGE_SAS }}"
+          
+          #Download and install azcopy 
+          echo "Getting AZCopy"
+          pwd 
+          wget -O azcopy.tar.gz https://aka.ms/downloadazcopy-v10-linux
+          tar -xf azcopy.tar.gz
+          rm azcopy.tar.gz
+
+          # Copy the content to azure blob storage
+          echo "Copying content to Azure blob storage lab folder"
+          azcopy copy 'mdwoutput/*' $DESTINATION --recursive 
+
+          echo "Content copied to Azure blob storage lab folder"
+
+      #Delete Archive
+      - name: Delete Output
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: mdwoutput
