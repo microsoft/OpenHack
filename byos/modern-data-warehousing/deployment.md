@@ -1,7 +1,7 @@
 
 # Modern Data Warehouse OpenHack
 
-## Setting up Permissions 
+## Setting up Permissions  
 
 Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription.
 
