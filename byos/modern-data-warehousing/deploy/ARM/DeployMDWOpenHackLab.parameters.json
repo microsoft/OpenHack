@@ -12,7 +12,7 @@
             "value": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
         },
         "VMAdminUsername": {
-            "value": "openhackadmin"
+            "value": "southridge"
         },
         "RentalsBackupStorageAccountName": {
             "value": "openhackartifacts"
