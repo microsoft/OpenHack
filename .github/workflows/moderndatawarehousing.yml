@@ -2,10 +2,6 @@
 name: Build and Deploy MDW Resources
 
 on:
-  pull_request:
-    branches: [ develop ]
-    paths:
-    - './byos/modern-data-warehousing*'
   push:
     branches: [ main ]
     paths:
