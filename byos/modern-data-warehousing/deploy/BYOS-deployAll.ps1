@@ -6,12 +6,10 @@ param(
     [string]$DeploymentParameterFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.parameters.json",
     [string]$Location = "eastus",
     [securestring]$SqlAdminLoginPassword,
-    [securestring]$VMAdminPassword,
-    [securestring]$BackupStorageContainerSAS
+    [securestring]$VMAdminPassword
 )
 $teamCount = Read-Host "How many teams are hacking?";
 $region = Read-Host "What Region Resources be deployed to (i.e. centralus, southcentralus, japaneast, etc)?";
-
 
 for ($i = 1; $i -le $teamCount; $i++)
 {
@@ -31,5 +29,5 @@ for ($i = 1; $i -le $teamCount; $i++)
     if (!$resourceGroup) {
         $resourceGroup = New-AzResourceGroup -Name $ResourceGroupName -Location $region
     }
-    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $resourceGroupName -Location $region -TemplateFile $DeploymentTemplateFile -TemplateParameterFile $DeploymentParameterFile -sqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword -BackupStorageContainerSAS $BackupStorageContainerSAS -AsJob    
+    New-AzResourceGroupDeployment -Name $deploymentName -ResourceGroupName $resourceGroupName -Location $region -TemplateFile $DeploymentTemplateFile -TemplateParameterFile $DeploymentParameterFile -sqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword -AsJob    
 }
