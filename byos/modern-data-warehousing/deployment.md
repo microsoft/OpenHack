@@ -89,28 +89,17 @@ See the following for detailed instructions for assigning users to roles.
 
 Resource Groups exist for each of the teams, members are in each team appropriately with owner permission on the resource group.
 
-Prerequisites/other things to check for each team:
+Review the readme file for Prerequisites/other things to check for each team.
 
-The deployment of the Modern Data Warehousing OpenHack Lab environment includes the following for each team.
+## More details on the usage of the services
 
-### Southridge Video Resources  
-
-- Two Azure SQL DBs in a single logical server
-- A Cosmos DB account with a single collection for the movie catalog
-
-### Fourth Coffee Resources
-
-- A VM with a directory of CSV data
-
-### VanArsdel, Ltd. Resources
-
-- A VM with a SQL DB
-
-## More detail on the usage of the services
+When you kick off the process, a number of templates are deployed.
 
 ### DeployMDWOpenHackLab.json
 
-This deployment template links each of the others. The only dependency between the linked templates is that the DeployFileVM.json template depends on DeployCosmosDB.json; the File VM's extension populates the Cosmos DB.
+You kicked this off (likely from the BYOS-deployAll.ps1 script).  
+
+This deployment template triggers the orchestrator template with the same name that is in Azure storage.  
 
 #### Parameters
 
@@ -132,7 +121,7 @@ Note that using the `DeployMDWOpenHackLab.parameters.json` will supply most of t
 - CloudFictitiousCompanyNamePrefix: The fictitious company name using the cloud DBs (Southridge)
 - **location**: The target Azure region
 
-> If you are deploying the full lab, you can stop reading now. The remainder of this document describes the linked templates in more detail, for the sake of completeness. Using the full lab template described above, all relevant parameters will be passed through to the linked templates.
+> Note: You can run the script without any parameters, as all scripts are set with default values for the critical pieces of the deployment.  Using parameters allows you to override should the need arise (such as the password).  
 
 ### DeployCosmosDB.json
 
