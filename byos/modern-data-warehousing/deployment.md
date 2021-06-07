@@ -29,99 +29,79 @@ Ensure that these services are not blocked by Azure Policy.  As this is an OpenH
 
 Attendees will be required to install software on the workstations that they are performing the OpenHack on. Ensure they have adequate permissions to perform software installation.
 
-## Deployment Instructions 
+## Deployment Instructions  
 
-1. Open a **PowerShell ISE** window, run the following command, if prompted, click **Yes to All**:
+1. Open a **PowerShell 7** window, run the following command, if prompted, click **Yes to All**:
 
    ```PowerShell
    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
    ```
 
-2. The latest version of the Azure PowerShell cmdlets do **NOT** work with this script. You will need to use an earlier version (noted below)
-
-    ```PowerShell
-    Install-Module -Name Az -RequiredVersion 4.2.0 -Force -AllowClobber -SkipPublisherCheck
-    ```
-
-    > Note: If you need to uninstall first: [Uninstall the Azure PowerShell Module](https://docs.microsoft.com/en-us/powershell/azure/uninstall-az-ps?view=azps-4.6.0)
-
-3. If you installed an update, **close** the PowerShell ISE window, then **re-open** it. This ensures that the latest version of the Az module is used.
-
-4. Execute the following to sign in to the Azure account that has the **Owner** role assignment in your subscription.
+2. Execute the following to sign in to the Azure account that has the **Owner** role assignment in your subscription.
 
     ```PowerShell
     Connect-AzAccount
     ```
 
-5. If you have more than one subscription, be sure to select the right one before the next step. Use `Get-AzSubscription` to list them and then use the command below to set the subscription you're using:
+3. If you have more than one subscription, be sure to select the right one before the next step. Use `Get-AzSubscription` to list them and then use the command below to set the subscription you're using:
+
+    List subscriptions:  
+
+    ```powershell
+    Get-AzSubscription
+    ```  
+
+    Select the subscription to use:
 
     ```powershell
     Select-AzSubscription -Subscription <The selected Subscription Id>
     ```
 
-6. Assign the `$sqlpwd` and `$vmpwd` variables in your PowerShell session as **Secure Strings**. Be sure to use a strong password for both. Follow [this link](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/faq#what-are-the-password-requirements-when-creating-a-vm) for Virtual Machine password requirements and [this link](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-2017#password-complexity) for SQL Server.
+4. Assign the `$sqlpwd` and `$vmpwd` variables in your PowerShell session as **Secure Strings**. Be sure to use a strong password for both. Follow [this link](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/faq#what-are-the-password-requirements-when-creating-a-vm) for Virtual Machine password requirements and [this link](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy?view=sql-server-2017#password-complexity) for SQL Server.
 
     ```powershell
     $PlainPassword = "demo@pass123"
     $SqlAdminLoginPassword = $PlainPassword | ConvertTo-SecureString -AsPlainText -Force
     $VMAdminPassword = $PlainPassword | ConvertTo-SecureString -AsPlainText -Force
-    ``` 
+    ```  
 
-7. Assign the `$containerSAS` variable in your PowerShell session also as a **Secure String**. This is a rwl SAS scoped to the dbbackups container:
-
-    ```powershell
-    $sasToken = "sp=rl&st=2021-03-11T23:29:56Z&se=2026-03-12T06:29:56Z&spr=https&sv=2020-02-10&sr=c&sig=D5jy97qh7LmF6GxHNcWAl5AcjcXK7BOxW5HxeQlU3BM%3D"
-    $containerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
-    $BackupStorageContainerSAS = $sasToken | ConvertTo-SecureString -AsPlainText -Force
-    ```
-
-8. If you have not already done so, you will need to download the `modern-data-warehousing` folder from the repository.  You can use the following command to clone the repo to the current directory:
+5. If you have not already done so, you will need to download the `modern-data-warehousing` folder from the repository.  You can use the following command to clone the repo to the current directory:
 
    ```shell
    git clone https://github.com/microsoft/OpenHack.git
    ```
-   
-9. Execute the following from the `modern-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
+  
+6. Execute the following from the `modern-data-warehousing` directory of the OpenHack repository clone to deploy the environment (this process may take 10-15 minutes):
 
     ```powershell
-     .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword -BackupStorageContainerSAS $BackupStorageContainerSAS
+     .\BYOS-deployAll.ps1 -SqlAdminLoginPassword $SqlAdminLoginPassword -VMAdminPassword $VMAdminPassword 
     ```
 
-### Manual step - Assigning Users to Each Resource Group 
+### Manual step - Assigning Users to Each Resource Group  
 
-After deployment, manually add the appropriate users with owner access on the appropriate resource group for their team. 
+After deployment, manually add the appropriate users with owner access on the appropriate resource group for their team.  
 
 See the following for detailed instructions for assigning users to roles.
 
 [Add or remove Azure role assignments using the Azure portal](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
-## Validate 
+## Validate  
+
 Resource Groups exist for each of the teams, members are in each team appropriately with owner permission on the resource group.
 
-Prerequisites/other things to check for each team:
+Review the readme file for Prerequisites/other things to check for each team.
 
-The deployment of the Modern Data Warehousing OpenHack Lab environment includes the following for each team.
+## More details on the usage of the services
 
-##### Southridge Video Resources
+When you kick off the process, a number of templates are deployed.
 
-- Two Azure SQL DBs in a single logical server
-- A Cosmos DB account with a single collection for the movie catalog
+### DeployMDWOpenHackLab.json
 
-##### Fourth Coffee Resources
+You kicked this off (likely from the BYOS-deployAll.ps1 script).  
 
-- A VM with a directory of CSV data
+This deployment template triggers the orchestrator template with the same name that is in Azure storage.  
 
-##### VanArsdel, Ltd. Resources
-
-- A VM with a SQL DB
-
-## More detail on the usage of the services
-
-##### DeployMDWOpenHackLab.json
-
-This deployment template links each of the others. The only dependency between the linked templates is that the DeployFileVM.json template depends on DeployCosmosDB.json; the File VM's extension populates the Cosmos DB.
-
-##### Parameters
+#### Parameters
 
 Note that using the `DeployMDWOpenHackLab.parameters.json` will supply most of these parameters for you. The ones which need attention at deployment time have been marked in **bold** below.
 
@@ -129,7 +109,6 @@ Note that using the `DeployMDWOpenHackLab.parameters.json` will supply most of t
 - **SqlAdminLoginPassword**: The password for the SqlAdminLogin on **all** SQL DBs in this deployment.
 - SalesDacPacPath: URI to the bacpac imported into the CloudSales (southridge) DB.
 - StreamingDacPacPath: URI to the bacpac imported into the CloudStreaming (southridge) DB.
-- **BackupStorageContainerSAS**: SAS for the dbbackups container
 - VMAdminUsername: The administrator username for **all** VMs in this deployment
 - **VMAdminPassword**: The password the for administrator on **all** VMs in this deployment
 - RentalsBackupStorageAccountName: The storage account in which dbbackups are stored
@@ -142,15 +121,15 @@ Note that using the `DeployMDWOpenHackLab.parameters.json` will supply most of t
 - CloudFictitiousCompanyNamePrefix: The fictitious company name using the cloud DBs (Southridge)
 - **location**: The target Azure region
 
-> If you are deploying the full lab, you can stop reading now. The remainder of this document describes the linked templates in more detail, for the sake of completeness. Using the full lab template described above, all relevant parameters will be passed through to the linked templates.
+> Note: You can run the script without any parameters, as all scripts are set with default values for the critical pieces of the deployment.  Using parameters allows you to override should the need arise (such as the password).  
 
-##### DeployCosmosDB.json
+### DeployCosmosDB.json
 
 Template scoped to the provisioning of a Cosmos DB account.
 
 > The Cosmos DB collection is created and populated by a VM extension in DeployFileVM.
 
-##### Parameters
+#### Parameters  
 
 - location: The target Azure region
 - namePrefix: The Cosmos DB account will be created with a name following the form `{namePrefix}-catalog-{uniqueStringForResourceGroup}`
@@ -161,23 +140,22 @@ Template scoped to the creation of the VM where one fictitious company stores th
 
 > This VM deployment contains the extension which not only downloads the CSV data to the VM, but also populates the Cosmos DB movie catalog.
 
-##### Parameters
+#### Parameters
 
 - adminUsername: VM admin username
 - adminPassword: VM admin password
 - BackupStorageAccountName: The storage account containing the CSV data
 - BackupStorageContainerName: The container within the storage account which contains the CSV data
-- BackupStorageContainerSAS: The SAS for the  backup container
 - RentalsCsvFolderName: The folder within the container which contains the CSV data
 - catalogJsonFileName: The filename of the southridge movie catalog to upload into Cosmos
 - location: The target Azure region
 - namePrefix: The VM resources will use this name, e.g., `{namePrefix}VM`, `{namePrefix}-PIP`, etc.
 
-##### DeploySQLAzure.json
+### DeploySQLAzure.json
 
 This template deploys two Azure SQL DBs into a single server, and performs a bacpac import for each.
 
-##### Parameters
+#### Parameters
 
 - AdminLogin: The SQL admin login
 - AdminLoginPassword: The SQL admin password
@@ -187,11 +165,11 @@ This template deploys two Azure SQL DBs into a single server, and performs a bac
 - location: The target Azure region
 - namePrefix: The SQL server name will be formatted as `{namePrefix-sqlserver-uniqueStringForResourceGroup}`
 
-##### DeploySQLVM.json
+### DeploySQLVM.json
 
 This deploys a VM with SQL server, and imports a bak for the on-premises rentals DB.
 
-##### Parameters
+#### Parameters
 
 - adminUsername: VM admin username
 - adminPassword: VM admin password
@@ -199,7 +177,6 @@ This deploys a VM with SQL server, and imports a bak for the on-premises rentals
 - sqlAuthenticationPassword: SQL password
 - BackupStorageAccountName: The storage account containing the bak
 - BackupStorageContainerName: The container within the storage account which contains the bak
-- BackupStorageContainerSAS: The SAS for the  backup container
 - BackupFileName: The bak filename
 - DatabaseName: The name of the restored DB
 - location: The target Azure region

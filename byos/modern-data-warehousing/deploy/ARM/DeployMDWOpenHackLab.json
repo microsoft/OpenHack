@@ -1,227 +1,137 @@
-﻿{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "SqlAdminLogin": {
-      "type": "string",
-      "defaultValue": "southridge"
-    },
-    "SqlAdminLoginPassword": {
-      "type": "securestring",
-      "minLength": 8,
-      "defaultValue": "md@ohPwd001!"
-    },
-    "VMAdminUsername": {
-      "type": "string",
-      "defaultValue": "southridge"
-    },
-    "VMAdminPassword": {
-      "type": "securestring",
-      "minLength": 8,
-      "defaultValue": "md@ohPwd001!"
-    },
-    "RentalsBackupStorageAccountName": {
-      "type": "string",
-      "defaultValue": "openhackartifacts"
-    },
-    "RentalsBackupStorageContainerName": {
-      "type": "string",
-      "defaultValue": "mdw"
-    },
-    "RentalsBackupFileName": {
-      "type": "string",
-      "defaultValue": "onpremrentals.bak"
-    },
-    "RentalsDatabaseName": {
-      "type": "string",
-      "defaultValue": "OnPremRentals"
-    },
-    "RentalsCsvFolderName": {
-      "type": "string",
-      "defaultValue": "onpremrentalscsv"
-    },
-    "CatalogJsonFileName": {
-      "type": "string",
-      "defaultValue": "movies_southridge.json"
-    },
-    "SalesDacPacPath": {
-      "type": "string",
-      "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudSales.bacpac"
-    },
-    "StreamingDacPacPath": {
-      "type": "string",
-      "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
-    },
-    "BackupStorageContainerSAS": {
-      "type": "securestring",
-      "minLength": 1,
-      "defaultValue": "sp=rl&st=2021-03-11T23:29:56Z&se=2026-03-12T06:29:56Z&spr=https&sv=2020-02-10&sr=c&sig=D5jy97qh7LmF6GxHNcWAl5AcjcXK7BOxW5HxeQlU3BM%3D"
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]"
-    },
-    "SQLFictitiousCompanyNamePrefix": {
-      "type": "string",
-      "defaultValue": "OHDataOnPremSQL"
-    },
-    "CSVFictitiousCompanyNamePrefix": {
-      "type": "string",
-      "defaultValue": "OHDataOnPremFil"
-    },
-    "CloudFictitiousCompanyNamePrefix": {
-      "type": "string",
-      "defaultValue": "ohmdw"
-    }
-  },
-  "variables": {},
-  "resources": [
-    {
-      "apiVersion": "2017-05-10",
-      "name": "deploySqlAzureLinkedTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeploySQLAzure.json",
-          "contentVersion": "1.0.0.0"
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "SqlAdminLogin": {
+            "type": "string",
+            "defaultValue": "southridge"
         },
-        "parameters": {
-          "AdminLogin": {
-            "value": "[parameters('SqlAdminLogin')]"
-          },
-          "AdminLoginPassword": {
-            "value": "[parameters('SqlAdminLoginPassword')]"
-          },
-          "SalesDacPacPath": {
-            "value": "[parameters('SalesDacPacPath')]"
-          },
-          "StreamingDacPacPath": {
-            "value": "[parameters('StreamingDacPacPath')]"
-          },
-          "DacPacContainerSAS": {
-            "value": "[concat('?', parameters('BackupStorageContainerSAS'))]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "namePrefix": {
-            "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "deploySqlVMLinkedTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeploySQLVM.json",
-          "contentVersion": "1.0.0.0"
+        "SqlAdminLoginPassword": {
+            "type": "securestring",
+            "minLength": 8,
+            "defaultValue": "md@ohPwd001!"
         },
-        "parameters": {
-          "adminUsername": {
-            "value": "[parameters('VMAdminUsername')]"
-          },
-          "adminPassword": {
-            "value": "[parameters('VMAdminPassword')]"
-          },
-          "sqlAuthenticationLogin": {
-            "value": "[parameters('SqlAdminLogin')]"
-          },
-          "sqlAuthenticationPassword": {
-            "value": "[parameters('SqlAdminLoginPassword')]"
-          },
-          "BackupStorageAccountName": {
-            "value": "[parameters('RentalsBackupStorageAccountName')]"
-          },
-          "BackupStorageContainerName": {
-            "value": "[parameters('RentalsBackupStorageContainerName')]"
-          },
-          "BackupStorageContainerSAS": {
-            "value": "[parameters('BackupStorageContainerSAS')]"
-          },
-          "BackupFileName": {
-            "value": "[parameters('RentalsBackupFileName')]"
-          },
-          "DatabaseName": {
-            "value": "[parameters('RentalsDatabaseName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "namePrefix": {
-            "value": "[parameters('SQLFictitiousCompanyNamePrefix')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "deployCosmosLinkedTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeployCosmosDB.json",
-          "contentVersion": "1.0.0.0"
+        "VMAdminUsername": {
+            "type": "string",
+            "defaultValue": "southridge"
         },
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "namePrefix": {
-            "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2017-05-10",
-      "name": "deployFileVMLinkedTemplate",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeployFileVM.json",
-          "contentVersion": "1.0.0.0"
+        "VMAdminPassword": {
+            "type": "securestring",
+            "minLength": 8,
+            "defaultValue": "md@ohPwd001!"
         },
-        "parameters": {
-          "adminUsername": {
-            "value": "[parameters('VMAdminUsername')]"
-          },
-          "adminPassword": {
-            "value": "[parameters('VMAdminPassword')]"
-          },
-          "BackupStorageAccountName": {
-            "value": "[parameters('RentalsBackupStorageAccountName')]"
-          },
-          "BackupStorageContainerName": {
-            "value": "[parameters('RentalsBackupStorageContainerName')]"
-          },
-          "BackupStorageContainerSAS": {
-            "value": "[parameters('BackupStorageContainerSAS')]"
-          },
-          "RentalsCsvFolderName": {
-            "value": "[parameters('RentalsCsvFolderName')]"
-          },
-          "CatalogJsonFileName": {
-            "value": "[parameters('CatalogJsonFileName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "namePrefix": {
-            "value": "[parameters('CSVFictitiousCompanyNamePrefix')]"
-          }
+        "RentalsBackupStorageAccountName": {
+            "type": "string",
+            "defaultValue": "openhackartifacts"
+        },
+        "RentalsBackupStorageContainerName": {
+            "type": "string",
+            "defaultValue": "mdw"
+        },
+        "RentalsBackupFileName": {
+            "type": "string",
+            "defaultValue": "onpremrentals.bak"
+        },
+        "RentalsDatabaseName": {
+            "type": "string",
+            "defaultValue": "OnPremRentals"
+        },
+        "RentalsCsvFolderName": {
+            "type": "string",
+            "defaultValue": "onpremrentalscsv"
+        },
+        "CatalogJsonFileName": {
+            "type": "string",
+            "defaultValue": "movies_southridge.json"
+        },
+        "SalesDacPacPath": {
+            "type": "string",
+            "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudSales.bacpac"
+        },
+        "StreamingDacPacPath": {
+            "type": "string",
+            "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "SQLFictitiousCompanyNamePrefix": {
+            "type": "string",
+            "defaultValue": "VanArsdelLtd"
+        },
+        "CSVFictitiousCompanyNamePrefix": {
+            "type": "string",
+            "defaultValue": "FourthCoffee"
+        },
+        "CloudFictitiousCompanyNamePrefix": {
+            "type": "string",
+            "defaultValue": "southridge"
         }
-      },
-      "dependsOn": [
-        "deployCosmosLinkedTemplate"
-      ]
-    }
-  ],
-  "outputs": {}
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "deployMDWOpenHackLabLinkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeployMDWOpenHackLab.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "SqlAdminLogin": {
+                        "value": "[parameters('SqlAdminLogin')]"
+                    },
+                    "SqlAdminLoginPassword": {
+                        "value": "[parameters('SqlAdminLoginPassword')]"
+                    },
+                    "VMAdminUsername": {
+                        "value": "[parameters('VMAdminUsername')]"
+                    },
+                    "VMAdminPassword": {
+                        "value": "[parameters('VMAdminPassword')]"
+                    },
+                    "RentalsBackupStorageAccountName": {
+                        "value": "[parameters('RentalsBackupStorageAccountName')]"
+                    },
+                    "RentalsBackupStorageContainerName": {
+                        "value": "[parameters('RentalsBackupStorageContainerName')]"
+                    },
+                    "RentalsBackupFileName": {
+                        "value": "[parameters('RentalsBackupFileName')]"
+                    },
+                    "RentalsDatabaseName": {
+                        "value": "[parameters('RentalsDatabaseName')]"
+                    },
+                    "RentalsCsvFolderName": {
+                        "value": "[parameters('RentalsCsvFolderName')]"
+                    },
+                    "CatalogJsonFileName": {
+                        "value": "[parameters('CatalogJsonFileName')]"
+                    },
+                    "SalesDacPacPath": {
+                        "value": "[parameters('SalesDacPacPath')]"
+                    },
+                    "StreamingDacPacPath": {
+                        "value": "[parameters('StreamingDacPacPath')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "SQLFictitiousCompanyNamePrefix": {
+                        "value": "[parameters('SQLFictitiousCompanyNamePrefix')]"
+                    },
+                    "CSVFictitiousCompanyNamePrefix": {
+                        "value": "[parameters('CSVFictitiousCompanyNamePrefix')]"
+                    },
+                    "CloudFictitiousCompanyNamePrefix": {
+                        "value": "[parameters('CloudFictitiousCompanyNamePrefix')]"
+                    }
+                }
+            }
+        }
+    ]
 }

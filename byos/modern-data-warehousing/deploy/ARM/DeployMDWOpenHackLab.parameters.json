@@ -5,6 +5,9 @@
         "SqlAdminLogin": {
             "value": "southridge"
         },
+        "SqlAdminLoginPassword": {
+            "value": "md@ohPwd001!"
+        },
         "SalesDacPacPath": {
             "value": "https://openhackartifacts.blob.core.windows.net/mdw/CloudSales.bacpac"
         },
@@ -13,6 +16,9 @@
         },
         "VMAdminUsername": {
             "value": "southridge"
+        },
+        "VMAdminPassword": {
+            "value": "md@ohPwd001!"
         },
         "RentalsBackupStorageAccountName": {
             "value": "openhackartifacts"
