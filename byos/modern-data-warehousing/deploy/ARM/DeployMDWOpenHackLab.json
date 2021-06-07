@@ -52,11 +52,6 @@
             "type": "string",
             "defaultValue": "https://openhackartifacts.blob.core.windows.net/mdw/CloudStreaming.bacpac"
         },
-        "BackupStorageContainerSAS": {
-            "type": "securestring",
-            "minLength": 1,
-            "defaultValue": "sp=rl&st=2021-03-11T23:29:56Z&se=2026-03-12T06:29:56Z&spr=https&sv=2020-02-10&sr=c&sig=D5jy97qh7LmF6GxHNcWAl5AcjcXK7BOxW5HxeQlU3BM%3D"
-        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
@@ -122,9 +117,6 @@
                     },
                     "StreamingDacPacPath": {
                         "value": "[parameters('StreamingDacPacPath')]"
-                    },
-                    "BackupStorageContainerSAS": {
-                        "value": "[concat('?', parameters('BackupStorageContainerSAS'))]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
