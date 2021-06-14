@@ -21,8 +21,8 @@ for ($i = 1; $i -le $teamCount; $i++)
     {
         Write-Host("Now deploying template " + $rg.Name + " with deploymentname: " + $deploymentName);
 
-        New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile './azuredeploy.json' -Name $deploymentName -Verbose 
-
+        New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile './azuredeploy.json' -Name $deploymentName -AsJob 
+        
         Write-Host("Deployment Completed for " + $resourceGroupName);
     }
     else {

@@ -105,7 +105,7 @@ For deployment, you will run a PowerShell script that executes an ARM template t
     Use the command:
 
     ```powershell  
-    .\azuredeploy.json
+    .\deployAll.ps1
     ```  
 
     To run the script.  
@@ -136,8 +136,11 @@ After deployment has completed, you should see the following resources in each t
 * Public IP - [soh-jumpbox-pip]
 * Disk - [soh-jumpbox_OsDisk_1_xxxxxxxx]
 * VPN - [soh-vnet]
-* Storage Sales [sohsalesxxxxxxxxxx]
+* Storage Sales [sohsalesxxxxxxxxxx]  
+    - container [receipts]  
+    - container [receipts-high-value]  
 * Storage VMDiagnostics [sohvmdiagxxxxxxxxx]  
+    - container [bootdiagnostics-sohjumpbo-(guidish)]
 
 ## More detail on the usage of the services  
 
