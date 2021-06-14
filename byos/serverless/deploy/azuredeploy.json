@@ -15,12 +15,6 @@
                 "templateLink": {
                     "uri": "https://openhackguides.blob.core.windows.net/openhack-common-deploy/serverless/azuredeploy.json",
                     "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "win10sku": {
-                         "type": "string",
-                         "defaultValue": "20h2-pro"
-                    }
                 }
             }
         }
