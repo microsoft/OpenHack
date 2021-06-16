@@ -103,8 +103,8 @@ For deployment, you will run a PowerShell script that executes an ARM template t
 
 7. Run the script `deployAll.ps1`  
 
-    You will only need to input the number of teams and the two regions you want to deploy to and the script. 
-    
+    You will only need to input the number of teams and the two regions you want to deploy to and the script.  
+
     >**Optionally:** if desired, you could modify the script before running it to set a different admin username and password than the defaults listed in the script.  
 
     ![Deploying the open hack using powershell](images/image0005.png "When the script runs you need to input the number of teams and the two locations")  

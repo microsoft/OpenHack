@@ -7,8 +7,8 @@ $location2 = Read-Host "What is the second location to deploy to (i.e. westus)?"
 
 # Enter the SQL Server username (i.e. openhackadmin)
 $sqlAdministratorLogin = "openhackadmin"
-# Enter the SQL Server password (i.e. ohadmsql@pass#123)
-$sqlAdministratorLoginPassword = "ohadmsql@pass#123"
+# Enter the SQL Server password (i.e. Password123)
+$sqlAdministratorLoginPassword = "Password123"
 
 for ($i = 1; $i -le $teamCount; $i++)
 {
