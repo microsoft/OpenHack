@@ -30,7 +30,7 @@ Execute the following steps to deploy the templates:
 
 2) Use the following link to deploy the templates:  
 
-    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployOnPrem.json)  
+    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazureDeployOnPrem.json)  
 
     This template deploys a Standard\_D16s\_v3 Hyper-V host and bootstraps the host with the attendee environment.
 
@@ -46,7 +46,7 @@ The second script will prepare the cloud network for the migration.
 
 2) Use the following link to deploy the cloud network:
 
-    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployCloudNetwork.json)  
+    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazureDeployCloudNetwork.json)  
 
     * You can deploy this template at the same time as the first one.
 
