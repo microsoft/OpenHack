@@ -366,50 +366,65 @@ code {
     });
   </script>
 <h1 id="lob-migration-open-hack">LOB Migration Open Hack</h1>
-<h1 id="azure-ad-guidance">Azure AD Guidance</h1>
+<p>This document contains information and instructions for deploying the Migration Open Hack into your own Azure subscription.</p>
+<h2 id="azure-ad-guidance">Azure AD Guidance</h2>
 <p>In this OpenHack, you will perform tasks that require Global Admin/Company Administrator and Owner permissions on your Azure Subscription.</p>
+<blockquote>
+<p><strong>Note</strong>: You will not be able to run this on an AzurePass as you will need to deploy 16 cores, and this will exceed the limit of an AzurePass subscription.</p>
+</blockquote>
 <h2 id="azure-ad">Azure AD</h2>
+<p>In order to complete this OpenHack, you will need to do the following:</p>
 <ul>
-<li><a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant">Create a new Tenant</a></li>
-<li><a href="https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory">Assocate tenant to an existing subscription</a></li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant">Create a new Tenant</a></p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory">Assocate tenant to an existing subscription</a></p>
+</li>
 </ul>
+<p>Therefore, you must have the ability to create a tenant and assign the tenant to your subscription of choice.</p>
 <h2 id="environment-deployment">Environment Deployment</h2>
-<p>To deploy the environment for this OpenHack, you will need to execute two Azure Resource Manager templates within your Azure subscription.</p>
-<ul>
+<p>To deploy the environment for this OpenHack, you will need to execute an Azure Resource Manager template to execute two linked ARM templates.</p>
+<p>Execute the following steps to deploy the templates:</p>
+<h3 id="on-premise-environment-azuredeployonpremjson">On-Premise Environment: <code>azureDeployOnPrem.json</code></h3>
+<ol>
 <li>
-<p>azuredeployOnPrem.json</p>
+<p>Create a resource group called <code>openhackonpremrg</code> in a region with support for Standard_D16s_v3 virtual machines.</p>
 </li>
 <li>
-<p>Create a resource group called openhackonpremrg in a region with support for Standard_D16s_v3 virtual machines.</p>
-</li>
-<li>
+<p>Use the following link to deploy the templates:</p>
+<p><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployOnPrem.json"><img src="OpenHack_BYOS-Migrationimages/media/image1.png" alt="Deploy to Azure"></a></p>
 <p>This template deploys a Standard_D16s_v3 Hyper-V host and bootstraps the host with the attendee environment.</p>
-</li>
+<ul>
 <li>
 <p>It is recommended that you make sure you deploy the template into a region with support and availability of Standard_D16s_v3.</p>
 </li>
 <li>
-<p>The template itself takes ~7-10 minutes to run, however there are a series of scripts and reboots which occur automatically as the host  is configured. This can take ~2-2.5 hours. It is recommended that you deploy the template and let the scripts run for at least that  amount of time before verifying the host.</p>
-<p><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fmigration-open-hack-artifacts%2Farmtemplates%2FazuredeployOnPrem.json"><img src="OpenHack_BYOS-Migrationimages/media/image1.png" alt="Deploy to Azure"></a></p>
+<p>The template itself takes ~7-10 minutes to run, however there are a series of scripts and reboots which occur automatically as the host is configured. This can take ~2-2.5 hours. It is recommended that you deploy the template and let the scripts run for at least that amount of time before verifying the host.</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="cloud-network-azuredeploycloudnetworkjson">Cloud Network: <code>azureDeployCloudNetwork.json</code></h3>
+<p>The second script will prepare the cloud network for the migration.</p>
+<ol>
+<li>
+<p>In the same region as the resource group and resources created earlier, create another resource group called <code>openhackcloudrg</code> and deploy this template to it.</p>
 </li>
 <li>
-<p>azuredeployCloudNetwork.json</p>
-</li>
-<li>
-<p>In the same region as the resource group and resources created
-earlier, create another resource group called openhackcloudrg and
-deploy this template to it.</p>
-</li>
+<p>Use the following link to deploy the cloud network:</p>
+<p><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployCloudNetwork.json"><img src="OpenHack_BYOS-Migrationimages/media/image1.png" alt="Deploy to Azure"></a></p>
+<ul>
 <li>
 <p>You can deploy this template at the same time as the first one.</p>
 </li>
 <li>
-<p>This template takes ~45 minutes to execute as it stands up a VPN
-gateway.</p>
-<p><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fmigration-open-hack-artifacts%2Farmtemplates%2FazuredeployCloudNetwork.json"><img src="OpenHack_BYOS-Migrationimages/media/image1.png" alt="Deploy to Azure"></a></p>
+<p>This template takes ~45 minutes to execute as it stands up a VPN gateway.</p>
 </li>
 </ul>
-<h1 id="services-consumed">Services consumed</h1>
+</li>
+</ol>
+<h2 id="services-consumed">Services consumed</h2>
 <p>The following services are expected to be consumed over the duration of
 the OpenHack. You should ensure that capacity is available and that
 quotas for each subscription you are running the OpenHack in are at an
@@ -420,31 +435,129 @@ least 30 cores per team per subscription.</p>
 <h2 id="required-resources">Required resources</h2>
 <p>The following are the required resources to successfully complete the
 OpenHack.</p>
-<p>Service                            SKU                  Count   Cores</p>
-<hr>
-<p>Azure Virtual Machines             Standard_D16s_v3   1       16
-Azure Virtual Machines             Standard_Ds         5       Minimum 10
-Azure Virtual Machines             Standard_Fs         5       Minimum 10
-Azure Active Directory             Free                 1<br>
-Azure App Service                  S1                   2<br>
-Azure SQL Database                 S0                   1<br>
-Azure App Gateway                  WAF_v2              1<br>
-Public IP                          Standard             5<br>
-Azure Database Migration Service   Premium              1<br>
-App Service Domain                                      1<br>
-Azure Load Balancer                Standard             1<br>
-Azure Storage                      GPv1                 ~5<br>
-VPN Gateway                        VpnGw1               1</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>SKU</th>
+<th>Count</th>
+<th>Cores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure Virtual Machines</td>
+<td>Standard_D16s_v3</td>
+<td>1</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Azure Virtual Machines</td>
+<td>Standard_Ds</td>
+<td>5</td>
+<td>&gt;=10</td>
+</tr>
+<tr>
+<td>Azure Virtual Machines</td>
+<td>Standard_Fs</td>
+<td>5</td>
+<td>&gt;=10</td>
+</tr>
+<tr>
+<td>Azure Active Directory</td>
+<td>Free</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure App Service</td>
+<td>S1</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure SQL Database</td>
+<td>S0</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure App Gateway</td>
+<td>WAF_v2</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Public IP</td>
+<td>Standard</td>
+<td>5</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Database Migration Service</td>
+<td>Premium</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Service Domain</td>
+<td></td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Load Balancer</td>
+<td>Standard</td>
+<td>1</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Storage</td>
+<td>GPv1</td>
+<td>~5</td>
+<td></td>
+</tr>
+<tr>
+<td>VPN Gateway</td>
+<td>VpnGw1</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="other-resources">Other resources</h2>
 <p>The following are resources that teams have used in the past to complete
 the OpenHack that are not required.</p>
-<p>Service                    SKU</p>
-<hr>
-<p>Azure App Service          Premium v2 Plan - P1 v2
-Azure App Service          SSL Certificates - Standard SSL - 1 Year Certificate
-Azure Key Vault<br>
-Azure Traffic Manager<br>
-Azure Front Door Service</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>SKU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure App Service</td>
+<td>Premium v2 Plan - P1 v2</td>
+</tr>
+<tr>
+<td>Azure App Service</td>
+<td>SSL Certificates - Standard SSL - 1 Year Certificate</td>
+</tr>
+<tr>
+<td>Azure Key Vault</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Traffic Manager</td>
+<td></td>
+</tr>
+<tr>
+<td>Azure Front Door Service</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 </body>
 </html>

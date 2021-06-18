@@ -14,7 +14,7 @@ In order to complete this OpenHack, you will need to do the following:
 
 * [Create a new Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant)  
 
-* [Assocate tenant to an existing subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory)  
+* [Associate tenant to an existing subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory)  
 
 Therefore, you must have the ability to create a tenant and assign the tenant to your subscription of choice.  
 
