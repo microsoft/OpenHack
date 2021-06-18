@@ -1,22 +1,38 @@
 # LOB Migration Open Hack
 
+This document contains information and instructions for deploying the Migration Open Hack into your own Azure subscription.  
 
-# Azure AD Guidance
+## Azure AD Guidance
 
 In this OpenHack, you will perform tasks that require Global Admin/Company Administrator and Owner permissions on your Azure Subscription.
 
-## Azure AD 
+>**Note**: You will not be able to run this on an AzurePass as you will need to deploy 16 cores, and this will exceed the limit of an AzurePass subscription.
 
-- [Create a new Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant)
-- [Assocate tenant to an existing subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory)
+## Azure AD
+
+In order to complete this OpenHack, you will need to do the following:
+
+* [Create a new Tenant](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant)  
+
+* [Assocate tenant to an existing subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory)  
+
+Therefore, you must have the ability to create a tenant and assign the tenant to your subscription of choice.  
 
 ## Environment Deployment
 
-To deploy the environment for this OpenHack, you will need to execute two Azure Resource Manager templates within your Azure subscription.
+To deploy the environment for this OpenHack, you will need to execute an Azure Resource Manager template to execute two linked ARM templates.  
+
+Execute the following steps to deploy the templates:
+
+1) Create a resource group called `openhackonpremrg` in a region with support for Standard\_D16s\_v3 virtual machines.  
+
+2) Use the following link to deploy the templates:  
+
+
 
 - azuredeployOnPrem.json
 
--   Create a resource group called openhackonpremrg in a region with support for Standard\_D16s\_v3 virtual machines.
+
 
 -   This template deploys a Standard\_D16s\_v3 Hyper-V host and bootstraps the host with the attendee environment.
 
