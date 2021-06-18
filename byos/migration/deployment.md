@@ -24,40 +24,35 @@ To deploy the environment for this OpenHack, you will need to execute an Azure R
 
 Execute the following steps to deploy the templates:
 
+### On-Premise Environment: `azureDeployOnPrem.json`
+
 1) Create a resource group called `openhackonpremrg` in a region with support for Standard\_D16s\_v3 virtual machines.  
 
 2) Use the following link to deploy the templates:  
 
+    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployOnPrem.json)  
 
+    This template deploys a Standard\_D16s\_v3 Hyper-V host and bootstraps the host with the attendee environment.
 
-- azuredeployOnPrem.json
+    * It is recommended that you make sure you deploy the template into a region with support and availability of Standard\_D16s\_v3.
 
+    * The template itself takes \~7-10 minutes to run, however there are a series of scripts and reboots which occur automatically as the host is configured. This can take \~2-2.5 hours. It is recommended that you deploy the template and let the scripts run for at least that amount of time before verifying the host.
 
+### Cloud Network: `azureDeployCloudNetwork.json`
 
--   This template deploys a Standard\_D16s\_v3 Hyper-V host and bootstraps the host with the attendee environment.
+The second script will prepare the cloud network for the migration.
 
--   It is recommended that you make sure you deploy the template into a region with support and availability of Standard\_D16s\_v3.
+1) In the same region as the resource group and resources created earlier, create another resource group called `openhackcloudrg` and deploy this template to it.
 
--   The template itself takes \~7-10 minutes to run, however there are a series of scripts and reboots which occur automatically as the host  is configured. This can take \~2-2.5 hours. It is recommended that you deploy the template and let the scripts run for at least that  amount of time before verifying the host.
+2) Use the following link to deploy the cloud network:
 
-    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fmigration-open-hack-artifacts%2Farmtemplates%2FazuredeployOnPrem.json)
+    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fopenhack-common-deploy%2Fmigration%2FazuredeployCloudNetwork.json)  
 
+    * You can deploy this template at the same time as the first one.
 
-- azuredeployCloudNetwork.json
+    * This template takes \~45 minutes to execute as it stands up a VPN gateway.
 
--   In the same region as the resource group and resources created
-    earlier, create another resource group called openhackcloudrg and
-    deploy this template to it.
-
--   You can deploy this template at the same time as the first one.
-
--   This template takes \~45 minutes to execute as it stands up a VPN
-    gateway.
-
-    [![Deploy to Azure](OpenHack_BYOS-Migrationimages/media/image1.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fopenhackguides.blob.core.windows.net%2Fmigration-open-hack-artifacts%2Farmtemplates%2FazuredeployCloudNetwork.json)
-
-
-# Services consumed
+## Services consumed
 
 The following services are expected to be consumed over the duration of
 the OpenHack. You should ensure that capacity is available and that
@@ -73,31 +68,31 @@ least 30 cores per team per subscription.
 The following are the required resources to successfully complete the
 OpenHack.
 
-  Service                            SKU                  Count   Cores
-  ---------------------------------- -------------------- ------- ------------
-  Azure Virtual Machines             Standard\_D16s\_v3   1       16
-  Azure Virtual Machines             Standard\_Ds         5       Minimum 10
-  Azure Virtual Machines             Standard\_Fs         5       Minimum 10
-  Azure Active Directory             Free                 1       
-  Azure App Service                  S1                   2       
-  Azure SQL Database                 S0                   1       
-  Azure App Gateway                  WAF\_v2              1       
-  Public IP                          Standard             5       
-  Azure Database Migration Service   Premium              1       
-  App Service Domain                                      1       
-  Azure Load Balancer                Standard             1       
-  Azure Storage                      GPv1                 \~5     
-  VPN Gateway                        VpnGw1               1       
+| Service                          | SKU                | Count | Cores |
+|----------------------------------|--------------------|-------|-------|
+| Azure Virtual Machines           | Standard\_D16s\_v3 | 1     | 16    |
+| Azure Virtual Machines           | Standard\_Ds       | 5     | >=10  |
+| Azure Virtual Machines           | Standard\_Fs       | 5     | >=10  |
+| Azure Active Directory           | Free               | 1     |       |
+| Azure App Service                | S1                 | 2     |       |
+| Azure SQL Database               | S0                 | 1     |       |
+| Azure App Gateway                | WAF\_v2            | 1     |       |
+| Public IP                        | Standard           | 5     |       |
+| Azure Database Migration Service | Premium            | 1     |       |
+| Azure Service Domain             |                    | 1     |       |
+| Azure Load Balancer              | Standard           | 1     |       |
+| Azure Storage                    | GPv1               | ~5    |       |
+| VPN Gateway                      | VpnGw1             | 1     |       |
 
 ## Other resources
 
 The following are resources that teams have used in the past to complete
 the OpenHack that are not required.
 
-  Service                    SKU
-  -------------------------- ------------------------------------------------------
-  Azure App Service          Premium v2 Plan - P1 v2
-  Azure App Service          SSL Certificates - Standard SSL - 1 Year Certificate
-  Azure Key Vault            
-  Azure Traffic Manager      
-  Azure Front Door Service   
+| Service                          | SKU                     |
+|----------------------------------|-------------------------|
+| Azure App Service                | Premium v2 Plan - P1 v2 |
+| Azure App Service                | SSL Certificates - Standard SSL - 1 Year Certificate |  
+| Azure Key Vault                  |                         |  
+| Azure Traffic Manager            |                         |  
+| Azure Front Door Service         |                         |  
