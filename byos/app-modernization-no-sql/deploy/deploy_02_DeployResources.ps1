@@ -3,7 +3,7 @@
 # requires variables for $resourceGroup1Name, $location1, $resourceGroup2Name, $location2
 #                           , $sqlserverName, $sqlAdministratorLogin, $sqlAdministratorLoginPassword
 #                           , $suffix, $suffix2
-$templateUri = "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/app-modernization-no-sql/deploy/azuredeploy.json"
+$templateUri = "https://openhackguides.blob.core.windows.net/openhack-common-deploy/app-modernization-no-sql/azuredeploy.json"
 
 $outputs = New-AzResourceGroupDeployment `
             -ResourceGroupName $resourceGroup1Name `

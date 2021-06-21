@@ -5,11 +5,11 @@
 
 $importRequest = New-AzSqlDatabaseImport -ResourceGroupName $resourceGroup1Name `
             -ServerName $sqlserverName -DatabaseName $databaseName `
-            -DatabaseMaxSizeBytes "5000000" `
+            -DatabaseMaxSizeBytes "2147483648" `
             -StorageKeyType "SharedAccessKey" `
-            -StorageKey "?sp=rl&st=2019-11-26T21:16:46Z&se=2025-11-27T21:36:00Z&sv=2019-02-02&sr=b&sig=P15nBXR2bD2jBnHX92%2BwWRxMnvTeUl3EdBNhLXnZ95s%3D" `
-            -StorageUri "https://databricksdemostore.blob.core.windows.net/data/nosql-openhack/movies.bacpac" `
-            -Edition "Basic" -ServiceObjectiveName "Basic" `
+            -StorageKey "?sp=r&st=2021-06-16T20:01:06Z&se=2028-06-17T04:01:06Z&spr=https&sv=2020-02-10&sr=b&sig=WWkTG8VN%2FuazkAiFu9QxYraJTp1bKEwMJj%2Fz6IimUOc%3D" `
+            -StorageUri "https://openhackguides.blob.core.windows.net/no-sql-artifacts/movies.bacpac" `
+            -Edition "Standard" -ServiceObjectiveName "S0" `
             -AdministratorLogin $sqlAdministratorLogin `
             -AdministratorLoginPassword $(ConvertTo-SecureString -String $sqlAdministratorLoginPassword -AsPlainText -Force)
 

@@ -1,5 +1,4 @@
-#NOTE: This script is modified based off of the script deploy.ps1 located here: https://github.com/solliancenet/nosql-openhack
-#       Validate that nothing has changed on that script to this script before proceeding
+#NOTE: This script is modified based off of the original script deploy.ps1 located here: https://github.com/solliancenet/nosql-openhack
 
 $teamCount = Read-Host "How many teams are hacking?";
 #get-azlocation | Select Location, DisplayName | Format-Table
@@ -48,17 +47,10 @@ for ($i = 1; $i -le $teamCount; $i++)
             & "$DeployResourcesScriptPath\deploy_02_DeployResources.ps1" | Out-Null
 
             Write-Output ("Resource deployments completed and validated.");
-
-            #Create the Movies database
-            Write-Output ("Starting deployment of Movies database");
-
-            $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
-            & "$DeployResourcesScriptPath\deploy_02_1_DeployDatabase.ps1" | Out-Null
-
             Write-Output ("Database deployment completed.");
 
             # Import data to the Movies database: 
-            Write-Output ("Import data to Movies database is starting (takes upwards of 20 minutes)");
+            Write-Output ("Import data to Movies database is starting (takes approximately 20 minutes to complete)");
 
             $DeployResourcesScriptPath = Split-Path $MyInvocation.InvocationName
             & "$DeployResourcesScriptPath\deploy_03_ImportData.ps1" | Out-Null
@@ -89,4 +81,4 @@ for ($i = 1; $i -le $teamCount; $i++)
 }
 
 #report operation completed
-Write-Output "All resources are deployed.  Operation completed!";
+Write-Output "All resources are deployed.  Enjoy the OpenHack!";
