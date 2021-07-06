@@ -178,7 +178,7 @@ In this task you will open the Advanced hunting to prepare new spaces for data.
 
 #### Create Azure resources
 
-The Azure Resource Manager (ARM) template located at [https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts.zip](https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts.zip) should be executed against a new resource group named **OpenHackRG** in the target Azure subscription.  The Azure resources are used throughout the OpenHack to provide basic elements used by the fictitious company.
+The Azure Resource Manager (ARM) template located at [https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts](https://github.com/microsoft/OpenHack/blob/main/byos/sci/scripts.zip) should be executed against a new resource group named **OpenHackRG** in the target Azure subscription.  The Azure resources are used throughout the OpenHack to provide basic elements used by the fictitious company.
 
 There are no ARM template parameters to provide (resource names are hard-coded within the template).
 
