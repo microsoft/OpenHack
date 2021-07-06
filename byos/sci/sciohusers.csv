@@ -1,22 +1,16 @@
-Type,Alias,FName,LName,Name,Password,ManagerAlias,Gender,Title,Department,Office,HomePhone,StreetAddress,City,State,PostalCode,Country,CountryCode,MemberOf,Role
-User,AlexW,Alex,Wu,Alex Wu,demo!pass123,RosalindD,Male,Sr. Engineer,Engineering,97/101,+81 345550101,"Shinagawa Grand Central Tower, 2-16-3, Konan Minato-ku",Tokyo,,140-0012,Japan,JP,,
-User,DianeF,Diane,Forsyth,Diane Forsyth,demo!pass123,KatieJ,Female,Compliance Specialist,Operations,24/107,+1 262 555 0107,"N19 W24133 Riverwood Dr., Suite 150",Waukesha,WI,53188,United States,US,,
-User,DorenaP,Dorena,Paschke,Dorena Paschke,demo!pass123,VivianA,Female,CVP Engineering,Engineering,23/102,+1 502 555 0102,"9900 Corporate Campus Dr., Suite 3000",Louisville,KY,40223,United States,US,,
-User,EricG,Eric,Gilmore,Eric Gilmore,demo!pass123,,Male,CEO,Executive Management,15/101,+1 513 555 0101,"4605 Duke Drive, Suite 800",Mason,OH,45040,United States,US,,
-User,GarretV,Garret,Vargas,Garret Vargas,demo!pass123,EricG,Male,CVP Operations,Operations,36/105,+1 206 555 0105,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US,,
-User,IsaiahL,Isaiah,Langer,Isaiah Langer,demo!pass123,RosalindD,Male,Legal Specialist,Legal,36/108,+1 206 555 0108,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US,,
-User,JulianI,Julian,Isla,Julian Isla,demo!pass123,RobY,Male,Helpdesk Group Manager,Operations,9/101,+1 309 555 0101,"2203 E. Empire St., Suite J",Bloomington,IL,61704,United States,US,,"Compliance Administrator,Demo"
-User,KatieJ,Katie,Jordan,Katie Jordan,demo!pass123,VivianA,Female,Financial Analyst Senior Manager,Finance,12/104,+1 412 555 0109,"30 Isabella St., Second Floor",Pittsburgh,PA,15212,United States,US,Financial Systems Access,
-User,LarryZ,Larry,Zhang,Larry Zhang,demo!pass123,DorenaP,Male,Helpdesk Level 1,Operations,36/108,+1 206 555 0108,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US,General Staff;Test,
-User,MeganB,Megan,Bowen,Megan Bowen,demo!pass123,,Female,Marketing Senior Manager,Sales & Marketing,8/106,+1 425 555 0105,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US,,
-User,NormaD,Norma,Daugherty,Norma Daugherty,demo!pass123,MeganB,Female,Product Marketing Manager,Research & Development,8/202,+1 425 555 0109,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US,,
-User,RainerS,Rainer,Schiller,Rainer Schiller,demo!pass123,,Male,Human Resources Assistant,Human Resources,17/204,+1 901 555 0109,"6465 N. Quail Hollow Rd., Suite 200",Memphis,TN,38120,United States,US,Human Resources,
-User,RobinW,Robin,Wakefield,Robin Wakefield,demo!pass123,DorenaP,Not Specified,Server Administrator,Operations,19/102,+1 860 555 0102,"74  Batterson Park Rd., #100",Farmington,CT,6032,United States,US,,
-User,RosalindD,Rosalind,Durham,Rosalind Durham,demo!pass123,,Female,VP Marketing,Sales & Marketing,131/103,+1 858 555 0109,"9255 Towne Center Dr., Suite 400",San Diego,CA,92121,United States,US,,
-User,VivianA,Vivian,Atlas,Vivian Atlas,demo!pass123,EricG,Female,VP Human Resources,Human Resources,8/104,+1 425 555 0103,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US,,
-Group,CompanyAdmins,,,Admins,,,,,,,,,,,,,,,
-Group,CompanyHR,,,Human Resources,,,,,,,,,,,,,,,
-Group,FinSysAccess,,,Financial System Access,,,,,,,,,,,,,,,
-Group,GeneralStaff,,,General Staff,,,,,,,,,,,,,,,
-Group,HelpDesk,,,Help Desk,,,,,,,,,,,,,,,
-Group,Legal,,,Legal,,,,,,,,,,,,,,,
+Alias,FName,LName,Name,Password,ManagerAlias,Gender,Title,Department,Office,HomePhone,StreetAddress,City,State,PostalCode,Country,CountryCode
+AlexW,Alex,Wu,Alex Wu,demo!pass123,RosalindD,Male,Sr. Engineer,Engineering,97/101,+81 345550101,"Shinagawa Grand Central Tower, 2-16-3, Konan Minato-ku",Tokyo,,140-0012,Japan,JP
+IsaiahL,Isaiah,Langer,Isaiah Langer,demo!pass123,RosalindD,Male,Legal Specialist,Legal,36/108,+1 206 555 0108,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US
+KatieJ,Katie,Jordan,Katie Jordan,demo!pass123,VivianA,Female,Financial Analyst Senior Manager,Finance,12/104,+1 412 555 0109,"30 Isabella St., Second Floor",Pittsburgh,PA,15212,United States,US
+MeganB,Megan,Bowen,Megan Bowen,demo!pass123,,Female,Marketing Senior Manager,Sales & Marketing,8/106,+1 425 555 0105,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US
+NormaD,Norma,Daugherty,Norma Daugherty,demo!pass123,MeganB,Female,Product Marketing Manager,Research & Development,8/202,+1 425 555 0109,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US
+RobinW,Robin,Wakefield,Robin Wakefield,demo!pass123,DorenaP,Not Specified,Server Administrator,Operations,19/102,+1 860 555 0102,"74  Batterson Park Rd., #100",Farmington,CT,6032,United States,US
+RosalindD,Rosalind,Durham,Rosalind Durham,demo!pass123,,Female,VP Marketing,Sales & Marketing,131/103,+1 858 555 0109,"9255 Towne Center Dr., Suite 400",San Diego,CA,92121,United States,US
+DianeF,Diane,Forsyth,Diane Forsyth,demo!pass123,KatieJ,Female,Compliance Specialist,Operations,24/107,+1 262 555 0107,"N19 W24133 Riverwood Dr., Suite 150",Waukesha,WI,53188,United States,US
+DorenaP,Dorena,Paschke,Dorena Paschke,demo!pass123,VivianA,Female,CVP Engineering,Engineering,23/102,+1 502 555 0102,"9900 Corporate Campus Dr., Suite 3000",Louisville,KY,40223,United States,US
+EricG,Eric,Gilmore,Eric Gilmore,demo!pass123,,Male,CEO,Executive Management,15/101,+1 513 555 0101,"4605 Duke Drive, Suite 800",Mason,OH,45040,United States,US
+GarretV,Garret,Vargas,Garret Vargas,demo!pass123,EricG,Male,CVP Operations,Operations,36/105,+1 206 555 0105,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US
+JulianI,Julian,Isla,Julian Isla,demo!pass123,RobY,Male,Helpdesk Group Manager,Operations,9/101,+1 309 555 0101,"2203 E. Empire St., Suite J",Bloomington,IL,61704,United States,US
+LarryZ,Larry,Zhang,Larry Zhang,demo!pass123,DorenaP,Male,Helpdesk Level 1,Operations,36/108,+1 206 555 0108,320 Westlake Ave N. Thomas St.,Seattle,WA,98109,United States,US
+RainerS,Rainer,Schiller,Rainer Schiller,demo!pass123,,Male,Human Resources Assistant,Human Resources,17/204,+1 901 555 0109,"6465 N. Quail Hollow Rd., Suite 200",Memphis,TN,38120,United States,US
+VivianA,Vivian,Atlas,Vivian Atlas,demo!pass123,EricG,Female,VP Human Resources,Human Resources,8/104,+1 425 555 0103,"205 108th Ave. NE, Suite 400",Bellevue,WA,98004,United States,US
