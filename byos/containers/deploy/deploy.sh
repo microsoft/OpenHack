@@ -138,12 +138,15 @@ then
 fi
 
 # Create VM
-az vm create -n internal-vm -g $teamRG --admin-username azureuser --generate-ssh-keys --public-ip-address "" --image UbuntuLTS --vnet-name vnet --subnet vm-subnet
+az vm create -n internal-vm -g $teamRG --admin-username azureuser --generate-ssh-keys --public-ip-address "" --image UbuntuLTS --vnet-name vnet --subnet vm-subnet --nsg-rule NONE
 
 if [ $? == 0 ];
 then
     echo "VM created successfully in subnet"
 fi
+
+# Deallocate the VM as it is only used in Challenge 3
+az vm deallocate -n internal-vm -g $teamRG
 
 # Create Azure SQL Server instance
 echo "Creating Azure SQL Server instance..."
