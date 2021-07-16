@@ -18,7 +18,7 @@ docker-compose up
 
 The simulator will be running at `http://localhost:8080/` and you can enter `http://ohnginx` as the base url for the simulator.
 
-It is required to have the tripviwer images from the open hack to test the solution end to end.  Instructions on buildng the images can be found at https://github.com/Azure-Samples/openhack-containers/blob/master/.azdevops/docker-compose.yaml.  
+It is required to have the tripviwer images from the open hack to test the solution end to end.  Instructions on buildng the images can be found at https://github.com/Microsoft-OpenHack/containers_artifacts/blob/main/.azdevops/docker-compose.yaml.
 
 It is also nessary to load the database that is created using:
 
@@ -42,10 +42,10 @@ docker run -d \
 ```
 export REGISTRY=<ACR name>.azurecr.io
 export TAG=0.1
-export ACR_NAME=<ACR name>
-export ACR_PASS="$(az acr credential show -n $ACR_NAME --query 'passwords[0].value' --output tsv)"
 export RG=<ACR resource group>
 export RG_LOCATION=<ACR resource group region>
+export ACR_NAME=<ACR name>
+export ACR_PASS="$(az acr credential show -g $RG -n $ACR_NAME --query 'passwords[0].value' --output tsv)"
 
 docker-compose build
 ./tag-images.sh $REGISTRY $TAG
