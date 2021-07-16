@@ -1,0 +1,5 @@
+# built binary
+simv2
+
+# output of deploy-aci.sh
+aci-deploy.yaml
