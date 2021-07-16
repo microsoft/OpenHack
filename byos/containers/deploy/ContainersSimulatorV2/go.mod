@@ -1,4 +1,4 @@
-module dev.azure.com/cseeest/OpenHack/_git/Containersv2/tooling/teamdeploy/simv2
+module github.com/Microsoft/OpenHack/containers/simv2
 
 go 1.14
 
