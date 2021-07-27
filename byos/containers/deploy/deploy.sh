@@ -109,7 +109,7 @@ then
     az acr build --registry $registryName --no-wait --image insurance:1.0 insuranceapp-monitoring
     
     echo "wcfservice:1.0...X"
-    az acr build --registry $registryName --image wcfservice:1.0 WinLegacyApp --platform Windows --no-wait
+    az acr build --registry $registryName --no-wait --image wcfservice:1.0 WinLegacyApp --platform Windows
 
     echo "tripviewer2:1.0..."
     az acr build --registry $registryName --no-wait --image tripviewer2:1.0 tripviewer2
