@@ -100,7 +100,11 @@ then
     az acr update -n $registryName --admin-enabled true
 
    
-    echo "Deploying application images..." 
+    echo "Deploying application images..."
+
+    echo "dataload:1.0..."
+    az acr build --registry $registryName --no-wait --image dataload:1.0 dataload
+    
     echo "insurance:1.0..."
     az acr build --registry $registryName --no-wait --image insurance:1.0 insuranceapp-monitoring
     
