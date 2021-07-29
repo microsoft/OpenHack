@@ -3,3 +3,6 @@ simv2
 
 # output of deploy-aci.sh
 aci-deploy.yaml
+
+# output of deployment script - uses index-template to create index.html
+views/index.html
