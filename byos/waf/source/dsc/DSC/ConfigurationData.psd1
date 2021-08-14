@@ -1,0 +1,8 @@
+﻿@{
+    AllNodes = @(
+        @{
+            NodeName = '*'
+            PsDscAllowPlainTextPassword = $true
+        }
+    )
+}

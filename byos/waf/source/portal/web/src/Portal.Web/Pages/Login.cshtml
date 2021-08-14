@@ -1,0 +1,30 @@
+﻿@page
+@model LoginModel
+@{
+    Layout = "_LayoutAuth";
+    ViewData["Title"] = "Home";
+}
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col pr-5">
+            <h2 class="mt-5 mb-5">Online Banking Sign On</h2>
+            <form class="col pr-5" method="post">
+                <div class="form-group">
+                    <label for="inputUsername">Username</label>
+                    <input type="input" class="form-control" id="inputUsername" name="Username" />
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" name="Password" />
+                </div>
+                <div asp-validation-summary="All" class="error float-left"></div>
+                <button type="submit" class="btn btn-primary float-right">Submit</button>
+                <br />
+            </form>
+        </div>
+        <div class="col">
+
+        </div>
+    </div>
+</div>
