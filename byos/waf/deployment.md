@@ -29,17 +29,17 @@ The deployment script **requires** the following five parameters.
 4. Generate an Azure AUTH file (see above)
 5. Run the command below
 
-Assuming you are currently in the `/scripts/tools/Deploy` folder:  
+Assuming you are currently in the `/deploy` folder:  
 
 **bash**
 ```bash
 chmod 755 ./deploy.sh
-./deploy.sh -p [pat] -o [organization] -s ../../source -a [auth.file] -u [subscriptionId]
+./deploy.sh -p [pat] -o [organization] -s ../source -a [auth.file] -u [subscriptionId]
 ```
 
 **command prompt**
 ```bash
-deploy -p [pat] -o [organization] -s ..\..\source -a [auth.file] -u [subscriptionId]
+deploy -p [pat] -o [organization] -s ..\source -a [auth.file] -u [subscriptionId]
 ```
 
 >NOTE: Generating the ARM template from the Bicep definition files will generate some warnings. This is expected and due to the Azure REST API not being updated.
