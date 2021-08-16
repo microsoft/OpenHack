@@ -1,8 +1,8 @@
 ﻿@{
     AllNodes = @(
         @{
-            NodeName = '*'
-            PsDscAllowPlainTextPassword = $true
+            NodeName = 'localhost'
+            PSDscAllowPlainTextPassword = $true
         }
     )
 }

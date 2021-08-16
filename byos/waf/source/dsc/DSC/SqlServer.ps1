@@ -1,43 +1,44 @@
 ﻿Configuration SqlServer {
     
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration, SqlServerDsc
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullorEmpty()]
+        [PSCredential]
+        $ServerCredential,
 
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullorEmpty()]
+        [PSCredential]
+        $DatabaseCredential
+    )
 
-    [string]$username = 'webapp'
-    [string]$password = 'S0m3R@ndomW0rd$'
-    [securestring]$securedPassword = ConvertTo-SecureString $password -AsPlainText -Force
-    [pscredential]$loginCredential = New-Object System.Management.Automation.PSCredential ($username, $securedPassword)
-    <#
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, SqlServerDsc, NetworkingDsc
 
-    [string]$sqlUsername = 'cloudsqladmin'
-    [string]$sqlPassword = 'Pass@word1234!'
-    [securestring]$sqlSecuredPassword = ConvertTo-SecureString $sqlPassword -AsPlainText -Force
-    [pscredential]$sqlLoginCredential = New-Object System.Management.Automation.PSCredential ($sqlUsername, $sqlSecuredPassword)
-    #>
-    
     Node localhost {
 
         SqlDatabase CreateDatabase
         {
             Ensure          = 'Present'
             ServerName      = 'sqlsvr1'
+            InstanceName    = 'MSSQLSERVER'
             Name            = 'CustomerPortal'
 
-            PsDscRunAsCredential = $SqlCredential
+            PsDscRunAsCredential = $ServerCredential
         }
-        <#
+
         SqlLogin CreateDatabaseLogin
         {
             Ensure          = 'Present'
             Name            = 'webapp'
             LoginType       = 'SqlLogin'
             ServerName      = 'sqlsvr1'
-            LoginCredential = $loginCredential
+            InstanceName    = 'MSSQLSERVER'
+            LoginCredential = $DatabaseCredential
             LoginMustChangePassword        = $false
             LoginPasswordExpirationEnabled = $false
             LoginPasswordPolicyEnforced    = $true
 
-       #     PsDscRunAsCredential = $sqlLoginCredential
+            PsDscRunAsCredential = $ServerCredential
             DependsOn       = '[SqlDatabase]CreateDatabase'
         }
 
@@ -45,15 +46,45 @@
         {
             Ensure          = 'Present'
             ServerName      = 'sqlsvr1'
-            InstanceName    = 'MSSSQLSERVER'
+            InstanceName    = 'MSSQLSERVER'
             DatabaseName    = 'CustomerPortal'
             Name            = 'webapp'
             UserType        = 'Login'
             LoginName       = 'webapp'
 
-        #    PsDscRunAsCredential = $sqlLoginCredential
+            PsDscRunAsCredential = $ServerCredential
             DependsOn       = '[SqlLogin]CreateDatabaseLogin'
         }
-        #>
-      }
+
+        SqlDatabaseRole SetUserAsOwner
+        {
+            Ensure          = 'Present'
+            ServerName      = 'sqlsvr1'
+            InstanceName    = 'MSSQLSERVER'
+            DatabaseName    = 'CustomerPortal'
+            Name            = 'db_owner'
+            MembersToInclude = @('webapp')
+
+            PsDscRunAsCredential = $ServerCredential
+            DependsOn       = '[SqlDatabaseUser]CreateDatabaseUser'
+        }
+
+        FirewallProfile ConfigurePrivateFirewallProfile
+        {
+            Name            = 'Private'
+            Enabled         = 'False'
+        }
+
+        FirewallProfile ConfigurePublicFirewallProfile
+        {
+            Name            = 'Public'
+            Enabled         = 'False'
+        }
+
+        FirewallProfile ConfigureDomainFirewallProfile
+        {
+            Name            = 'Domain'
+            Enabled         = 'False'
+        }
+    }
 }
