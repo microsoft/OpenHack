@@ -145,7 +145,7 @@ namespace Deploy
             diag.Process.Start("git", $@"-C {path} add .").WaitForExit();
             diag.Process.Start("git", $@"-C {path} commit -a -m ""Initial commit""").WaitForExit();
             diag.Process.Start("git", $@"-C {path} -c http.extraHeader=""Authorization: Basic {patBase64}"" push -u origin --all").WaitForExit();
-            diag.Process.Start("rm", $@"-rf {path}/.git").WaitForExit();
+            diag.Process.Start("rm", $@"-rf " + Path.Combine(path, "\\.git")).WaitForExit();
 
             Console.WriteLine($"  - Commit completed successfully)...");
         }
