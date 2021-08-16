@@ -21,10 +21,10 @@ namespace Deploy
         public void DeployTemplate(string subscriptionId, string path)
         {
             Console.WriteLine("- Building ARM Template from Bicep...");
-            Process.Start("az", $@"bicep build --file {path}/main.bicep").WaitForExit();
+            Process.Start("az", $@"bicep build --file " + Path.Combine(path, "\\main.bicep")).WaitForExit();
 
             Console.WriteLine("- Parsing ARM Template...");
-            var templateJson = GetArmTemplate(path + "/main.json");
+            var templateJson = GetArmTemplate(Path.Combine(path + "\\main.json"));
 
             Console.WriteLine("- Creating resource group 'webapp'...");
             _azure.ResourceGroups.Define("webapp")
