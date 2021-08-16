@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Runtime.InteropServices;
 using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Operations;
@@ -145,8 +146,11 @@ namespace Deploy
             diag.Process.Start("git", $@"-C {path} add .").WaitForExit();
             diag.Process.Start("git", $@"-C {path} commit -a -m ""Initial commit""").WaitForExit();
             diag.Process.Start("git", $@"-C {path} -c http.extraHeader=""Authorization: Basic {patBase64}"" push -u origin --all").WaitForExit();
-            diag.Process.Start("rm", $@"-rf " + Path.Combine(path, "\\.git")).WaitForExit();
-
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                diag.Process.Start("rm", $@"-rf " + Path.Combine(path, "\\.git")).WaitForExit();
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                diag.Process.Start("rmdir", $@"/s /q " + Path.Combine(path, "\\.git")).WaitForExit();
+            
             Console.WriteLine($"  - Commit completed successfully)...");
         }
 
