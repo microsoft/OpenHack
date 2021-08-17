@@ -8,7 +8,7 @@ declare teamRG="teamResources"
 declare suffix=""
 declare proctorRG="proctorResources"
 declare randstr=""
-declare createAdUsers=""
+declare createAdUsers=false
 
 # Initialize parameters specified from command line
 while getopts ":r:t:p:s:" arg; do
@@ -24,6 +24,9 @@ while getopts ":r:t:p:s:" arg; do
         ;;
         s)
             suffix=${OPTARG}
+        ;;
+        a)
+            createAdUsers=true
         ;;
     esac
 done
@@ -85,8 +88,6 @@ az group create -n $teamRG -l $region
 
 # might be already created, but if not create here... 
 az group create -n $proctorRG -l $region
-
-# todo skips ad account creation
 
 # Create ACR
 echo "Creating Azure Container Registry..."
@@ -223,6 +224,13 @@ else
     echo "Failed to deploy simulator v2 to ACI."
 fi
 
+if [[ ${createAdUsers} ]]; then
+    echo "Creating webdev and apidev users..."
+    apidevObjectId=$(az ad user create --display-name api-dev --password $apidevpassword --user-principal-name apidev@$domain --query objectId -o tsv)
+
+    webdevObjectId=$(az ad user create --display-name web-dev --password $webdevpassword --user-principal-name webdev@$domain --query objectId -o tsv)
+fi
+
 echo "ACR Login Server: $registryLoginServer"
 echo "ACR Username: $registryName"
 echo "ACR Password: $ACR_PASS"
@@ -230,3 +238,8 @@ echo "SQL Server: $sqlServerName"
 echo "SQL Server Username: $sqlServerUsername"
 echo "SQL Server Password: $sqlServerPassword"
 echo "Simulator url: $simulatorfqdn"
+
+if [[ ${createAdUsers} ]]; then
+    echo "api-dev password: $apidevpassword"
+    echo "web-dev password: $webdevpassword"
+fi

@@ -64,6 +64,7 @@ The deployment script expects to be run from the [`byos/containers/deploy`](./de
 | `-t` | Azure resource group name for team (attendee) resources | `teamResources` |
 | `-p` | Azure resource group name for proctor resources | `proctorResources` |
 | `-s` | Suffix (appended to resource group names) | `""` |
+| `-a` | Set in order to create Azure users `api-dev` and `web-dev` used in Challenge 4 | false |
 
 ### Example Usage
 
@@ -78,12 +79,12 @@ The deployment script expects to be run from the [`byos/containers/deploy`](./de
 ```
 
 ```sh
-# specify region and resource group name
-./deploy.sh -r "northeurope" -t "openHackTest"
+# specify a resource group name and create the api-dev and web-dev users
+./deploy.sh -t "openHackTest" -a
 ```
 
 ```sh
-# specify region, resource group name, and suffix 
+# specify region, resource group name, and suffix
 ./deploy.sh -r "australiaeast" -t "teamRG" -s "2"
 ```
 
