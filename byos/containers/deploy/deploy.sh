@@ -1,34 +1,33 @@
 #!/bin/bash
-# set -xeuo pipefail
+
+set -xeuo pipefail
 IFS=$'\n\t'
 
 declare region="westus"
-declare resourceGroupName="teamResources"
+declare teamRG="teamResources"
 declare suffix=""
 declare proctorRG="proctorResources"
 declare randstr=""
 declare createAdUsers=""
 
 # Initialize parameters specified from command line
-while getopts ":c:s:l:i:q:r:u:p:t:g:o:" arg; do
+while getopts ":r:t:p:s:" arg; do
     case "${arg}" in
         r)
             region=${OPTARG}
         ;;
         t)
-            resourceGroupName=${OPTARG}
+            teamRG=${OPTARG}
+        ;;
+        p)
+            proctorRG=${OPTARG}
         ;;
         s)
             suffix=${OPTARG}
         ;;
-        a)
-            createAdUsers=${OPTARG}
-        ;;
     esac
 done
 shift $((OPTIND-1))
-
-declare teamRG=$resourceGroupName
 
 if [[ -n "$suffix" ]]; then
     
