@@ -14,10 +14,10 @@ namespace Deploy
         {
             VssCredentials creds = null;
             string accessToken = string.Empty;
-            string collectionUrl = string.Empty;
             string path = string.Empty;
             string authFile = string.Empty;
             string subscriptionId = string.Empty;
+            string organization = string.Empty;
 
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(o =>
@@ -38,7 +38,7 @@ namespace Deploy
                     }
                     else
                     {
-                        collectionUrl = "https://dev.azure.com/" + o.Organization;
+                        organization = o.Organization;
                     }
 
                     if (String.IsNullOrWhiteSpace(o.Source))
@@ -77,12 +77,12 @@ namespace Deploy
                     }
                 });
 
-            DeployDevOps(creds, accessToken, collectionUrl, path);
+            DeployDevOps(creds, accessToken, organization, path);
             DeployAzureTenant(authFile, subscriptionId, path);
         }
 
-        static void DeployDevOps(VssCredentials credentials, string accessToken, string collectionUrl, string path) {
-            var adoHelper = new AdoHelper(credentials, collectionUrl);
+        static void DeployDevOps(VssCredentials credentials, string accessToken, string organization, string path) {
+            var adoHelper = new AdoHelper(credentials, "https://dev.azure.com/" + organization);
 
             Console.WriteLine("*********************************");
             Console.WriteLine("*                               *");
@@ -95,15 +95,15 @@ namespace Deploy
             var bicepTempRepo = adoHelper.CreateRepository(bicepProject, "temp", true);
             adoHelper.RemoveRepository(bicepProject, "Bicep", isDefault: true);
             var bicepRepo = adoHelper.CreateRepository(bicepProject, "bicep");
-            adoHelper.CommitRepository(bicepProject, bicepRepo, accessToken, path + "/bicep");
+            adoHelper.CommitRepository(organization, bicepProject, bicepRepo, accessToken, path + "\\bicep");
             adoHelper.RemoveRepository(bicepProject, "temp", isTemp: true);
 
             // Create Portal project
             var portalProject = adoHelper.CreateProject("Portal");
             var processorRepo = adoHelper.CreateRepository(portalProject, "processor");
-            adoHelper.CommitRepository(portalProject, processorRepo, accessToken, path + "/portal/processor");
+            adoHelper.CommitRepository(organization, portalProject, processorRepo, accessToken, path + "\\portal\\processor");
             var webRepo = adoHelper.CreateRepository(portalProject, "web");
-            adoHelper.CommitRepository(portalProject, webRepo, accessToken, path + "/portal/web");
+            adoHelper.CommitRepository(organization, portalProject, webRepo, accessToken, path + "\\portal\\web");
             adoHelper.RemoveRepository(portalProject, "Portal", isDefault: true);
 
             Console.WriteLine();
@@ -125,7 +125,7 @@ namespace Deploy
                             .WithSubscription(subscriptionId);
 
             var azureHelper = new AzureHelper(azure);
-            azureHelper.DeployTemplate(subscriptionId, path + "/bicep");
+            azureHelper.DeployTemplate(subscriptionId, path + "\\bicep");
 
             Console.WriteLine();
         }

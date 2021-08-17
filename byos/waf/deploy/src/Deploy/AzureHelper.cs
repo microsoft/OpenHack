@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Models;
@@ -21,10 +22,13 @@ namespace Deploy
         public void DeployTemplate(string subscriptionId, string path)
         {
             Console.WriteLine("- Building ARM Template from Bicep...");
-            Process.Start("az", $@"bicep build --file " + Path.Combine(path, "\\main.bicep")).WaitForExit();
-
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Process.Start("CMD.exe", $@"/C az bicep build --file " + Path.GetFullPath(path + "\\main.bicep")).WaitForExit();
+            else
+                Process.Start("az", $@"bicep build --file " + Path.GetFullPath(path + "\\main.bicep")).WaitForExit();
+            
             Console.WriteLine("- Parsing ARM Template...");
-            var templateJson = GetArmTemplate(Path.Combine(path + "\\main.json"));
+            var templateJson = GetArmTemplate(Path.GetFullPath(path + "\\main.json"));
 
             Console.WriteLine("- Creating resource group 'webapp'...");
             _azure.ResourceGroups.Define("webapp")
@@ -38,6 +42,8 @@ namespace Deploy
                 .WithParameters("{}")
                 .WithMode(DeploymentMode.Complete)
                 .Create();
+
+            File.Delete(Path.GetFullPath(path + "\\main.json"));                
         }
 
         public string GetArmTemplate(string templateFileName)

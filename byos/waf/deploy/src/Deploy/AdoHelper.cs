@@ -131,7 +131,7 @@ namespace Deploy
             }
         }
 
-        public void CommitRepository(TeamProject project, GitRepository repo, string pat, string path)
+        public void CommitRepository(string org, TeamProject project, GitRepository repo, string pat, string path)
         {
             var patBytes = Encoding.UTF8.GetBytes(":" + pat);
             string patBase64 = Convert.ToBase64String(patBytes);
@@ -140,16 +140,12 @@ namespace Deploy
 
             Console.WriteLine($"- Pushing repo '{repo.Name}'...");
 
-            diag.Process.Start("git", $@"init {path}").WaitForExit();
-            diag.Process.Start("git", $@"-C {path} branch -m main").WaitForExit();
-            diag.Process.Start("git", $@"-C {path} remote add origin {repo.RemoteUrl}").WaitForExit();
-            diag.Process.Start("git", $@"-C {path} add .").WaitForExit();
-            diag.Process.Start("git", $@"-C {path} commit -a -m ""Initial commit""").WaitForExit();
-            diag.Process.Start("git", $@"-C {path} -c http.extraHeader=""Authorization: Basic {patBase64}"" push -u origin --all").WaitForExit();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                diag.Process.Start("rm", $@"-rf " + Path.Combine(path, "\\.git")).WaitForExit();
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                diag.Process.Start("rmdir", $@"/s /q " + Path.Combine(path, "\\.git")).WaitForExit();
+            diag.Process.Start("git", $@"init {Path.GetFullPath(path)}").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} branch -m main").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} remote add {org} {repo.RemoteUrl}").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} add .").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} commit -a -m ""Initial commit""").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} -c http.extraHeader=""Authorization: Basic {patBase64}"" push -u {org} --all").WaitForExit();
             
             Console.WriteLine($"  - Commit completed successfully)...");
         }
