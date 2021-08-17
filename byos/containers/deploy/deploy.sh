@@ -87,31 +87,33 @@ az group create -n $teamRG -l $region
 # might be already created, but if not create here... 
 az group create -n $proctorRG -l $region
 
+# todo skips ad account creation
+
 # Create ACR
 echo "Creating Azure Container Registry..."
-ACR=$(az acr create -n $registryName -g $teamRG -l $region --sku Basic -o json)
+ACR=$(az acr create -n $registryName -g $teamRG --sku Basic -o json)
 
 if [ $? == 0 ];
 then
     echo "Azure Container Registry" $registryName "created successfully..."
     # This step so that we don't need to do role assignement
     echo "Enable Registry for admin authentication"
-    az acr update -n $registryName --admin-enabled true
+    az acr update -n $registryName -g $teamRG --admin-enabled true
 
-   
-    echo "Deploying application images..."
+    echo "Building application images in ACR..."
 
     echo "dataload:1.0..."
-    az acr build --registry $registryName --no-wait --image dataload:1.0 dataload
-    
+    az acr build --registry $registryName -g $teamRG --no-wait --image dataload:1.0 dataload
+
     echo "insurance:1.0..."
-    az acr build --registry $registryName --no-wait --image insurance:1.0 insuranceapp-monitoring
+    az acr build --registry $registryName -g $teamRG --no-wait --image insurance:1.0 insuranceapp-monitoring
     
     echo "wcfservice:1.0...X"
-    az acr build --registry $registryName --no-wait --image wcfservice:1.0 WinLegacyApp --platform Windows
+    # todo uncomment, commented out for speed
+    #az acr build --registry $registryName -g $teamRG --no-wait --image wcfservice:1.0 WinLegacyApp --platform Windows
 
     echo "tripviewer2:1.0..."
-    az acr build --registry $registryName --no-wait --image tripviewer2:1.0 tripviewer2
+    az acr build --registry $registryName -g $teamRG --no-wait --image tripviewer2:1.0 tripviewer2
 
     # Replace hard coded localhost in simulator webpage
     # Create from template first so we don't overwrite
@@ -120,15 +122,15 @@ then
     FQDN='simulator'${registryName}'.'${region}'.azurecontainer.io'
     sed -i -e 's localhost '${FQDN}' g' ContainersSimulatorV2/views/index.html
 
-    echo "Deploying ContainerSimulatorV2 artifacts..."
+    echo "Building ContainerSimulatorV2 components..."
     echo "simulator:1.0..."
-    az acr build --registry $registryName --image simulator:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile --no-wait
+    az acr build --registry $registryName -g $teamRG --image simulator:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile --no-wait
 
     echo "prometheus-sim:1.0..."
-    az acr build --registry $registryName --image prometheus-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.prometheus --no-wait
+    az acr build --registry $registryName -g $teamRG --image prometheus-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.prometheus --no-wait
 
     echo "grafana-sim:1.0..."
-    az acr build --registry $registryName --image grafana-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.grafana --no-wait 
+    az acr build --registry $registryName -g $teamRG --image grafana-sim:1.0 ContainersSimulatorV2 -f ContainersSimulatorV2/Dockerfile.grafana --no-wait 
 fi
 
 # Create VNET
@@ -150,14 +152,13 @@ fi
 
 # Create Azure SQL Server instance
 echo "Creating Azure SQL Server instance..."
-az sql server create -l $region -g $teamRG -n $sqlServerName -u $sqlServerUsername -p $sqlServerPassword
-
+az sql server create -g $teamRG -n $sqlServerName -u $sqlServerUsername -p $sqlServerPassword
 
 if [ $? == 0 ];
 then
     echo "SQL Server created successfully."
     echo "Adding firewall rule to SQL server..."
-    az sql server firewall-rule create --resource-group $teamRG --server $sqlServerName -n "Allow Access To Azure Services" --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+    az sql server firewall-rule create -g $teamRG --server $sqlServerName -n "Allow Access To Azure Services" --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
     
     if [ $? == 0 ];
     then
@@ -170,8 +171,6 @@ then
     echo "Creating Azure SQL DB..."
     az sql db create -g $teamRG -s $sqlServerName -n $sqlDBName
 
-    echo "SQL database created successfully."
-    az container create -g $proctorRG --name dataload --image $dataLoadImage --secure-environment-variables SQLFQDN=$sqlServerName.database.windows.net SQLUSER=$sqlServerUsername SQLPASS=$sqlServerPassword SQLDB=$sqlDBName
 else
     echo "Failed to create SQL Server."
 fi
@@ -182,15 +181,15 @@ echo "Checking on builds..."
 END=$(( $(date +%s) + 900 ))
 while true
 do
-    status=$(az acr task list-runs -r $registryName --query [].status -o tsv | tr ' ' '\n'| sort -u)
+    status=$(az acr task list-runs -r $registryName -g $teamRG --query [].status -o tsv | tr ' ' '\n'| sort -u)
     if [[ $status =~ "Failed" ]];
     then
         echo "One or more ACR builds failed."
-        failed=$(az acr task list-runs -r $registryName --run-status Failed --query [].name -o tsv | tr ' ' '\n' )
+        failed=$(az acr task list-runs -r $registryName -g $teamRG --run-status Failed --query [].name -o tsv | tr ' ' '\n' )
         for i in "${failed[@]}"
         do
             echo "Logs for failed build $i:"
-            echo "$(az acr task logs -r $registryName --run-id $i)"
+            echo "$(az acr task logs -r $registryName -g $teamRG --run-id $i)"
         done
         exit 1
     fi
@@ -201,18 +200,22 @@ do
     fi
 
     # Timeout if no success after 15 minutes
-    if [[ $(date +%s) -gt $END ]]; then
+    if [[ $(date +%s) -gt $END ]];
+    then
         break
     fi
     sleep 1m
 done
 
+ACR_PASS="$(az acr credential show -n $registryName -g $teamRG --query 'passwords[0].value' --output tsv)"
+registryLoginServer="$registryName.azurecr.io"
+
+echo "Loading data in SQL database..."
+az container create -g $proctorRG --name dataload --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $ACR_PASS \
+    --secure-environment-variables SQLFQDN=$sqlServerName.database.windows.net SQLUSER=$sqlServerUsername SQLPASS=$sqlServerPassword SQLDB=$sqlDBName
+
 echo "Creating simulator..."
-chmod +x  ./ContainersSimulatorV2/deploy-aci.sh
-
-
-ACR_PASS="$(az acr credential show -n $registryName --query 'passwords[0].value' --output tsv)"
-./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryName.azurecr.io 1.0 $registryName $ACR_PASS
+./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryLoginServer 1.0 $registryName $ACR_PASS
 simulatorfqdn=$(az container show -n $simulatorName -g $teamRG --query 'ipAddress.fqdn' --out tsv)
 
 if [ $? == 0 ];
@@ -222,11 +225,10 @@ else
     echo "Failed to deploy simulator v2 to ACI."
 fi
 
-echo "ACR Server: $registryName.azurecr.io"
-echo "ACR Registry: $registryName"
+echo "ACR Login Server: $registryLoginServer"
+echo "ACR Username: $registryName"
 echo "ACR Password: $ACR_PASS"
 echo "SQL Server: $sqlServerName"
-echo "SQL Server User Name: $sqlServerUsername"
-echo "SQL ServerPassword: $sqlServerPassword"
-
-echo "Simulator url:$simulatorfqdn"
+echo "SQL Server Username: $sqlServerUsername"
+echo "SQL Server Password: $sqlServerPassword"
+echo "Simulator url: $simulatorfqdn"
