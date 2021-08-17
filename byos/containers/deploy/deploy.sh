@@ -58,7 +58,6 @@ sqlServerUsername="sqladmin${randStr}"
 sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 sqlDBName="mydrivingDB"
 simulatorName="simulator-app-$registryName"
-dataLoadImage="openhack/data-load:v1"
 webdevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 apidevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 
