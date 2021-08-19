@@ -214,6 +214,13 @@ echo "Loading data in SQL database..."
 az container create -g $proctorRG --name dataload --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $ACR_PASS \
     --secure-environment-variables SQLFQDN=$sqlServerName.database.windows.net SQLUSER=$sqlServerUsername SQLPASS=$sqlServerPassword SQLDB=$sqlDBName
 
+logs=$(az container logs -g $proctorRG --name dataload)
+if [[ logs =~ "BCP copy in failed" ]]; then
+    echo "Failed to load data into database."
+else
+    echo "Successfully loaded data into database."
+fi
+
 echo "Creating simulator..."
 ./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryLoginServer 1.0 $registryName $ACR_PASS
 simulatorfqdn=$(az container show -n $simulatorName -g $teamRG --query 'ipAddress.fqdn' --out tsv)
