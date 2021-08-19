@@ -233,6 +233,10 @@ else
 fi
 
 if [[ ${createAdUsers} ]]; then
+    # todo remove if azureUserName is added as script arg
+    azureUserName=$(az account show --query user.name -o tsv)
+    domain=$(cut -d "@" -f 2 <<< $azureUserName)
+
     echo "Creating webdev and apidev users..."
     apidevObjectId=$(az ad user create --display-name api-dev --password $apidevpassword --user-principal-name apidev@$domain --query objectId -o tsv)
 
