@@ -1,9 +1,11 @@
 # Microsoft Azure Well-Architected Framework OpenHack
+
 This deployment guide will assist you in deploying the required resources and artifacts for the Microsoft Azure Well-Architected OpenHack.
 
 > Total deployment time may take **15-20 minutes** for provisioning Azure resources.
 
 ## Prerequisites
+
 * Azure DevOps Organization/Tenant (the script will create the necessary projects and upload the artifacts)
 * Azure subscription
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
@@ -12,6 +14,7 @@ This deployment guide will assist you in deploying the required resources and ar
 * [Git CLI](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 ## Deployment
+
 The deployment script **requires** the following five parameters.  
 | Flag | Description | Help |
 | ---- | ----------- | ---- |
@@ -21,8 +24,8 @@ The deployment script **requires** the following five parameters.
 | `-s` | The path of the parent source folder. The source folder is the parent folder containing the `bicep` and `portal` folders.| |
 | `-u` | The Azure subscription Id. | |
 
+### Steps
 
-### Steps:
 1. If necessary, create a target Azure DevOps organization
 2. Retrieve your Azure DevOps PAT (see above)
 3. If necessary, create a target Azure subscription
@@ -31,19 +34,23 @@ The deployment script **requires** the following five parameters.
 
 Assuming you are currently in the `/deploy` folder:  
 
-**bash**
+#### bash
+
 ```bash
 chmod 755 ./deploy.sh
 ./deploy.sh -p [pat] -o [organization] -s ../source -a [auth.file] -u [subscriptionId]
 ```
 
-**command prompt**
+#### command prompt
+
 ```bash
 deploy -p [pat] -o [organization] -s ..\source -a [auth.file] -u [subscriptionId]
 ```
 
 >NOTE: Generating the ARM template from the Bicep definition files will generate some warnings. This is expected and due to the Azure REST API not being updated.
+
 ## Process
+
 The deployment application follows the below execution plan.
 
 1. Deploys the Azure DevOps artifacts
