@@ -1,4 +1,4 @@
-# Deployment Guide
+# Microsoft Azure Well-Architected Framework OpenHack
 This deployment guide will assist you in deploying the required resources and artifacts for the Microsoft Azure Well-Architected OpenHack.
 
 > Total deployment time may take **15-20 minutes** for provisioning Azure resources.
