@@ -5,25 +5,44 @@ IFS=$'\n\t'
 
 declare region="westus"
 declare teamRG="teamResources"
-declare suffix=""
 declare proctorRG="proctorResources"
-declare randstr=""
+declare suffix=""
+
 declare createAdUsers=false
 
+declare azureUserName=""
+declare azurePassword=""
+declare subscriptionId=""
+declare tenantId=""
+
+declare randstr=""
+
 # Initialize parameters specified from command line
-while getopts ":r:t:p:s:" arg; do
+while getopts ":l:g:o:f:u:p:s:t:a:" arg; do
     case "${arg}" in
-        r)
+        l)
             region=${OPTARG}
         ;;
-        t)
+        g)
             teamRG=${OPTARG}
         ;;
-        p)
+        o)
             proctorRG=${OPTARG}
         ;;
-        s)
+        f)
             suffix=${OPTARG}
+        ;;
+        u)
+            azureUserName=${OPTARG}
+        ;;
+        p)
+            azurePassword=${OPTARG}
+        ;;
+        t)
+            tenantId=${OPTARG}
+        ;;
+        s)
+            subscriptionId=${OPTARG}
         ;;
         a)
             createAdUsers=true
@@ -33,7 +52,6 @@ done
 shift $((OPTIND-1))
 
 if [[ -n "$suffix" ]]; then
-    
 	teamRG=$teamRG-$suffix
 	proctorRG=$proctorRG-$suffix
 fi
@@ -61,8 +79,6 @@ sqlServerUsername="sqladmin${randStr}"
 sqlServerPassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 sqlDBName="mydrivingDB"
 simulatorName="simulator-app-$registryName"
-webdevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
-apidevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 
 echo "=========================================="
 echo " VARIABLES"
@@ -75,15 +91,34 @@ echo "sqlServerName     = "${sqlServerName}
 echo "sqlServerUsername = "${sqlServerUsername}
 echo "sqlDBName         = "${sqlDBName}
 
+if [[ -n "${azureUserName}" && "${azurePassword}" ]]; then
+    #login to azure using your credentials
+    echo "Username: $azureUserName"
+
+    if [[ -z "${tenantId}" ]]; then
+        az login --username=$azureUserName --password=$azurePassword
+    else
+        az login --service-principal --username=$azureUserName --password=$azurePassword --tenant=$tenantId
+    fi
+fi
+
+if [[ -n "${subscriptionId}" ]]; then
+    # Setting sub:
+    echo "Setting sub to ${subscriptionId}..."
+    az account set -s $subscriptionId 
+fi
+
 echo "Registering preview features..."
 
 az feature register --name APIServerSecurityPreview --namespace Microsoft.ContainerService
 az feature register --name WindowsPreview --namespace Microsoft.ContainerService
 az feature register --name PodSecurityPolicyPreview --namespace Microsoft.ContainerService
 az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
+az feature register --name AKS-AzureKeyVaultSecretsProvider --namespace Microsoft.ContainerService
 
 echo "Registering providers required..."
 az provider register --namespace Microsoft.OperationsManagement
+az provider register --namespace Microsoft.ContainerService
 
 az group create -n $teamRG -l $region
 
@@ -207,11 +242,11 @@ do
     sleep 1m
 done
 
-ACR_PASS="$(az acr credential show -n $registryName -g $teamRG --query 'passwords[0].value' --output tsv)"
+registryPassword="$(az acr credential show -n $registryName -g $teamRG --query 'passwords[0].value' --output tsv)"
 registryLoginServer="$registryName.azurecr.io"
 
 echo "Loading data in SQL database..."
-az container create -g $proctorRG --name dataload --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $ACR_PASS \
+az container create -g $proctorRG --name dataload --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $registryPassword \
     --secure-environment-variables SQLFQDN=$sqlServerName.database.windows.net SQLUSER=$sqlServerUsername SQLPASS=$sqlServerPassword SQLDB=$sqlDBName
 
 logs=$(az container logs -g $proctorRG --name dataload)
@@ -222,7 +257,7 @@ else
 fi
 
 echo "Creating simulator..."
-./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryLoginServer 1.0 $registryName $ACR_PASS
+./ContainersSimulatorV2/deploy-aci.sh $region $teamRG $simulatorName $registryLoginServer 1.0 $registryName $registryPassword
 simulatorfqdn=$(az container show -n $simulatorName -g $teamRG --query 'ipAddress.fqdn' --out tsv)
 
 if [ $? == 0 ];
@@ -232,26 +267,30 @@ else
     echo "Failed to deploy simulator v2 to ACI."
 fi
 
-if [[ ${createAdUsers} ]]; then
-    # todo remove if azureUserName is added as script arg
-    azureUserName=$(az account show --query user.name -o tsv)
+if "$createAdUsers"; then
+    if [[ -z "$azureUserName" ]]; then
+        azureUserName=$(az account show --query user.name -o tsv)
+    fi
     domain=$(cut -d "@" -f 2 <<< $azureUserName)
 
-    echo "Creating webdev and apidev users..."
-    apidevObjectId=$(az ad user create --display-name api-dev --password $apidevpassword --user-principal-name apidev@$domain --query objectId -o tsv)
+    webdevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
+    apidevpassword="$(randomChar;randomCharUpper;randomNum;randomChar;randomChar;randomNum;randomCharUpper;randomChar;randomNum)" 
 
-    webdevObjectId=$(az ad user create --display-name web-dev --password $webdevpassword --user-principal-name webdev@$domain --query objectId -o tsv)
+    echo "Creating webdev and apidev users..."
+    az ad user create --display-name api-dev --password $apidevpassword --user-principal-name apidev@$domain
+
+    az ad user create --display-name web-dev --password $webdevpassword --user-principal-name webdev@$domain
 fi
 
 echo "ACR Login Server: $registryLoginServer"
 echo "ACR Username: $registryName"
-echo "ACR Password: $ACR_PASS"
+echo "ACR Password: $registryPassword"
 echo "SQL Server: $sqlServerName"
 echo "SQL Server Username: $sqlServerUsername"
 echo "SQL Server Password: $sqlServerPassword"
 echo "Simulator url: $simulatorfqdn"
 
-if [[ ${createAdUsers} ]]; then
+if "${createAdUsers}"; then
     echo "api-dev password: $apidevpassword"
     echo "web-dev password: $webdevpassword"
 fi

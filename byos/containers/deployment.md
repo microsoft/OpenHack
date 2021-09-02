@@ -12,8 +12,9 @@ If you plan on adding another user to the resource group after provisioning (for
 
 #### Permissions for Challenge 4
 
-The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements.
-If you do not have access to create these user accounts in Azure AD you can use accounts from members of your team instead.
+The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements. To add users, you will need the [User Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#user-administrator) or [Global Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#global-administrator) role.
+
+If you do not have access to create these user accounts in Azure AD, you can use accounts from members of your team instead.
 
 ### Tools
 
@@ -21,19 +22,19 @@ For deploying the lab environment:
 
 - A terminal environment capable of running `bash` scripts
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) installed locally, or within [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview)
-  - If using a local installation, ensure you have the latest updates
+  - If using a local installation, ensure you have the latest version
 
 > Note: Azure Cloud Shell has Azure CLI and tools used in the hack (docker, kubectl, helm) installed already.
 
 Ensure you have logged in to Azure CLI:
 
-```bash
+```sh
 az login
 ```
 
 and that you have selected the correct Azure subscription:
 
-```bash
+```sh
 az account list
 az account set --subscription [subscription name]
 ```
@@ -42,7 +43,7 @@ az account set --subscription [subscription name]
 
 You can clone this repository with
 
-```bash
+```sh
 git clone https://github.com/microsoft/openhack 
 ```
 
@@ -60,11 +61,15 @@ The deployment script expects to be run from the [`byos/containers/deploy`](./de
 
 | Flag | Description | Default Value |
 | --------- | ----------- | ------------- |
-| `-r` | Azure region | `westus` |
-| `-t` | Azure resource group name for team (attendee) resources | `teamResources` |
-| `-p` | Azure resource group name for proctor resources | `proctorResources` |
-| `-s` | Suffix (appended to resource group names) | `""` |
-| `-a` | Set in order to create Azure users `api-dev` and `web-dev` used in Challenge 4 | false |
+| `-l` | Azure region | `westus` |
+| `-g` | Azure resource group name for team (attendee) resources | `teamResources` |
+| `-o` | Azure resource group name for proctor resources | `proctorResources` |
+| `-f` | Suffix (appended to resource group names) | `""` |
+| `-u` | Azure username - not necessary if you are logged in to `az` | `""` |
+| `-p` | Azure password - not necessary if you are logged in to `az` | `""` |
+| `-t` | Azure tenant ID - not necessary if you are logged in to `az`; only required for service principal login | `""` |
+| `-s` | Azure subscription ID - not necessary if you have selected the intended subscription with `az account set` | `""` |
+| `-a` | Append in order to create Azure users `api-dev` and `web-dev` used in Challenge 4 | false |
 
 ### Example Usage
 
@@ -75,17 +80,22 @@ The deployment script expects to be run from the [`byos/containers/deploy`](./de
 
 ```sh
 # specify region
-./deploy.sh -r "eastus2"
+./deploy.sh -l "eastus2"
 ```
 
 ```sh
-# specify a resource group name and create the api-dev and web-dev users
-./deploy.sh -t "openHackTest" -a
+# specify a team resource group name and create the api-dev and web-dev users
+./deploy.sh -g "openHackTest" -a
 ```
 
 ```sh
-# specify region, resource group name, and suffix
-./deploy.sh -r "australiaeast" -t "teamRG" -s "2"
+# specify region, team resource group name, and suffix
+./deploy.sh -l "australiaeast" -g "teamRG" -f "2"
+```
+
+```sh
+# Logging in with an Azure username and password, and setting a specified subscription
+./deploy.sh -u yourUsername@yourTenant.com -p yourPassword -s subscriptionGUID
 ```
 
 If deploying for multiple teams, run the script once per team using a unique suffix each time:
@@ -93,8 +103,8 @@ If deploying for multiple teams, run the script once per team using a unique suf
 ```sh
 # a build for 2 teams in eastus region using default resource group naming
 
-./deploy.sh -r "eastus" -s "1" # creates teamResources1 and proctorResources1
-./deploy.sh -r "eastus" -s "2" # creates teamResources2 and proctorResources2
+./deploy.sh -l "eastus" -f "1" # creates teamResources1 and proctorResources1
+./deploy.sh -l "eastus" -f "2" # creates teamResources2 and proctorResources2
 ```
 
 ## Provisioned Resources
@@ -106,9 +116,22 @@ The following are resources are deployed as part of the deployment script (per t
 | Azure resource | Pricing tier/SKU | Purpose | Registered Resource Providers |
 | -------------- | ---------------- | ------- | ----------------------------- |
 | Azure SQL Database | Standard S3: 100 DTUs | mydrivingDB | Microsoft.Sql |
-| Azure Kubernetes Service| Basic | Private container service | Microsoft.ContainerService |
 | Azure Container Registry | Basic | Private container registry | Microsoft.ContainerRegistry |
-| Azure Container Instance | 1 CPU core/1.5 GiB RAM | DataLoad container | Microsoft.ContainerInstance |
-| Azure Virtual Machine | Standard DS1 |  | Microsoft.Compute |
+| Azure Container Instance | 1 CPU core/1.5 GiB RAM | Dataload container | Microsoft.ContainerInstance |
+| Azure Container Instance (Container Group) | 2 CPU cores/1.5 GiB RAM; 1 CPU core/1.5 GiB RAM; 1 CPU core/1.5 GiB RAM | Traffic simulator; traffic simulator metrics; traffic simulator dashboard | Microsoft.ContainerInstance |
+| Azure Virtual Network | n/a | Network space for Challenge 3 onward | Microsoft.Network |
+| Azure Virtual Machine | Standard DS1 | Used to test connectivity within the VNet | Microsoft.Compute |
 
 > Note: Resource Provider Registration can be found at portal.azure.com/_yourTenantName_.onmicrosoft.com/resource/subscriptions/_yourSubscriptionId_/resourceproviders
+
+Several images are built and added to the Azure Container Registry as part of deployment:
+
+| Image name | Purpose |
+| ---------- | ------- |
+| dataload | Adds data to the SQL database |
+| simulator | Traffic simulator which makes calls to attendees' cluster |
+| grafana-sim | Grafana dashboard for the traffic simulator |
+| prometheus-sim | Metrics for the traffic simulator |
+| insurance | Application used in Challenge 5 |
+| tripviewer2 | Updated Tripviewer UI used in Challenge 7 |
+| wcfservice | Windows application used in Challenge 7 |
