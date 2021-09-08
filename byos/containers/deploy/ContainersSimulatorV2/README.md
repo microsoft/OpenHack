@@ -15,7 +15,7 @@ go generate
 
 ## running locally
 
-```shqq
+```sh
 docker-compose build
 docker-compose up
 ```
