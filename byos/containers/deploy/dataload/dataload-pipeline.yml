@@ -1,0 +1,84 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - tooling/dataload/*
+
+pr:
+- master
+
+resources:
+- repo: self
+
+variables:
+  - group: pipeline-variables-group
+
+stages:
+- stage: TestBuild
+  displayName: Test Build and push stage
+  jobs:  
+  - job: TestBuild
+    displayName: Test Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(dataloadTestImageRepository)
+        dockerfile: $(dataloadDockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+- stage: DeployAndValidate
+  displayName: Deploy and Validate
+  jobs:  
+  - job: DeployandValidate
+    displayName: Deploy and Validate
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: $(APSAzureSub)
+        scriptLocation: 'scriptPath'
+        scriptPath: '$(Build.SourcesDirectory)/tooling/dataload-validate.sh'
+        arguments: '"$(registryName)/$(dataloadTestImageRepository):$(tag)" $(location) $(tag) $(imageRegistryUsername) $(imageRegistryPassword) $(registryName)'
+
+- stage: Push
+  displayName: Push stage
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+  jobs:  
+  - job: Push
+    displayName: Push
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(dataloadImageRepository)
+        dockerfile: $(dataloadDockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+- stage: PostCleanup
+  displayName: Cleanup
+  condition: always()
+  jobs:  
+  - job: Cleanup
+    displayName: Cleanup
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: AzureResourceGroupDeployment@2
+        inputs:
+          azureSubscription: $(APSAzureSub)
+          action: 'DeleteRG'
+          resourceGroupName: 'dataload-$(tag)'

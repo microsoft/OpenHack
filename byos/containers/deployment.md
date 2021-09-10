@@ -1,126 +1,137 @@
 # Containers OpenHack Deployment
 
-## Setting up Permissions
+## Prerequisites
 
-To deploy this lab environment use an account that has at least Azure Contributor Role Permissions. 
+### Permissions
 
-**Initial Setup** 
+To deploy this lab environment, you will need an Azure account that has at least [Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor) access to the subscription.
 
-To initiate a deployment, clone the OpenHacks repository and change directory to 'openhack/byos/containers/deploy', and run the script **deploy.sh** with the parameters provided below in the [Deployment Instructions Section](#deployment-instructions).  The script uses relative paths to execute other scripts within the content folder.
+#### Adding Users to the Created Environment
 
-You can deploy this lab using local Azure CLI on a Linux machine, or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), or using Azure CloudShell. If you use your local AZ CLI client, ensure you have [latest AZ CLI installed](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).  
+If you plan on adding another user to the resource group after provisioning (for example, if you will be working together with someone else), you will need the [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner) or [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role.
 
+#### Permissions for Challenge 4
 
-> Note: [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/overview) will be the easiest to use as it has all of the required tooling installed already. From within cloud shell you can clone the repo using the following command:
+The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements. To add users, you will need the [User Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#user-administrator) or [Global Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#global-administrator) role.
 
-```bash
-git clone https://github.com/microsoft/openhack 
+If you do not have access to create these user accounts in Azure AD, you can use accounts from members of your team instead.
+
+### Tools
+
+For deploying the lab environment:
+
+- A terminal environment capable of running `bash` scripts
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) installed locally, or within [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview)
+  - If using a local installation, ensure you have the latest version
+
+> Note: Azure Cloud Shell has Azure CLI and tools used in the hack (docker, kubectl, helm) installed already.
+
+Ensure you have logged in to Azure CLI:
+
+```sh
+az login
 ```
 
+and that you have selected the correct Azure subscription:
 
-## Deployment Instructions 
-
-Prior to executing the script below, ensure you have selected the correct Azure subscription. 
-
-The following command will list the subscriptions you have access to. If you are not running in Azure Cloud Shell execute 'az login' first. 
-
-```bash
+```sh
 az account list
-```
-
-After identifying the available subscriptions. Run the following and replace [subscription name] with either your subscription name or subscriptio ID.
-
-```bash 
 az account set --subscription [subscription name]
 ```
 
-Set the script with execute permissions.
+### Files
 
-```bash
-chmod +x deploy.sh
+You can clone this repository with
+
+```sh
+git clone https://github.com/microsoft/openhack 
 ```
+
+The deployment script expects to be run from the [`byos/containers/deploy`](./deploy) directory. Scripts use relative paths based on that expectation.
+
+## Deployment
+
+[`deploy.sh`](./deploy/deploy.sh) will perform all needed provisioning.
+
+> Note: This script will often take 10-20 minutes on average to execute.  
+>
+> Some Azure services are not available in all locations.  Check with Azure Regions to ensure the resources required below are available in a given region prior to deployment.
+
+### Parameters
+
+| Flag | Description | Default Value |
+| --------- | ----------- | ------------- |
+| `-l` | Azure region | `westus` |
+| `-g` | Azure resource group name for team (attendee) resources | `teamResources` |
+| `-o` | Azure resource group name for proctor resources | `proctorResources` |
+| `-f` | Suffix (appended to resource group names) | `""` |
+| `-u` | Azure username - not necessary if you are logged in to `az` | `""` |
+| `-p` | Azure password - not necessary if you are logged in to `az` | `""` |
+| `-t` | Azure tenant ID - not necessary if you are logged in to `az`; only required for service principal login | `""` |
+| `-s` | Azure subscription ID - not necessary if you have selected the intended subscription with `az account set` | `""` |
+| `-a` | Append in order to create Azure users `api-dev` and `web-dev` used in Challenge 4 | false |
+
+### Example Usage
+
+```sh
+# uses default variable values
+./deploy.sh
+```
+
+```sh
+# specify region
+./deploy.sh -l "eastus2"
+```
+
+```sh
+# specify a team resource group name and create the api-dev and web-dev users
+./deploy.sh -g "openHackTest" -a
+```
+
+```sh
+# specify region, team resource group name, and suffix
+./deploy.sh -l "australiaeast" -g "teamRG" -f "2"
+```
+
+```sh
+# Logging in with an Azure username and password, and setting a specified subscription
+./deploy.sh -u yourUsername@yourTenant.com -p yourPassword -s subscriptionGUID
+```
+
+If deploying for multiple teams, run the script once per team using a unique suffix each time:
+
+```sh
+# a build for 2 teams in eastus region using default resource group naming
+
+./deploy.sh -l "eastus" -f "1" # creates teamResources1 and proctorResources1
+./deploy.sh -l "eastus" -f "2" # creates teamResources2 and proctorResources2
+```
+
+## Provisioned Resources
 
 On deployment, two resource groups will be created with resources in each. The Team Resource Group contains the stage artifacts on which the challenge is run. The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
 
-For deployment, there is only one step: 
+The following are resources are deployed as part of the deployment script (per team). Throughout the hack, there will be many other resources created.
 
-You will run a shell script **deploy.sh** with appropriate parameter values that builds out the required resources using Azure CLI calls under the security context of the shell.  
+| Azure resource | Pricing tier/SKU | Purpose | Registered Resource Providers |
+| -------------- | ---------------- | ------- | ----------------------------- |
+| Azure SQL Database | Standard S3: 100 DTUs | mydrivingDB | Microsoft.Sql |
+| Azure Container Registry | Basic | Private container registry | Microsoft.ContainerRegistry |
+| Azure Container Instance | 1 CPU core/1.5 GiB RAM | Dataload container | Microsoft.ContainerInstance |
+| Azure Container Instance (Container Group) | 2 CPU cores/1.5 GiB RAM; 1 CPU core/1.5 GiB RAM; 1 CPU core/1.5 GiB RAM | Traffic simulator; traffic simulator metrics; traffic simulator dashboard | Microsoft.ContainerInstance |
+| Azure Virtual Network | n/a | Network space for Challenge 3 onward | Microsoft.Network |
+| Azure Virtual Machine | Standard DS1 | Used to test connectivity within the VNet | Microsoft.Compute |
 
-deploy.sh has the following parameters:
+> Note: Resource Provider Registration can be found at portal.azure.com/_yourTenantName_.onmicrosoft.com/resource/subscriptions/_yourSubscriptionId_/resourceproviders
 
-| Parameter | Description                                            | Example      |
-| --------- | -------------------------------------------------------|------------- |
-|  -r       | Azure region                                           | westus       |  
-|  -s       | Team Suffix                                            | _Team4       |
-|  -t       | Azure Resource Group Name (default: teamResources)     | TeamRG_Team4 |
+Several images are built and added to the Azure Container Registry as part of deployment:
 
-You should run the script once per team using a unique Team Suffix each time.
-
-Consider the following minimal parameter execution: 
-
-```sh
-# full default
-./deploy.sh  
-```
-```sh
-# specify region
-./deploy.sh -r "<deploymentregion>" 
-```
-
-```sh
-# specify region, and custom resource group name
-./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>"
-```
-
-```sh
-# specify region, custom resource group name, and suffix 
-./deploy.sh -r "<deploymentregion>" -t "<teamresoucegroup>" -s "2" 
-```
-
-
-Considering the examples above, the inclusion of a suffix parameter augments both the Team Resource Group name and the Proctor Resource Group name by appending the suffix value.   This is useful when building out several identical stages, individually configured for each team - as such:
-
-```sh
-# a build for team 1 and 2 in eastus region using default resource group name
-./deploy.sh -r "eastus" -s "1"  # Build challenge stage for Team 1: teamResources1, proctorResources1
-./deploy.sh -r "eastus" -s "2"  # Build challenge stage for Team 2: teamResources2, proctorResources2
-
-```
-
-> Note: This script will often take 10-20 minutes on average to execute.  
-> 
-> Some Azure services are not available in all locations.  Check with Azure Regions to ensure the resources required below are available in a given region prior to deployment.
-
-
-## Permissions for Challenge 4
-
-The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements.
-If you do not have access to create these user accounts in Azure AD you can use accounts from members of your team instead. 
-
-
-
-### Manual step ### 
-
-After deployment, manually add appropriate users with owner access on the appropriate resource group for their team, so that they will have ability to create and deploy resources in that resource group.
-
-
-## Deployed Azure Resources 
-
-The following are resources are deployed as part of the deployment scripts (per team). Throughout the hack, there will be many other resources created. 
-
-
-| Azure resource           | Pricing tier/SKU       | Purpose                                 | Registered Resource Providers |
-| ------------------------ | ---------------------- | --------------------------------------- | ----------------------------- |
-| Azure SQL Database       | Standard S3: 100 DTUs  | mydrivingDB                             | Microsoft.Sql                 |
-| Azure Kubernetes Service | Basic                  | Private container service               | Microsoft.ContainerService    |
-| Azure Container Registry | Basic                  | Private container registry              | Microsoft.ContainerRegistry   |
-| Azure Container Instance | 1 CPU core/1.5 GiB RAM | DataLoad container                      | Microsoft.ContainerInstance   |
-| Azure Virtual Machine    | Standard DS1           | Data Loader                             | Microsoft.Compute             |
-
-> Note:  Resource Provider Registration can be found at https://portal.azure.com/_yourtenantname_.onmicrosoft.com/resource/subscriptions/_yoursubscriptionid_/resourceproviders
-
-## Attendee Computers
-
-Attendees will be required to install software on the workstations that they are performing the OpenHack on. 
-Ensure they have adequate permissions to perform software installation. 
-Attendees require internet access outside of any corpnet VPNs they can cause security and access issues. 
+| Image name | Purpose |
+| ---------- | ------- |
+| dataload | Adds data to the SQL database |
+| simulator | Traffic simulator which makes calls to attendees' cluster |
+| grafana-sim | Grafana dashboard for the traffic simulator |
+| prometheus-sim | Metrics for the traffic simulator |
+| insurance | Application used in Challenge 5 |
+| tripviewer2 | Updated Tripviewer UI used in Challenge 7 |
+| wcfservice | Windows application used in Challenge 7 |
