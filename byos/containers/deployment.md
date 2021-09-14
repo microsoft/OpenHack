@@ -107,6 +107,13 @@ If deploying for multiple teams, run the script once per team using a unique suf
 ./deploy.sh -l "eastus" -f "2" # creates teamResources2 and proctorResources2
 ```
 
+### Known Errors
+
+If you're seeing `\r` characters (carriage returns) in your output, check the following:
+
+- If you've cloned the repo on Windows, that's likely added carriage returns. Reclone in a Linux environment or run `sed -i 's/\r//g' deploy.sh`
+- If you're in a Linux environment and still having issues, check that your `az` installation is a Linux version, not Windows. In WSL, it's possible to access your Windows applications - which can leave carriage returns on the end of your `az` command responses.
+
 ## Provisioned Resources
 
 On deployment, two resource groups will be created with resources in each. The Team Resource Group contains the stage artifacts on which the challenge is run. The Proctor Resource Group acts as a deployment depot and contains a single Azure Container Instance with an image required to load the SQL Server instance in the Team Resource Group.
