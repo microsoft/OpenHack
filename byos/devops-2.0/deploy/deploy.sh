@@ -3,14 +3,17 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
+declare AZURE_USERNAME=""
+declare AZURE_PASSWORD=""
 declare RESOURCEGROUPLOCATION=""
 declare RGSUFFIX=""
 declare ACRNAME=""
 declare -r GITOHTEAMURI="https://github.com/Azure-Samples/openhack-devops-team.git"
 declare -r GITOHTEAMDIRNAME="openhack-devops-team"
-# declare -r GITOHPROCTORURI="https://github.com/Azure-Samples/openhack-devops-proctor.git"
-declare -r GITOHPROCTORURI="https://github.com/AndrewConniff/openhack-devops-proctor.git"
+declare -r GITOHTEAMBRANCH="origin/master"
+declare -r GITOHPROCTORURI="https://github.com/Azure-Samples/openhack-devops-proctor.git"
 declare -r GITOHPROCTORDIRNAME="openhack-devops-proctor"
+declare -r GITOHPROCTORBRANCH="origin/master"
 declare -r SQL_USERNAME="demousersa"
 declare -r SQL_PASSWORD="demo@pass123"
 declare -r DATABASENAME="mydrivingDB"
@@ -20,7 +23,7 @@ declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GG
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
-declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> -s <SUFFIX>"
+declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -30,7 +33,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Initialize parameters specified from command line
-while getopts ":l:s:" arg; do
+while getopts ":l:s:u:p:" arg; do
     case "${arg}" in
         l) # Process -l (Location)
             RESOURCEGROUPLOCATION=${OPTARG}
@@ -38,7 +41,13 @@ while getopts ":l:s:" arg; do
         s) # Process -s (Suffix)
             RGSUFFIX=${OPTARG}
         ;;
-        \?) 
+        u) # Process -u (Username)
+            AZURE_USERNAME=${OPTARG}
+        ;;
+        p) # Process -p (Password)
+            AZURE_PASSWORD=${OPTARG} 
+        ;;
+        \?)
             echo "Invalid options found: -$OPTARG."
             echo $USAGESTRING 2>&1; exit 1; 
         ;;
@@ -54,10 +63,13 @@ elif ! [ -x "$(command -v sqlcmd)" ]; then
   echo "Error: sqlcmd is not installed." 2>&1
   exit 1
 elif ! [ -x "$(command -v bcp)" ]; then
-  echo "Error: sqlcmd is not installed." 2>&1
+  echo "Error: bcp is not installed." 2>&1
   exit 1
 elif ! [ -x "$(command -v dig)" ]; then
   echo "Error: dig is not installed." 2>&1
+  exit 1 
+elif ! [ -x "$(command -v git)" ]; then
+  echo "Error: git is not installed." 2>&1
   exit 1 
 fi
 
@@ -77,14 +89,24 @@ randomCharUpper() {
     echo -n ${s:$p:1}
 }
 
-echo "Checking for Jenkins deployment files"
-if [[ ! -d "${PWD}/jenkins" ]]; then
-    echo "Directory ${PWD}/jenkins does not exist. Deployment cannot proceed." 2>&1; exit 1;
-fi
-
-if [[ ! -f "${PWD}/jenkins/Dockerfile" ]]; then
-    echo "Jenkins deployment files do not exist on your filesystem." 2>&1; exit 1;
-fi
+submitACRBuild() {
+    local REPOPRESENT=""
+    echo "Repository name: ${1}"
+    echo "Image tag: ${2}"
+    for (( c=1; c<=5; c++ ))
+    do  
+        REPOPRESENT=$(az acr repository list --name $ACRNAME --query "[?contains(@,'${1}')]" -o tsv)
+        echo "REPOPRESENT: $REPOPRESENT"
+        if [ -z $REPOPRESENT ]; then
+            echo "Repository $1 not found. Creating repository (run $c)"
+            az acr build --image "devopsoh/${1}:${2}" --registry $ACRNAME --build-arg build_version=$2 --file Dockerfile .
+            sleep 10
+        else
+            echo "Repository $1 found!"
+            break
+        fi
+    done
+}
 
 if [ ${#RGSUFFIX} -eq 0 ]; then
     RGSUFFIX="$(randomChar;randomChar;randomChar;randomNum;randomChar;randomChar;randomChar;randomNum;)"
@@ -93,6 +115,12 @@ fi
 echo "Resource random suffix: "$RGSUFFIX
 
 RGNAME="openhack${RGSUFFIX}rg"
+
+# Accommodate Cloud Sandbox startup
+if [ ${#AZURE_USERNAME} -gt 0 ] && [ ${#AZURE_PASSWORD} -gt 0 ]; then
+    echo "Authenticating to Azure with username and password..."
+    az login --username $AZURE_USERNAME --password $AZURE_PASSWORD
+fi
 
 RGEXISTS=$(az group show --name $RGNAME --query name)
 if [ ${#RGEXISTS} -eq 0 ]; then
@@ -153,50 +181,75 @@ echo "Full tempoary directory is $FULLTEMPDIRPATH..."
 
 cd $TEMPDIRNAME
 
+echo "Cloning $GITOHTEAMURI"
 git clone $GITOHTEAMURI
+
+GITOHTEAMDIRPATH="$FULLTEMPDIRPATH/$GITOHTEAMDIRNAME"
+
+cd $GITOHTEAMDIRPATH
+echo "Switching to branch $GITOHTEAMBRANCH..."
+git checkout $GITOHTEAMBRANCH
 
 cd $FULLTEMPDIRPATH
 
+echo "Cloning $GITOHPROCTORURI"
 git clone $GITOHPROCTORURI
 
 GITOHPROCTORDIRPATH="$FULLTEMPDIRPATH/$GITOHPROCTORDIRNAME"
-GITOHTEAMDIRPATH="$FULLTEMPDIRPATH/$GITOHTEAMDIRNAME"
+
+cd $GITOHPROCTORDIRPATH
+echo "Switching to branch $GITOHPROCTORBRANCH..."
+git checkout $GITOHPROCTORBRANCH
 
 # BUILD POI
 echo "Building API-POI image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/poi/web..."
 cd "$GITOHTEAMDIRPATH/apis/poi/web"
-az acr build --image "devopsoh/api-poi:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "api-poi" $BASEIMAGETAG
 
 # BUILD TRIPS
 echo "Building API-TRIPS image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/trips..."
 cd "$GITOHTEAMDIRPATH/apis/trips"
-az acr build --image "devopsoh/api-trips:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "api-trips" $BASEIMAGETAG
 
 # BUILD USER-JAVA
 echo "Building API-USER-JAVA image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/user-java..."
 cd "$GITOHTEAMDIRPATH/apis/user-java"
-az acr build --image "devopsoh/api-user-java:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "api-user-java" $BASEIMAGETAG
 
 # BUILD USERPROFILE
 echo "Building API-USERPROFILE image..."
 echo "Changing directory to $GITOHTEAMDIRPATH/apis/userprofile..."
 cd "$GITOHTEAMDIRPATH/apis/userprofile"
-az acr build --image "devopsoh/api-userprofile:${BASEIMAGETAG}" --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "api-userprofile" $BASEIMAGETAG
 
 # BUILD TripViewer
 echo "Building Tripviewer image..."
 echo "Changing directory to $GITOHPROCTORDIRPATH/tripviewer..."
 cd "$GITOHPROCTORDIRPATH/tripviewer"
-az acr build --image devopsoh/tripviewer:latest --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "tripviewer" "latest"
 
 # BUILD Simulator
 echo "Building Simulator image..."
 echo "Changing directory to $GITOHPROCTORDIRPATH/simulator..."
 cd "$GITOHPROCTORDIRPATH/simulator"
-az acr build --image devopsoh/simulator:latest --registry $ACRNAME --file Dockerfile .
+
+submitACRBuild "simulator" "latest"
+
+# Final sanity check for repositories being present
+REPOSITORYCOUNT=$(az acr repository list --name $ACRNAME --query "[length(@)]" -o tsv)
+if [ $REPOSITORYCOUNT -eq 6 ]; then 
+    echo "All repositories built successfully!"
+else 
+    echo "All Azure Container Registry repositories not found." 2>&1; exit 1;
+fi
 
 echo "Creating Key Vault..."
 az keyvault create --name "openhack${RGSUFFIX}kv" --resource-group $RGNAME --location $RESOURCEGROUPLOCATION
@@ -328,8 +381,6 @@ az sql server firewall-rule delete \
     --resource-group $RGNAME \
     --server "openhack${RGSUFFIX}sql" \
     --name $SQLFWRULENAME
-    
-cd $FULLCURRENTPATH
 
 echo "Deploying simulator container..."
 az container create \
@@ -345,8 +396,8 @@ az container create \
 
 # BUILD JENKINS
 echo "Building JENKINS image..."
-echo "Changing directory to $FULLCURRENTPATH/jenkins..."
-cd "$FULLCURRENTPATH/jenkins"
+echo "Changing directory to $GITOHPROCTORDIRPATH/provision-team/jenkins..."
+cd "$GITOHPROCTORDIRPATH/provision-team/jenkins"
 az acr build --image devopsoh/jenkins:latest --registry $ACRNAME --file Dockerfile --build-arg JENKINS_USERNAME=${JENKINS_USERNAME} --build-arg JENKINS_PASSWORD=${JENKINS_PASSWORD} .
 
 # DEPLOY JENKINS TO ACI
