@@ -2,10 +2,14 @@
 
 param(
     [string]$teamCount = "1",
-    [string]$DeploymentTemplateFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.json",
-    [string]$DeploymentParameterFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.parameters.json",
+    [string]$DeploymentTemplateFile = "$PSScriptRoot/ARM/DeployMDWOpenHackLab.json",
+    [string]$DeploymentParameterFile = "$PSScriptRoot/ARM/DeployMDWOpenHackLab.parameters.json",
     [string]$Location = "eastus",
+    [Parameter(Mandatory=$True)]
+    [ValidateNotNullOrEmpty()]
     [securestring]$SqlAdminLoginPassword,
+    [Parameter(Mandatory=$True)]
+    [ValidateNotNullOrEmpty()]
     [securestring]$VMAdminPassword
 )
 $teamCount = Read-Host "How many teams are hacking?";
