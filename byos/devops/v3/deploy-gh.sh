@@ -55,26 +55,43 @@ shift $((OPTIND - 1))
 
 # Check for programs
 if ! [ -x "$(command -v az)" ]; then
-    _error "Error: az is not installed!"
+    _error "az is not installed!"
     exit 1
 elif ! [ -x "$(command -v jq)" ]; then
-    _error "Error: jq is not installed!"
+    _error "jq is not installed!"
     exit 1
 elif ! [ -x "$(command -v python3)" ]; then
-    _error "Error: python3 is not installed!"
+    _error "python3 is not installed!"
     exit 1
 fi
+
+check_tool_semver() {
+    local _tool_name="$1"
+    local _tool_ver="$2"
+    local _tool_min_ver="$3"
+
+    _semver=$(./semver2.sh "${_tool_ver}" "${_tool_min_ver}")
+
+    if [ "${_semver}" -lt 0 ]; then
+        _error "${_tool_name} version ${_tool_ver} is lower then required! Expected minimum ${_tool_min_ver}"
+        exit 1
+    fi
+}
+
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.28.0"
+check_tool_semver "python3" $(python3 --version | sed 's/Python //g') "3.8"
+check_tool_semver "jq" $(jq --version | sed 's/jq-//g') "1.5"
 
 # Check for azuresp.json
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
-    _error "Error: ${AZURE_SP_JSON} does not exist!"
+    _error "${AZURE_SP_JSON} does not exist!"
     exit 1
 fi
 
 # Check for GITHUB_TOKEN
 if [ -z ${GITHUB_TOKEN+x} ]; then
-    _error "Error: GITHUB_TOKEN does not set!"
+    _error "GITHUB_TOKEN does not set!"
     _error "How to set?"
     _error 'export GITHUB_TOKEN="<GitHubPAT>"'
     exit 1
@@ -254,18 +271,18 @@ create_repository_secret() {
 }
 
 # EXECUTE
-create_azure_resources "${UNIQUE_NAME}"
-organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
-_organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
-team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
-create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
-create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
-create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
-create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
-create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
-create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+# create_azure_resources "${UNIQUE_NAME}"
+# organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
+# _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
+# team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+# repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+# create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+# create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
+# create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
+# create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
+# create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
+# create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
+# create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
 
 # OUTPUT
 _team_url=$(echo "${team}" | jq -c -r '.html_url')
