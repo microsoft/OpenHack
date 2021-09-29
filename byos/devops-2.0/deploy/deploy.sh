@@ -3,8 +3,8 @@
 # set -euo pipefail
 IFS=$'\n\t'
 
-declare AZURE_USERNAME=""
-declare AZURE_PASSWORD=""
+# declare AZURE_USERNAME=""
+# declare AZURE_PASSWORD=""
 declare RESOURCEGROUPLOCATION=""
 declare RGSUFFIX=""
 declare ACRNAME=""
@@ -23,7 +23,8 @@ declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GG
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
-declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
+# declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX> -u <AZURE_USERNAME> -p <AZURE_PASSWORD>]"
+declare -r USAGESTRING="Usage: deploy.sh -l <RESOURCEGROUPLOCATION> [-s <RGSUFFIX>]"
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -32,8 +33,9 @@ if [ $# -eq 0 ]; then
     echo $USAGESTRING 2>&1; exit 1; 
 fi
 
-# Initialize parameters specified from command line
-while getopts ":l:s:u:p:" arg; do
+# # Initialize parameters specified from command line
+# while getopts ":l:s:u:p:" arg; do
+while getopts ":l:s:" arg; do
     case "${arg}" in
         l) # Process -l (Location)
             RESOURCEGROUPLOCATION=${OPTARG}
@@ -41,12 +43,12 @@ while getopts ":l:s:u:p:" arg; do
         s) # Process -s (Suffix)
             RGSUFFIX=${OPTARG}
         ;;
-        u) # Process -u (Username)
-            AZURE_USERNAME=${OPTARG}
-        ;;
-        p) # Process -p (Password)
-            AZURE_PASSWORD=${OPTARG} 
-        ;;
+#         u) # Process -u (Username)
+#             AZURE_USERNAME=${OPTARG}
+#         ;;
+#         p) # Process -p (Password)
+#             AZURE_PASSWORD=${OPTARG} 
+#         ;;
         \?)
             echo "Invalid options found: -$OPTARG."
             echo $USAGESTRING 2>&1; exit 1; 
@@ -117,10 +119,10 @@ echo "Resource random suffix: "$RGSUFFIX
 RGNAME="openhack${RGSUFFIX}rg"
 
 # Accommodate Cloud Sandbox startup
-if [ ${#AZURE_USERNAME} -gt 0 ] && [ ${#AZURE_PASSWORD} -gt 0 ]; then
-    echo "Authenticating to Azure with username and password..."
-    az login --username $AZURE_USERNAME --password $AZURE_PASSWORD
-fi
+# if [ ${#AZURE_USERNAME} -gt 0 ] && [ ${#AZURE_PASSWORD} -gt 0 ]; then
+#     echo "Authenticating to Azure with username and password..."
+#     az login --username $AZURE_USERNAME --password $AZURE_PASSWORD
+# fi
 
 RGEXISTS=$(az group show --name $RGNAME --query name)
 if [ ${#RGEXISTS} -eq 0 ]; then
