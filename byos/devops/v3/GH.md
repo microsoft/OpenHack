@@ -38,7 +38,7 @@ az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
 
 ### GitHub pre-deployment steps
 
-Login to your GitHub account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). Then set environment variable `GITHUB_TOKEN` with generated token.
+Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, read:enterprise`. Then set environment variable `GITHUB_TOKEN` with generated token.
 
 ```bash
 export GITHUB_TOKEN="<GitHubPAT>"
