@@ -115,6 +115,7 @@ az feature register --name WindowsPreview --namespace Microsoft.ContainerService
 az feature register --name PodSecurityPolicyPreview --namespace Microsoft.ContainerService
 az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
 az feature register --name AKS-AzureKeyVaultSecretsProvider --namespace Microsoft.ContainerService
+az feature register --name AKS-OpenServiceMesh  --namespace Microsoft.ContainerService
 
 echo "Registering providers required..."
 az provider register --namespace Microsoft.OperationsManagement
