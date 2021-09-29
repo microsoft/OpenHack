@@ -30,7 +30,7 @@ If not, then change to your Azure Subscription dedicated for the OpenHack.
 az account set --subscription <subscriptionId>
 ```
 
-Create a new Service Principal with Owner role dedicated only for the OpenHack, and save the result to **azuresp.json** file.
+Create a new Service Principal with **Owner** role dedicated only for the OpenHack, and save the result to `azuresp.json` file. Make sure the `azuresp.json` is in teh same place where `deploy-gh.sh` script.
 
 ```bash
 az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
