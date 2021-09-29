@@ -4,9 +4,9 @@
 
 - [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
 - [GitHub Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations) within [GitHub Enterprise Cloud](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-enterprise) with [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux)
-- [Python 3.x](https://www.python.org/downloads/)
-- [jq](https://stedolan.github.io/jq/download/)
+- [Azure CLI 2.28.x](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or newer
+- [Python 3.9.x](https://www.python.org/downloads/) or newer
+- [jq 1.5](https://stedolan.github.io/jq/download/) or newer
 
 ## Deployments Steps
 
