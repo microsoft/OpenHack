@@ -18,7 +18,6 @@ module stateStorageAccount './azureStorageAccounts.bicep' = {
   name: 'storageAccountpDeployment'
   params: {
     storageAccountName: '${uniquer}statest'
-    location: location
     spPrincipalId: spPrincipalId
   }
   scope: resourceGroup(resourceGroupName)

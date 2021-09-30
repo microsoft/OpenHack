@@ -1,11 +1,10 @@
 param storageAccountName string
-param location string
 param spPrincipalId string
 
 // https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/storageaccounts?tabs=bicep
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
-  location: location
+  location: resourceGroup().location
   sku: {
     name: 'Standard_LRS'
   }
