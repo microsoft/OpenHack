@@ -271,18 +271,18 @@ create_repository_secret() {
 }
 
 # EXECUTE
-# create_azure_resources "${UNIQUE_NAME}"
-# organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
-# _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
-# team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-# repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-# create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
-# create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
-# create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
-# create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
-# create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
-# create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
-# create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+create_azure_resources "${UNIQUE_NAME}"
+organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
+_organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
+team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
+create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
+create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
+create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
+create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
+create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
 
 # OUTPUT
 _team_url=$(echo "${team}" | jq -c -r '.html_url')
