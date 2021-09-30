@@ -258,6 +258,7 @@ create_repository_secret() {
     local _value="$3"
 
     repository_public_key=$(_get_repository_public_key "${_repository_full_name}")
+    echo "${repository_public_key}"
     public_key_id=$(echo "${repository_public_key}" | jq -c -r '.key_id')
     public_key=$(echo "${repository_public_key}" | jq -c -r '.key')
 
