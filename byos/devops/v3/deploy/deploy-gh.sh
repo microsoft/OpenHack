@@ -2,12 +2,12 @@
 
 declare AZURE_LOCATION=""
 declare GITHUB_ORG_NAME="CSE-OpenHackContent"
-declare NAME_SUFFIX=""
+declare TEAM_NAME=""
 declare -r GITHUB_API_ENDPOINT="https://api.github.com"
 declare -r GITHUB_TEMPLATE_OWNER="Azure-Samples"
 declare -r GITHUB_TEMPLATE_REPO="openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
-declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-g <GITHUB_ORG_NAME> -s <NAME_SUFFIX>]"
+declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-g <GITHUB_ORG_NAME> -t <TEAM_NAME>]"
 
 # Helpers
 _information() {
@@ -33,16 +33,16 @@ if [ $# -eq 0 ]; then
 fi
 
 # Initialize parameters specified from command line
-while getopts ":l:g:s:" arg; do
+while getopts ":l:g:t:" arg; do
     case "${arg}" in
     l) # Process -l (Location)
         AZURE_LOCATION="${OPTARG}"
         ;;
-    g) # Process -g (GitHub Organization
+    g) # Process -g (GitHub Organization)
         GITHUB_ORG_NAME="${OPTARG}"
         ;;
-    s) # Process -s (Suffix)
-        NAME_SUFFIX="${OPTARG}"
+    n) # Process -t (Team Name)
+        NAME="${OPTARG}"
         ;;
     \?)
         _error "Invalid options found: -${OPTARG}."
@@ -80,14 +80,7 @@ check_tool_semver() {
 
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.28.0"
 check_tool_semver "python3" $(python3 --version | sed 's/Python //g') "3.8"
-check_tool_semver "jq" $(jq --version | sed 's/jq-//g') "1.5"
-
-# Check for azuresp.json
-AZURE_SP_JSON="azuresp.json"
-if [ ! -f "${AZURE_SP_JSON}" ]; then
-    _error "${AZURE_SP_JSON} does not exist!"
-    exit 1
-fi
+# check_tool_semver "jq" $(jq --version | sed 's/jq-//g') "1.5"
 
 # Check for GITHUB_TOKEN
 if [ -z ${GITHUB_TOKEN+x} ]; then
@@ -97,13 +90,62 @@ if [ -z ${GITHUB_TOKEN+x} ]; then
     exit 1
 fi
 
-# Generate unique name
-UNIQUER=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -5)
-if [ ${#NAME_SUFFIX} -eq 0 ]; then
+if [ ${#TEAM_NAME} -eq 0 ]; then
+    # Generate unique name
+    UNIQUER=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -5)
     UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
 else
-    UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}t${NAME_SUFFIX}"
+    UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
 fi
+
+# LOGIN AZURE
+# Check for azuresp.json
+AZURE_SP_JSON="azuresp.json"
+if [ ! -f "${AZURE_SP_JSON}" ]; then
+    az ad sp create-for-rbac --sdk-auth --role Owner >azuresp.json
+fi
+
+_parse_azuresp_json() {
+    _azuresp_json=$(cat azuresp.json)
+    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
+    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
+    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
+    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
+}
+
+_azure_login() {
+    _parse_azuresp_json
+    az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+    az account set --subscription "${ARM_SUBSCRIPTION_ID}"
+}
+
+_azure_logout() {
+    az logout
+    az cache purge
+    az account clear
+}
+
+# AZURE RESOURCES
+
+create_azure_resources() {
+    local _azure_resource_name="$1"
+
+    _azure_login
+    az bicep install
+    az deployment sub create --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${ARM_CLIENT_ID}"
+
+    # _resource_group_name="${_azure_resource_name}staterg"
+    # _storage_account_name="${_azure_resource_name}statest"
+    # _storage_container_name="tfstate"
+
+    # az group create --location "${AZURE_LOCATION}" --resource-group "${_resource_group_name}"
+    # az storage account create --resource-group "${_resource_group_name}" --name "${_storage_account_name}" --location "${AZURE_LOCATION}" --sku Standard_LRS --min-tls-version TLS1_2
+    # az storage container create --account-name "${_storage_account_name}" --name "${_storage_container_name}" --public-access off
+    # _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
+    # az role assignment create --role "Storage Blob Data Contributor" --assignee-object-id "${_sp_object_id}" --assignee-principal-type ServicePrincipal --scope "/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${_resource_group_name}/providers/Microsoft.Storage/storageAccounts/${_storage_account_name}/blobServices/default/containers/${_storage_container_name}"
+
+    _azure_logout
+}
 
 # Call API helper
 call_api() {
@@ -198,47 +240,6 @@ create_repository_project() {
     call_api "POST" "${_api_uri}" "${_api_body}"
 }
 
-# LOGIN AZURE
-_parse_azuresp_json() {
-    _azuresp_json=$(cat azuresp.json)
-    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
-    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
-    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
-    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
-}
-
-_azure_login() {
-    _parse_azuresp_json
-    az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-    az account set --subscription "${ARM_SUBSCRIPTION_ID}"
-}
-
-_azure_logout() {
-    az logout
-    az cache purge
-    az account clear
-}
-
-# AZURE RESOURCES
-
-create_azure_resources() {
-    local _azure_resource_name="$1"
-
-    _azure_login
-
-    _resource_group_name="${_azure_resource_name}staterg"
-    _storage_account_name="${_azure_resource_name}statest"
-    _storage_container_name="tfstate"
-
-    az group create --location ${AZURE_LOCATION} --resource-group "${_resource_group_name}"
-    az storage account create --resource-group "${_resource_group_name}" --name "${_storage_account_name}" --location "${AZURE_LOCATION}" --sku Standard_LRS --min-tls-version TLS1_2
-    az storage container create --account-name "${_storage_account_name}" --name "${_storage_container_name}" --public-access off
-    _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-    az role assignment create --role "Storage Blob Data Contributor" --assignee-object-id "${_sp_object_id}" --assignee-principal-type ServicePrincipal --scope "/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${_resource_group_name}/providers/Microsoft.Storage/storageAccounts/${_storage_account_name}/blobServices/default/containers/${_storage_container_name}"
-
-    _azure_logout
-}
-
 # CREATE REPOSITORY SECRET
 
 # https://docs.github.com/en/rest/reference/actions#get-a-repository-public-key
@@ -294,4 +295,4 @@ echo "Team Name: ${UNIQUE_NAME}"
 echo "Team URL: ${_team_url}"
 echo "Repo URL: ${_repository_url}"
 echo "Project URL: ${_project_url}"
-echo "Azure TFstate RG: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
+echo "Azure RG: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"

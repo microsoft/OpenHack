@@ -31,12 +31,6 @@ If not, then change to your Azure Subscription dedicated for the OpenHack.
 az account set --subscription <subscriptionId>
 ```
 
-Create a new Service Principal with **Owner** role dedicated only for the OpenHack, and save the result to `azuresp.json` file. Make sure the `azuresp.json` is in teh same place where `deploy-gh.sh` script.
-
-```bash
-az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
-```
-
 ### GitHub pre-deployment steps
 
 Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, read:enterprise`. Then set environment variable `GITHUB_TOKEN` with generated token.
@@ -62,3 +56,17 @@ Add OpenHack team members to Azure Subscription with **Contributor** role, follo
 
 Add OpenHack team members to GitHub Team, follow guide: [Adding organization members to a team
 ](https://docs.github.com/en/organizations/organizing-members-into-teams/adding-organization-members-to-a-team)
+
+## Expected resources
+
+### azuresp.json
+
+The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role and it's dedicated for the OpenHack.
+
+### Azure
+
+TODO
+
+### GitHub
+
+TODO
