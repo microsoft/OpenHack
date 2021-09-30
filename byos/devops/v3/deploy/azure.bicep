@@ -6,7 +6,7 @@ param spPrincipalId string
 
 var resourceGroupName = '${uniquer}staterg'
 
-module supportResourceGroup './azureResourceGroup.bicep' = {
+module stateResourceGroup './azureResourceGroup.bicep' = {
   name: 'resourceGroupDeployment'
   params: {
     resourceGroupName: resourceGroupName
@@ -14,7 +14,7 @@ module supportResourceGroup './azureResourceGroup.bicep' = {
   }
 }
 
-module supportStorageAccount './azureStorageAccounts.bicep' = {
+module stateStorageAccount './azureStorageAccounts.bicep' = {
   name: 'storageAccountpDeployment'
   params: {
     storageAccountName: '${uniquer}statest'
