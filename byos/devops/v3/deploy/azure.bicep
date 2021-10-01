@@ -21,4 +21,7 @@ module stateStorageAccount './azureStorageAccounts.bicep' = {
     spPrincipalId: spPrincipalId
   }
   scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    stateResourceGroup
+  ]
 }

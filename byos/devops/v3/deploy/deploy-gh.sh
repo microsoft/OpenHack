@@ -41,8 +41,8 @@ while getopts ":l:g:t:" arg; do
     g) # Process -g (GitHub Organization)
         GITHUB_ORG_NAME="${OPTARG}"
         ;;
-    n) # Process -t (Team Name)
-        NAME="${OPTARG}"
+    t) # Process -t (Team Name)
+        TEAM_NAME="${OPTARG}"
         ;;
     \?)
         _error "Invalid options found: -${OPTARG}."
@@ -60,8 +60,8 @@ if ! [ -x "$(command -v az)" ]; then
 elif ! [ -x "$(command -v jq)" ]; then
     _error "jq is not installed!"
     exit 1
-elif ! [ -x "$(command -v python3)" ]; then
-    _error "python3 is not installed!"
+elif ! [ -x "$(command -v gh)" ]; then
+    _error "gh is not installed!"
     exit 1
 fi
 
@@ -79,14 +79,14 @@ check_tool_semver() {
 }
 
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.28.0"
-check_tool_semver "python3" $(python3 --version | sed 's/Python //g') "3.8"
-# check_tool_semver "jq" $(jq --version | sed 's/jq-//g') "1.5"
+
+if [ -f "devvars.sh" ]; then
+    . devvars.sh
+fi
 
 # Check for GITHUB_TOKEN
 if [ -z ${GITHUB_TOKEN+x} ]; then
     _error "GITHUB_TOKEN does not set!"
-    _error "How to set?"
-    _error 'export GITHUB_TOKEN="<GitHubPAT>"'
     exit 1
 fi
 
@@ -98,7 +98,7 @@ else
     UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
 fi
 
-# LOGIN AZURE
+# AZURE AUTH
 # Check for azuresp.json
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
@@ -131,24 +131,16 @@ create_azure_resources() {
     local _azure_resource_name="$1"
 
     _azure_login
+
     az bicep install
-    az deployment sub create --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${ARM_CLIENT_ID}"
-
-    # _resource_group_name="${_azure_resource_name}staterg"
-    # _storage_account_name="${_azure_resource_name}statest"
-    # _storage_container_name="tfstate"
-
-    # az group create --location "${AZURE_LOCATION}" --resource-group "${_resource_group_name}"
-    # az storage account create --resource-group "${_resource_group_name}" --name "${_storage_account_name}" --location "${AZURE_LOCATION}" --sku Standard_LRS --min-tls-version TLS1_2
-    # az storage container create --account-name "${_storage_account_name}" --name "${_storage_container_name}" --public-access off
-    # _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-    # az role assignment create --role "Storage Blob Data Contributor" --assignee-object-id "${_sp_object_id}" --assignee-principal-type ServicePrincipal --scope "/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${_resource_group_name}/providers/Microsoft.Storage/storageAccounts/${_storage_account_name}/blobServices/default/containers/${_storage_container_name}"
+    _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
+    az deployment sub create --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
 
     _azure_logout
 }
 
-# Call API helper
-call_api() {
+# Call GitHub API helper
+call_gh_api() {
     local _api_request_type="$1"
     local _api_uri="$2"
     local _api_body="$3"
@@ -179,7 +171,6 @@ call_api() {
 }
 
 # CREATE AN ORGANIZATION REPOSITORY
-
 # https://docs.github.com/en/rest/reference/repos#create-a-repository-using-a-template
 _create_templatebase_repository() {
     local _templatebase_repository_name="$1"
@@ -188,7 +179,7 @@ _create_templatebase_repository() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"owner": "'"${GITHUB_ORG_NAME}"'","name": "'"${_templatebase_repository_name}"'", "description": "Repo for '"${_templatebase_repository_name}"'", "include_all_branches": true, "private": true}'
 
-    call_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
+    call_gh_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
 }
 
 # https://docs.github.com/en/rest/reference/repos#update-a-repository
@@ -199,7 +190,7 @@ _update_repository() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"has_issues": true, "has_projects": true, "has_wiki": true, "has_issues": true}'
 
-    call_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
+    call_gh_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
 }
 
 create_organization_repository() {
@@ -213,7 +204,6 @@ create_organization_repository() {
 }
 
 # CREATE A TEAM
-
 # https://docs.github.com/en/rest/reference/teams#create-a-team
 create_team() {
     local _team_name="$1"
@@ -223,11 +213,24 @@ create_team() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_team_name}"'", "description": "Team for '"${_team_name}"'", "repo_names": ["'"${_repository_full_name}"'"] ,"privacy": "secret"}'
 
-    call_api "POST" "${_api_uri}" "${_api_body}"
+    call_gh_api "POST" "${_api_uri}" "${_api_body}"
+}
+
+# UPDATE TEAM REPOSITORY PERMISSIONS
+# https://docs.github.com/en/rest/reference/teams#add-or-update-team-repository-permissions
+update_team_repository_permissions() {
+    local _team_slug="$1"
+    local _repository_full_name="$2"
+    local _team_permission="$3"
+
+    _api_path="/orgs/${GITHUB_ORG_NAME}/teams/${_team_slug}/repos/${_repository_full_name}"
+    _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
+    _api_body='{"permission": "'"${_team_permission}"'"}'
+
+    call_gh_api "PUT" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE A REPOSITORY PROJECT
-
 # https://docs.github.com/en/rest/reference/projects#create-a-repository-project
 create_repository_project() {
     local _repository_project_name="$1"
@@ -237,39 +240,17 @@ create_repository_project() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_repository_project_name}"'", "body": "Repo Project for '"${_repository_project_name}"'"}'
 
-    call_api "POST" "${_api_uri}" "${_api_body}"
+    call_gh_api "POST" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE REPOSITORY SECRET
-
-# https://docs.github.com/en/rest/reference/actions#get-a-repository-public-key
-_get_repository_public_key() {
-    local _repository_full_name="$1"
-
-    _api_path="/repos/${_repository_full_name}/actions/secrets/public-key"
-    _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
-
-    call_api "GET" "${_api_uri}"
-}
-
-# https://docs.github.com/en/rest/reference/actions#create-or-update-a-repository-secret
 create_repository_secret() {
     local _repository_secret_name="$1"
     local _repository_full_name="$2"
     local _value="$3"
 
-    repository_public_key=$(_get_repository_public_key "${_repository_full_name}")
-    echo "${repository_public_key}"
-    public_key_id=$(echo "${repository_public_key}" | jq -c -r '.key_id')
-    public_key=$(echo "${repository_public_key}" | jq -c -r '.key')
-
-    encrypted_value=$(python3 encrypt.py --publickey "${public_key}" --value "${_value}")
-
-    _api_path="/repos/${_repository_full_name}/actions/secrets/${_repository_secret_name}"
-    _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
-    _api_body='{"encrypted_value": "'"${encrypted_value}"'", "key_id": "'"${public_key_id}"'"}'
-
-    call_api "PUT" "${_api_uri}" "${_api_body}"
+    gh auth login --with-token "${GITHUB_TOKEN}"
+    gh secret set "${_repository_secret_name}" -b "${_value}" --repo "${_repository_full_name}"
 }
 
 # EXECUTE
@@ -277,6 +258,8 @@ create_azure_resources "${UNIQUE_NAME}"
 organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
 _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
 team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+_team_slug=$(echo "${team}" | jq -c -r '.slug')
+team_repository_permissions=$(update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
 repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
 create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
