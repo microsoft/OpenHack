@@ -53,6 +53,12 @@ while getopts ":l:g:t:" arg; do
 done
 shift $((OPTIND - 1))
 
+if [ ${#AZURE_LOCATION} -eq 0 ]; then
+    _error "Required AZURE_LOCATION parameter is not set!"
+    _error "${USAGE_HELP}" 2>&1
+    exit 1
+fi
+
 # Check for programs
 if ! [ -x "$(command -v az)" ]; then
     _error "az is not installed!"
