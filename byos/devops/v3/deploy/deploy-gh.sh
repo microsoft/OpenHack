@@ -69,6 +69,9 @@ elif ! [ -x "$(command -v jq)" ]; then
 elif ! [ -x "$(command -v gh)" ]; then
     _error "gh is not installed!"
     exit 1
+elif ! [ -x "$(command -v curl)" ]; then
+    _error "curl is not installed!"
+    exit 1
 fi
 
 check_tool_semver() {
@@ -108,7 +111,7 @@ fi
 # Check for azuresp.json
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
-    az ad sp create-for-rbac --sdk-auth --role Owner >azuresp.json
+    az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
 fi
 
 _parse_azuresp_json() {
