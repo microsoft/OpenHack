@@ -114,16 +114,12 @@ if [ ! -f "${AZURE_SP_JSON}" ]; then
     az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
 fi
 
-_parse_azuresp_json() {
+_azure_login() {
     _azuresp_json=$(cat azuresp.json)
     export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
     export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
     export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
     export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
-}
-
-_azure_login() {
-    _parse_azuresp_json
     az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
     az account set --subscription "${ARM_SUBSCRIPTION_ID}"
 }
@@ -143,7 +139,7 @@ create_azure_resources() {
 
     az bicep install
     _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-    az deployment sub create --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
+    az deployment sub create --name "${UNIQUE_NAME}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
 
     _azure_logout
 }
