@@ -266,7 +266,7 @@ team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 _team_slug=$(echo "${team}" | jq -c -r '.slug')
 team_repository_permissions=$(update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
 repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+# create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
 create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
 create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
 create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
