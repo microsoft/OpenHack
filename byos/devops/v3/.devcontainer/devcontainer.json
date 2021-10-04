@@ -1,0 +1,51 @@
+{
+	// https://code.visualstudio.com/docs/remote/devcontainerjson-reference
+	"name": "DevOps OpenHack",
+	"dockerFile": "Dockerfile",
+	"runArgs": [
+		"--privileged"
+	],
+	//"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	// Docker in docker
+	"mounts": [
+		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.defaultProfile.linux": "bash"
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"redhat.vscode-yaml",
+		"github.vscode-pull-request-github",
+		"ms-vscode.azure-account",
+		"ms-azuretools.vscode-azureappservice",
+		"golang.go",
+		"vscjava.vscode-java-pack",
+		"hashicorp.terraform",
+		"ms-azuretools.vscode-docker",
+		"ms-vscode.vscode-node-azure-pack",
+		"ms-azuretools.vscode-azureterraform",
+		"msjsdiag.debugger-for-edge",
+		"ms-azuretools.vscode-azureresourcegroups",
+		"ms-vscode.azurecli",
+		"ms-azure-devops.azure-pipelines",
+		"ms-azuretools.vscode-bicep",
+		"vscjava.vscode-maven",
+		"ms-python.python",
+		"ms-dotnettools.csharp",
+		"ms-vscode-remote.remote-wsl",
+		"ms-vscode-remote.remote-containers",
+		"visualstudioexptteam.vscodeintellicode",
+		"ms-vsliveshare.vsliveshare",
+		"github.codespaces",
+		"github.remotehub",
+		"ms-python.vscode-pylance"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "go version",
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
