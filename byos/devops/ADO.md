@@ -12,6 +12,7 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 - [Azure DevOps organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops) with [Project Collection Administrators](https://docs.microsoft.com/en-us/azure/devops/organizations/security/lookup-organization-owner-admin?view=azure-devops#show-members-of-the-project-collection-administrators-group) membership
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
 - [Azure CLI 2.28.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
+- [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
 > **Note** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for Azure DevOps deployment scenario.
 
