@@ -3,11 +3,12 @@
 declare AZURE_LOCATION=""
 declare GITHUB_ORG_NAME="CSE-OpenHackContent"
 declare TEAM_NAME=""
+
 declare -r GITHUB_API_ENDPOINT="https://api.github.com"
 declare -r GITHUB_TEMPLATE_OWNER="Azure-Samples"
 declare -r GITHUB_TEMPLATE_REPO="openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
-declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-g <GITHUB_ORG_NAME> -t <TEAM_NAME>]"
+declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-o <GITHUB_ORG_NAME> -t <TEAM_NAME>]"
 
 # Helpers
 _information() {
@@ -33,16 +34,16 @@ if [ $# -eq 0 ]; then
 fi
 
 # Initialize parameters specified from command line
-while getopts ":l:g:t:" arg; do
+while getopts ":l:o:t:" arg; do
     case "${arg}" in
     l) # Process -l (Location)
         AZURE_LOCATION="${OPTARG}"
         ;;
-    g) # Process -g (GitHub Organization)
+    o) # Process -o (GitHub Organization)
         GITHUB_ORG_NAME="${OPTARG}"
         ;;
     t) # Process -t (Team Name)
-        TEAM_NAME="${OPTARG}"
+        TEAM_NAME=$(echo "${OPTARG}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
         ;;
     \?)
         _error "Invalid options found: -${OPTARG}."
@@ -111,7 +112,7 @@ fi
 # Check for azuresp.json
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
-    az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
+    az ad sp create-for-rbac --sdk-auth --role Contributor > azuresp.json
 fi
 
 _azure_login() {
@@ -131,7 +132,6 @@ _azure_logout() {
 }
 
 # AZURE RESOURCES
-
 create_azure_resources() {
     local _azure_resource_name="$1"
 
@@ -145,7 +145,7 @@ create_azure_resources() {
 }
 
 # Call GitHub API helper
-call_gh_api() {
+gh_call_api() {
     local _api_request_type="$1"
     local _api_uri="$2"
     local _api_body="$3"
@@ -177,40 +177,40 @@ call_gh_api() {
 
 # CREATE AN ORGANIZATION REPOSITORY
 # https://docs.github.com/en/rest/reference/repos#create-a-repository-using-a-template
-_create_templatebase_repository() {
+_gh_create_templatebase_repository() {
     local _templatebase_repository_name="$1"
 
     _api_path="/repos/${GITHUB_TEMPLATE_OWNER}/${GITHUB_TEMPLATE_REPO}/generate"
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"owner": "'"${GITHUB_ORG_NAME}"'","name": "'"${_templatebase_repository_name}"'", "description": "Repo for '"${_templatebase_repository_name}"'", "include_all_branches": true, "private": true}'
 
-    call_gh_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
+    gh_call_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
 }
 
 # https://docs.github.com/en/rest/reference/repos#update-a-repository
-_update_repository() {
+_gh_update_repository() {
     local _repository_full_name="$1"
 
     _api_path="/repos/${_repository_full_name}"
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"has_issues": true, "has_projects": true, "has_wiki": true, "has_issues": true}'
 
-    call_gh_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
+    gh_call_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
 }
 
-create_organization_repository() {
+gh_create_organization_repository() {
     local _organization_repositor_name="$1"
 
-    _templatebase_repository=$(_create_templatebase_repository "${_organization_repositor_name}")
+    _templatebase_repository=$(_gh_create_templatebase_repository "${_organization_repositor_name}")
     _repository_full_name=$(echo "${_templatebase_repository}" | jq -c -r '.full_name')
-    _organization_repository=$(_update_repository "${_repository_full_name}")
+    _organization_repository=$(_gh_update_repository "${_repository_full_name}")
 
     echo "${_organization_repository}"
 }
 
 # CREATE A TEAM
 # https://docs.github.com/en/rest/reference/teams#create-a-team
-create_team() {
+gh_create_team() {
     local _team_name="$1"
     local _repository_full_name="$2"
 
@@ -218,12 +218,12 @@ create_team() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_team_name}"'", "description": "Team for '"${_team_name}"'", "repo_names": ["'"${_repository_full_name}"'"] ,"privacy": "secret"}'
 
-    call_gh_api "POST" "${_api_uri}" "${_api_body}"
+    gh_call_api "POST" "${_api_uri}" "${_api_body}"
 }
 
 # UPDATE TEAM REPOSITORY PERMISSIONS
 # https://docs.github.com/en/rest/reference/teams#add-or-update-team-repository-permissions
-update_team_repository_permissions() {
+gh_update_team_repository_permissions() {
     local _team_slug="$1"
     local _repository_full_name="$2"
     local _team_permission="$3"
@@ -232,12 +232,12 @@ update_team_repository_permissions() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"permission": "'"${_team_permission}"'"}'
 
-    call_gh_api "PUT" "${_api_uri}" "${_api_body}"
+    gh_call_api "PUT" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE A REPOSITORY PROJECT
 # https://docs.github.com/en/rest/reference/projects#create-a-repository-project
-create_repository_project() {
+gh_create_repository_project() {
     local _repository_project_name="$1"
     local _repository_full_name="$2"
 
@@ -245,11 +245,11 @@ create_repository_project() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_repository_project_name}"'", "body": "Repo Project for '"${_repository_project_name}"'"}'
 
-    call_gh_api "POST" "${_api_uri}" "${_api_body}"
+    gh_call_api "POST" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE REPOSITORY SECRET
-create_repository_secret() {
+gh_create_repository_secret() {
     local _repository_secret_name="$1"
     local _repository_full_name="$2"
     local _value="$3"
@@ -258,29 +258,53 @@ create_repository_secret() {
     gh secret set "${_repository_secret_name}" -b "${_value}" --repo "${_repository_full_name}"
 }
 
+gh_logout(){
+    # az devops logout
+    export AZURE_DEVOPS_EXT_PAT=0
+}
+
+save_details(){
+    local _project_url="$1"
+    local _team_url="$2"
+    local _repo_url="$3"
+
+    jq -n \
+        --arg teamName "${UNIQUE_NAME}" \
+        --arg projectUrl "${_project_url}" \
+        --arg teamUrl "${_team_url}" \
+        --arg repoUrl "${_repo_url}" \
+        --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
+        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > details.json
+}
+
 # EXECUTE
 create_azure_resources "${UNIQUE_NAME}"
-organization_repository=$(create_organization_repository "${UNIQUE_NAME}")
+organization_repository=$(gh_create_organization_repository "${UNIQUE_NAME}")
 _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
-team=$(create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+team=$(gh_create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 _team_slug=$(echo "${team}" | jq -c -r '.slug')
-team_repository_permissions=$(update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
-repository_project=$(create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-# create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
-create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
-create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
-create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
-create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
-create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
-create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+team_repository_permissions=$(gh_update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
+repository_project=$(gh_create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+# gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
+gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
+gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
+gh_create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
+gh_create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
+gh_create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+gh_logout
 
 # OUTPUT
 _team_url=$(echo "${team}" | jq -c -r '.html_url')
 _repository_url=$(echo "${organization_repository}" | jq -c -r '.html_url')
 _project_url=$(echo "${repository_project}" | jq -c -r '.html_url')
 
+save_details "${_project_url}" "${_team_url}" "${_repository_url}"
+
 echo "Team Name: ${UNIQUE_NAME}"
+echo "Project URL: ${_project_url}"
 echo "Team URL: ${_team_url}"
 echo "Repo URL: ${_repository_url}"
-echo "Project URL: ${_project_url}"
-echo "Azure RG: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
+echo "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
+
+echo 'Done!'
