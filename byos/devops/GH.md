@@ -8,7 +8,7 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 
 ### GitHub Personal Access Token authorization for use with SAML single sign-on
 
-In some cases if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide how to do it: ([Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
+In some cases if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
 
 ## Prerequisites
 
