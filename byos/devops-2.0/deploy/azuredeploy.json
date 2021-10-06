@@ -17,7 +17,7 @@
             "metadata": {
                 "description": "Tier of your Azure Container Registry."
             },
-            "defaultValue": "Basic",
+            "defaultValue": "Premium",
             "allowedValues": [
                 "Basic",
                 "Standard",
