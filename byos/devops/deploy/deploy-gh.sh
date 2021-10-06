@@ -112,7 +112,7 @@ fi
 # Check for azuresp.json
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
-    az ad sp create-for-rbac --sdk-auth --role Contributor > azuresp.json
+    az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
 fi
 
 _azure_login() {

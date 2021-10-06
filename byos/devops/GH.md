@@ -4,11 +4,11 @@
 
 Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription and on your GitHub organization.
 
-This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Contributor Role.
+This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Owner Role.
 
 ## Prerequisites
 
-- [Azure Subscription](https://azure.microsoft.com/) with [Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
+- [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
 - [GitHub Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations) within [GitHub Enterprise Cloud](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-enterprise) with [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
 - [Azure CLI 2.28.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
@@ -21,7 +21,7 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 
 ### azuresp.json
 
-The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Contributor** role and it's dedicated for the OpenHack only.
+The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role and it's dedicated for the OpenHack only.
 
 ### Azure
 
@@ -66,7 +66,7 @@ If not, then change to your Azure Subscription dedicated for the OpenHack.
 az account set --subscription <subscriptionId>
 ```
 
-Verify your account permissions for the subscription. Expected value: `Contributor` or `Owner`.
+Verify your account permissions for the subscription. Expected value: `Owner`.
 
 ```bash
 az role assignment list --assignee $(az account show --output tsv --query user.name) --output tsv --query [].roleDefinitionName
@@ -96,7 +96,7 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 ### Azure post-deployment steps
 
-Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
+Add OpenHack team members to Azure Subscription with **Owner** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
 ### GitHub post-deployment steps

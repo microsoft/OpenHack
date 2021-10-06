@@ -4,11 +4,11 @@
 
 Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription and on your Azure DevOps organization.
 
-This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Contributor Role.
+This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Owner Role.
 
 ## Prerequisites
 
-- [Azure Subscription](https://azure.microsoft.com/) with [Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
+- [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
 - [Azure DevOps organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops) with [Project Collection Administrators](https://docs.microsoft.com/en-us/azure/devops/organizations/security/lookup-organization-owner-admin?view=azure-devops#show-members-of-the-project-collection-administrators-group) membership
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
 - [Azure CLI 2.28.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
@@ -20,7 +20,7 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 
 ### azuresp.json
 
-The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Contributor** role and it's dedicated for the OpenHack only.
+The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role and it's dedicated for the OpenHack only.
 
 ### Azure
 
@@ -65,7 +65,7 @@ If not, then change to your Azure Subscription dedicated for the OpenHack.
 az account set --subscription <subscriptionId>
 ```
 
-Verify your account permissions for the subscription. Expected value: `Contributor` or `Owner`.
+Verify your account permissions for the subscription. Expected value: `Owner`.
 
 ```bash
 az role assignment list --assignee $(az account show --output tsv --query user.name) --output tsv --query [].roleDefinitionName
@@ -97,7 +97,7 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 
 ### Azure post-deployment steps
 
-Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
+Add OpenHack team members to Azure Subscription with **Owner** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
 ### Azure DevOps post-deployment steps
