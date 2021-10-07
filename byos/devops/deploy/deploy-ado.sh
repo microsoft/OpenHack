@@ -45,7 +45,7 @@ while getopts ":l:o:t:a:" arg; do
         ADO_ORG_NAME="${OPTARG}"
         ;;
     t) # Process -t (Team Name)
-        TEAM_NAME=$(echo "${OPTARG}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+        TEAM_NAME=$(echo "${OPTARG}" | LC_CTYPE=C tr '[:upper:]' '[:lower:]' | LC_CTYPE=C tr -d '[:space:]')
         ;;
     a) # Process -a (Azure Deployment)
         AZURE_DEPLOYMENT="${OPTARG}"
@@ -118,7 +118,7 @@ fi
 
 if [ ${#TEAM_NAME} -eq 0 ]; then
     # Generate unique name
-    UNIQUER=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -5)
+    UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
     UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
 else
     UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
@@ -129,6 +129,8 @@ fi
 AZURE_SP_JSON="azuresp.json"
 if [ ! -f "${AZURE_SP_JSON}" ]; then
     az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
+    # wait for the token to sync across aad
+    sleep 60
 fi
 
 _azure_login() {
