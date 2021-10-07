@@ -173,7 +173,7 @@ ado_config_defaults(){
 }
 
 ado_project_create(){
-    az devops project create --name "${UNIQUE_NAME}" --visibility private --process Basic
+    az devops project create --name "${UNIQUE_NAME}" --visibility private --process Agile
 }
 
 ado_repo_import(){
