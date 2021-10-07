@@ -6,10 +6,6 @@ Before continuing ensure you understand the permissions needed to run the OpenHa
 
 This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Owner Role.
 
-### GitHub Personal Access Token authorization for use with SAML single sign-on
-
-In some cases if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
-
 ## Prerequisites
 
 - [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
@@ -44,7 +40,7 @@ The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal cre
 | Actions Secret     | LOCATION                       | Variable with Azure location for resources           |
 | Actions Secret     | TFSTATE_RESOURCES_GROUP_NAME   | Variable with Resource Group for Terraform state     |
 | Actions Secret     | TFSTATE_STORAGE_ACCOUNT_NAME   | Variable with Storage Account for Terraform state    |
-| Actions Secret     | TFSTATE_STORAGE_CONTAINER_NAME | Variable with Storage Container for Terraform states |
+| Actions Secret     | TFSTATE_STORAGE_CONTAINER_NAME | Variable with Storage Container for Terraform state  |
 | Actions Secret     | TFSTATE_KEY                    | Variable with State Key for Terraform state          |
 | Actions Secret     | AZURE_CREDENTIALS              | Variable with Azure Service Principal                |
 
@@ -78,7 +74,13 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 ### GitHub pre-deployment steps
 
-Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`. Then set environment variable `GITHUB_TOKEN` with generated token.
+Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`. 
+
+> **GitHub Personal Access Token authorization for use with SAML single sign-on**
+>
+> In some cases if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
+
+Then set environment variable `GITHUB_TOKEN` with generated token.
 
 ```bash
 export GITHUB_TOKEN="<GitHubPAT>"

@@ -3,11 +3,14 @@
 declare AZURE_LOCATION=""
 declare ADO_ORG_NAME=""
 declare TEAM_NAME=""
+declare AZURE_DEPLOYMENT=true
 
 declare -r ADO_ENDPOINT="https://dev.azure.com"
 declare -r REPO_TEMPLATE="https://github.com/Azure-Samples/openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
-declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME>]"
+declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
+
+declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
 
 # Helpers
 _information() {
@@ -33,7 +36,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Initialize parameters specified from command line
-while getopts ":l:o:t:" arg; do
+while getopts ":l:o:t:a:" arg; do
     case "${arg}" in
     l) # Process -l (Location)
         AZURE_LOCATION="${OPTARG}"
@@ -43,6 +46,9 @@ while getopts ":l:o:t:" arg; do
         ;;
     t) # Process -t (Team Name)
         TEAM_NAME=$(echo "${OPTARG}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+        ;;
+    a) # Process -a (Azure Deployment)
+        AZURE_DEPLOYMENT="${OPTARG}"
         ;;
     \?)
         _error "Invalid options found: -${OPTARG}."
@@ -145,13 +151,15 @@ _azure_logout() {
 create_azure_resources() {
     local _azure_resource_name="$1"
 
-    _azure_login
+    if [ ${AZURE_DEPLOYMENT} == true ]; then
+        _azure_login
 
-    az bicep install
-    _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-    az deployment sub create --name "${UNIQUE_NAME}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
+        az bicep install
+        _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
+        az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
 
-    _azure_logout
+        _azure_logout
+    fi
 }
 
 # AZURE DEVOPS
