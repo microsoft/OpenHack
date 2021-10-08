@@ -7,7 +7,7 @@ param spPrincipalId string
 var resourceGroupName = '${uniquer}staterg'
 
 module stateResourceGroup './azureResourceGroup.bicep' = {
-  name: 'resourceGroupDeployment'
+  name: '${deployment().name}-resourceGroupDeployment'
   params: {
     resourceGroupName: resourceGroupName
     location: location

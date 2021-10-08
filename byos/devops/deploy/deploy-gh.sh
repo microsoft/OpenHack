@@ -277,17 +277,17 @@ gh_create_repository_secrets(){
 
     _azure_parse_json
 
-    # gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
-    gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
-    gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
-    gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
-    gh_create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
-    gh_create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
-    gh_create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
-    gh_create_repository_secret "ARM_CLIENT_ID" "${_organization_repository_fullname}" "${ARM_CLIENT_ID}"
-    gh_create_repository_secret "ARM_CLIENT_SECRET" "${_organization_repository_fullname}" "${ARM_CLIENT_SECRET}"
-    gh_create_repository_secret "ARM_SUBSCRIPTION_ID" "${_organization_repository_fullname}" "${ARM_SUBSCRIPTION_ID}"
-    gh_create_repository_secret "ARM_TENANT_ID" "${_organization_repository_fullname}" "${ARM_TENANT_ID}"
+    _gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+    _gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
+    _gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
+    _gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
+    _gh_create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
+    _gh_create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
+    _gh_create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+    _gh_create_repository_secret "ARM_CLIENT_ID" "${_organization_repository_fullname}" "${ARM_CLIENT_ID}"
+    _gh_create_repository_secret "ARM_CLIENT_SECRET" "${_organization_repository_fullname}" "${ARM_CLIENT_SECRET}"
+    _gh_create_repository_secret "ARM_SUBSCRIPTION_ID" "${_organization_repository_fullname}" "${ARM_SUBSCRIPTION_ID}"
+    _gh_create_repository_secret "ARM_TENANT_ID" "${_organization_repository_fullname}" "${ARM_TENANT_ID}"
 }
 
 gh_logout(){
