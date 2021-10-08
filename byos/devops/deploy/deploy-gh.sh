@@ -123,12 +123,16 @@ if [ ! -f "${AZURE_SP_JSON}" ]; then
     sleep 60
 fi
 
-_azure_login() {
+_azure_parse_json() {
     _azuresp_json=$(cat azuresp.json)
     export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
     export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
     export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
     export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
+}
+
+_azure_login() {
+    _azure_parse_json
     az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
     az account set --subscription "${ARM_SUBSCRIPTION_ID}"
 }
@@ -259,13 +263,31 @@ gh_create_repository_project() {
 }
 
 # CREATE REPOSITORY SECRET
-gh_create_repository_secret() {
+_gh_create_repository_secret() {
     local _repository_secret_name="$1"
     local _repository_full_name="$2"
     local _value="$3"
 
     gh auth login --with-token "${GITHUB_TOKEN}"
     gh secret set "${_repository_secret_name}" -b "${_value}" --repo "${_repository_full_name}"
+}
+
+gh_create_repository_secrets(){
+    local _organization_repository_fullname="$1"
+
+    _azure_parse_json
+
+    # gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+    gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
+    gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
+    gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
+    gh_create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
+    gh_create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
+    gh_create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+    gh_create_repository_secret "ARM_CLIENT_ID" "${_organization_repository_fullname}" "${ARM_CLIENT_ID}"
+    gh_create_repository_secret "ARM_CLIENT_SECRET" "${_organization_repository_fullname}" "${ARM_CLIENT_SECRET}"
+    gh_create_repository_secret "ARM_SUBSCRIPTION_ID" "${_organization_repository_fullname}" "${ARM_SUBSCRIPTION_ID}"
+    gh_create_repository_secret "ARM_TENANT_ID" "${_organization_repository_fullname}" "${ARM_TENANT_ID}"
 }
 
 gh_logout(){
@@ -295,13 +317,7 @@ team=$(gh_create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 _team_slug=$(echo "${team}" | jq -c -r '.slug')
 team_repository_permissions=$(gh_update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
 repository_project=$(gh_create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-# gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
-gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
-gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
-gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"
-gh_create_repository_secret "TFSTATE_STORAGE_CONTAINER_NAME" "${_organization_repository_fullname}" "tfstate"
-gh_create_repository_secret "TFSTATE_KEY" "${_organization_repository_fullname}" "terraform.tfstate"
-gh_create_repository_secret "AZURE_CREDENTIALS" "${_organization_repository_fullname}" "$(cat azuresp.json)"
+gh_create_repository_secrets "${_organization_repository_fullname}"
 gh_logout
 
 # OUTPUT
