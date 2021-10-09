@@ -90,6 +90,11 @@ export GITHUB_TOKEN="<GitHubPAT>"
 
 Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
+> **NOTE**
+>
+> For Azure Location, `koreasouth`, `westindia`, `australiacentral` are not supported!
+>
+
 ```bash
 ./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName>]
 ```

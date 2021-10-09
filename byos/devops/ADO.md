@@ -2,9 +2,9 @@
 
 ## Setting up permissions
 
-Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription and on your Azure DevOps organization.
+Before continuing, ensure you understand the permissions needed to run the OpenHack on your Azure subscription and your Azure DevOps organization.
 
-This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Owner Role.
+This lab deploys to a single resource group within an Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got the Azure Owner Role.
 
 ## Prerequisites
 
@@ -14,13 +14,13 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 - [Azure CLI 2.28.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **Note** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for Azure DevOps deployment scenario.
+> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for the Azure DevOps deployment scenario.
 
 ## Expected resources
 
 ### azuresp.json
 
-The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role and it's dedicated for the OpenHack only.
+The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role, and it's dedicated for the OpenHack only. Please save this file for future use by your team members.
 
 ### Azure
 
@@ -53,7 +53,7 @@ Login to your Azure Subscription.
 az login
 ```
 
-Make sure your login context uses right Azure Subscription.
+Make sure your login context uses the correct Azure Subscription.
 
 ```bash
 az account show
@@ -73,11 +73,11 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 ### Azure DevOps pre-deployment steps
 
-(optional) Create new Azure DevOps organization. Follow this guide how to do it: [Create an organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops#create-an-organization)
+(optional) Create a new Azure DevOps organization. Follow this guide on how to do it: [Create an organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops#create-an-organization)
 
-> **Note** New Azure DevOps organization dedicated only for the OpenHack is highly recommended!
+> **NOTE** New Azure DevOps organization dedicated only for the OpenHack is highly recommended!
 
-Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `TODO`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with generated token.
+Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `TODO`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
 
 ```bash
 export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
@@ -87,8 +87,16 @@ export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
 
 Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 
+> **NOTE**
+>
+> For Azure Location, please use the exact location where your Azure DevOps organization has deployed.
+>
+> If you are unsure, go to the Organization Settings page and check Region value.
+>
+> Organization Settings page: `https://dev.azure.com/<YourAdoOrgName>/_setting`
+
 ```bash
-./deploy-ado.sh -l <AzureLocation> -o <GitHubOrgName> [-t <TeamName>]
+./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName>]
 ```
 
 > **Defaults for optional parameters**

@@ -14,7 +14,7 @@ declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
 
 # Helpers
 _information() {
-    echo "##[command] $@"
+    echo "##[command] $@" 2>&1
 }
 
 _error() {
@@ -23,7 +23,7 @@ _error() {
 
 _debug() {
     if [ ${DEBUG_FLAG} == true ]; then
-        echo "##[debug] $@"
+        echo "##[debug] $@" 2>&1
     fi
 }
 
@@ -52,7 +52,7 @@ while getopts ":l:o:t:a:" arg; do
         ;;
     \?)
         _error "Invalid options found: -${OPTARG}."
-        _error "${USAGE_HELP}" 2>&1
+        _error "${USAGE_HELP}"
         exit 1
         ;;
     esac
@@ -61,13 +61,22 @@ shift $((OPTIND - 1))
 
 if [ ${#AZURE_LOCATION} -eq 0 ]; then
     _error "Required AZURE_LOCATION parameter is not set!"
-    _error "${USAGE_HELP}" 2>&1
+    _error "${USAGE_HELP}"
+    exit 1
+fi
+
+declare -a supported_azure_regions=("centralus" "uksouth" "eastasia" "southeastasia" "brazilsouth" "canadacentral" "southindia" "australiaeast" "westeurope" "westus2")
+
+if [[ ! "${supported_azure_regions[*]}" =~ "${AZURE_LOCATION}" ]]; then
+    _error "Provided region (${AZURE_LOCATION}) is not supported."
+    _error "Supported regions:"
+    printf '%s\n' "${supported_azure_regions[@]}"
     exit 1
 fi
 
 if [ ${#ADO_ORG_NAME} -eq 0 ]; then
     _error "Required ADO_ORG_NAME parameter is not set!"
-    _error "${USAGE_HELP}" 2>&1
+    _error "${USAGE_HELP}"
     exit 1
 fi
 
