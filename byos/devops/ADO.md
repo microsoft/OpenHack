@@ -20,7 +20,9 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 ### azuresp.json
 
-The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role, and it's dedicated for the OpenHack only. Please save this file for future use by your team members.
+The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role, and it's dedicated for the OpenHack only.
+
+> **NOTE** Please keep this file for future use by your team members.
 
 ### Azure
 
@@ -96,16 +98,18 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 > Organization Settings page: `https://dev.azure.com/<YourAdoOrgName>/_setting`
 
 ```bash
-./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName>]
+./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName> -a <AzureDeployment>]
 ```
 
 > **Defaults for optional parameters**
 >
 > -t TeamName = randomly generated number with 5 digits
+>
+> -a AzureDeployment = true (deploy Azure resources, if false, then just configure Azure DevOps)
 
 ### Azure post-deployment steps
 
-Add OpenHack team members to Azure Subscription with **Owner** role, follow guide: [Assign Azure roles using the Azure portal
+Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
 ### Azure DevOps post-deployment steps

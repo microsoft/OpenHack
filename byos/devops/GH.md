@@ -2,9 +2,9 @@
 
 ## Setting up permissions
 
-Before continuing ensure you understand the permissions needed to run the OpenHack on your Azure subscription and on your GitHub organization.
+Before continuing, ensure you understand the permissions needed to run the OpenHack on your Azure subscription and your GitHub organization.
 
-This lab deploys to a single resource group within a Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got Azure Owner Role.
+This lab deploys to a single resource group within an Azure subscription. To deploy this lab environment, ensure the account you use to execute the script got the Azure Owner Role.
 
 ## Prerequisites
 
@@ -15,13 +15,15 @@ This lab deploys to a single resource group within a Azure subscription. To depl
 - [GitHub CLI 2.0.0](https://cli.github.com/) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **Note** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is not supported for GitHub deployment scenario.
+> **Note** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **not supported** for GitHub deployment scenario.
 
 ## Expected resources
 
 ### azuresp.json
 
-The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role and it's dedicated for the OpenHack only.
+The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal credentials. Service Principal has **Owner** role, and it's dedicated for the OpenHack only.
+
+> **NOTE** Please keep this file for future use by your team members.
 
 ### Azure
 
@@ -32,17 +34,17 @@ The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal cre
 
 ### GitHub
 
-| GitHub resource    | Name                           | Purpose                                              |
-| ------------------ | ------------------------------ | ---------------------------------------------------- |
-| Team               | N/A                            | Team for team members                                |
-| Repository         | N/A                            | Git repository with OpenHack files                   |
-| Repository Project | N/A                            | Project for work organization                        |
-| Actions Secret     | LOCATION                       | Variable with Azure location for resources           |
-| Actions Secret     | TFSTATE_RESOURCES_GROUP_NAME   | Variable with Resource Group for Terraform state     |
-| Actions Secret     | TFSTATE_STORAGE_ACCOUNT_NAME   | Variable with Storage Account for Terraform state    |
-| Actions Secret     | TFSTATE_STORAGE_CONTAINER_NAME | Variable with Storage Container for Terraform state  |
-| Actions Secret     | TFSTATE_KEY                    | Variable with State Key for Terraform state          |
-| Actions Secret     | AZURE_CREDENTIALS              | Variable with Azure Service Principal                |
+| GitHub resource    | Name                           | Purpose                                             |
+| ------------------ | ------------------------------ | --------------------------------------------------- |
+| Team               | N/A                            | Team for team members                               |
+| Repository         | N/A                            | Git repository with OpenHack files                  |
+| Repository Project | N/A                            | Project for work organization                       |
+| Actions Secret     | LOCATION                       | Variable with Azure location for resources          |
+| Actions Secret     | TFSTATE_RESOURCES_GROUP_NAME   | Variable with Resource Group for Terraform state    |
+| Actions Secret     | TFSTATE_STORAGE_ACCOUNT_NAME   | Variable with Storage Account for Terraform state   |
+| Actions Secret     | TFSTATE_STORAGE_CONTAINER_NAME | Variable with Storage Container for Terraform state |
+| Actions Secret     | TFSTATE_KEY                    | Variable with State Key for Terraform state         |
+| Actions Secret     | AZURE_CREDENTIALS              | Variable with Azure Service Principal               |
 
 ## Deployments Steps
 
@@ -54,7 +56,7 @@ Login to your Azure Subscription.
 az login
 ```
 
-Make sure your login context uses right Azure Subscription.
+Make sure your login context uses the correct Azure Subscription.
 
 ```bash
 az account show
@@ -74,11 +76,11 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 ### GitHub pre-deployment steps
 
-Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`. 
+Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`.
 
 > **GitHub Personal Access Token authorization for use with SAML single sign-on**
 >
-> In some cases if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
+> In some cases, if your GitHub account is associated with an organization that uses SAML single sign-on (SSO), you must first authorize the token. Follow this guide on how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
 
 Then set environment variable `GITHUB_TOKEN` with generated token.
 
@@ -93,10 +95,9 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > **NOTE**
 >
 > For Azure Location, `koreasouth`, `westindia`, `australiacentral` are not supported!
->
 
 ```bash
-./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName>]
+./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>]
 ```
 
 > **Defaults for optional parameters**
@@ -104,10 +105,12 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > -o GitHubOrgName = CSE-OpenHackContent
 >
 > -t TeamName = randomly generated number with 5 digits
+>
+> -a AzureDeployment = true (deploy Azure resources, if false, then just configure GitHub)
 
 ### Azure post-deployment steps
 
-Add OpenHack team members to Azure Subscription with **Owner** role, follow guide: [Assign Azure roles using the Azure portal
+Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
 ### GitHub post-deployment steps
