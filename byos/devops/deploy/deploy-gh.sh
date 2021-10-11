@@ -283,7 +283,6 @@ _gh_create_repository_secret() {
     local _repository_full_name="$2"
     local _value="$3"
 
-    gh auth login --with-token "${GITHUB_TOKEN}"
     gh secret set "${_repository_secret_name}" -b "${_value}" --repo "${_repository_full_name}"
 }
 
@@ -326,14 +325,27 @@ save_details(){
 }
 
 # EXECUTE
+echo "Creating Azure resources..."
 create_azure_resources "${UNIQUE_NAME}"
+
+echo "Creating organization repository..."
 organization_repository=$(gh_create_organization_repository "${UNIQUE_NAME}")
 _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
+
+echo "Creating GitHub team..."
 team=$(gh_create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 _team_slug=$(echo "${team}" | jq -c -r '.slug')
+
+echo "Updating team repository permissions..."
 team_repository_permissions=$(gh_update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
+
+echo "Creating repository project..."
 repository_project=$(gh_create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
+
+echo "Creating repository secrets..."
 gh_create_repository_secrets "${_organization_repository_fullname}"
+
+echo "GitHub logout..."
 gh_logout
 
 # OUTPUT
@@ -343,10 +355,12 @@ _project_url=$(echo "${repository_project}" | jq -c -r '.html_url')
 
 save_details "${_project_url}" "${_team_url}" "${_repository_url}"
 
+echo -e "\n"
 echo "Team Name: ${UNIQUE_NAME}"
 echo "Project URL: ${_project_url}"
 echo "Team URL: ${_team_url}"
 echo "Repo URL: ${_repository_url}"
 echo "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
 
-echo 'Done!'
+echo -e "\n"
+echo "Done!"

@@ -94,6 +94,10 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
 >
+> When running on Windows in WSL, ensure that all *.sh files use correct line endings (`LF`), because the default behavior when cloning files on Windows is to switch to CRLF. That can cause issues when running the deployment script (`-bash: ./deploy-gh.sh: /bin/bash^M: bad interpreter: No such file or directory`).
+
+> **NOTE**
+>
 > For Azure Location, `koreasouth`, `westindia`, `australiacentral` are not supported!
 
 ```bash
