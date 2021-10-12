@@ -31,7 +31,7 @@ The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal cr
 | Azure Resource Group  | N/A              | Resource Group for Terraform state | N/A                           |
 | Azure Storage Account | Standard_LRS     | Storage for Terraform state        | Microsoft.Storage             |
 
-### Azure DevOps
+### Azure DevOps {#devops-resources}
 
 | Azure DevOps resource | Name                           | Purpose                                                                 |
 | --------------------- | ------------------------------ | ----------------------------------------------------------------------- |
@@ -70,7 +70,7 @@ az account set --subscription <subscriptionId>
 Verify your account permissions for the subscription. Expected value: `Owner`.
 
 ```bash
-az role assignment list --assignee $(az account show --output tsv --query user.name) --output tsv --query [].roleDefinitionName
+az role assignment list --assignee $(az account show --output tsv --query user.name) --output tsv --query [].roleDefinitionName --include-inherited
 ```
 
 ### Azure DevOps pre-deployment steps
@@ -79,7 +79,16 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 > **NOTE** New Azure DevOps organization dedicated only for the OpenHack is highly recommended!
 
-Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `TODO`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
+Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `Full Access`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
+
+> **NOTE**
+>
+> You can customize the access rights the PAT will have by selecting the Custom Defined scope option as shown in the following picture.
+>
+> ![](../images/PAT-Creation.png)
+>
+> Make source you assign the rights to create the resources mentioned at [Azure DevOps](#devops-resources)
+
 
 ```bash
 export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
@@ -101,6 +110,20 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 ./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName> -a <AzureDeployment>]
 ```
 
+> **NOTES**
+>
+> ADO supported regions and thus valid arguments for `AzureLocation` are:
+> - centralus
+> - uksouth
+> - eastasia
+> - southeastasia
+> - brazilsouth
+> - canadacentral
+> - southindia
+> - australiaeast
+> - westeurope
+> - westus2
+>
 > **Defaults for optional parameters**
 >
 > -t TeamName = randomly generated number with 5 digits
