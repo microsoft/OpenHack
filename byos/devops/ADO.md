@@ -31,7 +31,7 @@ The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal cr
 | Azure Resource Group  | N/A              | Resource Group for Terraform state | N/A                           |
 | Azure Storage Account | Standard_LRS     | Storage for Terraform state        | Microsoft.Storage             |
 
-### Azure DevOps {#devops-resources}
+### Azure DevOps
 
 | Azure DevOps resource | Name                           | Purpose                                                                 |
 | --------------------- | ------------------------------ | ----------------------------------------------------------------------- |
@@ -85,10 +85,9 @@ Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a P
 >
 > You can customize the access rights the PAT will have by selecting the Custom Defined scope option as shown in the following picture.
 >
-> ![](../images/PAT-Creation.png)
+> ![ADO PAT Create](images/ado-pat-create.png)
 >
-> Make source you assign the rights to create the resources mentioned at [Azure DevOps](#devops-resources)
-
+> Make source you assign the rights to create the resources mentioned at Azure DevOps resources table.
 
 ```bash
 export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
@@ -113,6 +112,7 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 > **NOTES**
 >
 > ADO supported regions and thus valid arguments for `AzureLocation` are:
+>
 > - centralus
 > - uksouth
 > - eastasia

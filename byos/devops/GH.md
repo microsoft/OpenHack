@@ -80,15 +80,11 @@ Login to your [GitHub](https://github.com) account and [Create a Personal Access
 
 > **GitHub Personal Access Token authorization for use with SAML single sign-on**
 >
-> If the GitHub organization you are planing on using to provision the environment uses SAML single sign-on (SSO)
+> If the GitHub organization you are planing on using to provision the environment uses SAML single sign-on (SSO) you must first authorize the token to access this organization. Follow this guide on how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
 >
-> ![](../images/SAML_SSO.png)
->
-> you must first authorize the token to access this organization. Follow this guide on how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
-> 
 > **Note** The deployment script uses a repository template from a Microsoft organization that has the SAML Signle Sign On enabled so you need to authorize your PAT for the Microsoft organization.
 >
-> ![](../images/GHSingleSignOn.png)
+> ![GH PAT SSQ](images/gh-pat-sso.png)
 
 Then set environment variable `GITHUB_TOKEN` with generated token.
 
@@ -102,7 +98,7 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
 >
-> When running on Windows in WSL, ensure that all *.sh files use correct line endings (`LF`), because the default behavior when cloning files on Windows is to switch to CRLF. That can cause issues when running the deployment script (`-bash: ./deploy-gh.sh: /bin/bash^M: bad interpreter: No such file or directory`).
+> When running on Windows in WSL, ensure that all \*.sh files use correct line endings (`LF`), because the default behavior when cloning files on Windows is to switch to CRLF. That can cause issues when running the deployment script (`-bash: ./deploy-gh.sh: /bin/bash^M: bad interpreter: No such file or directory`).
 
 > **NOTE**
 >
