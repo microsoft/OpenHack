@@ -17,6 +17,10 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 > **Note** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **not supported** for GitHub deployment scenario.
 
+### GitHub Organization membership
+
+Make sure your OpenHack team members are part of a dedicated GitHub Organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
+
 ## Expected resources
 
 ### azuresp.json
@@ -125,3 +129,7 @@ Add OpenHack team members to Azure Subscription with **Contributor** role, follo
 
 Add OpenHack team members to GitHub Team, follow guide: [Adding organization members to a team
 ](https://docs.github.com/en/organizations/organizing-members-into-teams/adding-organization-members-to-a-team)
+
+## Post-event steps
+
+After OpenHack, clean up GitHub Organization by removing OpenHack team members from the GitHub Organization. Follow this guide on how to do it: [Removing a member from your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/removing-a-member-from-your-organization#revoking-the-users-membership)
