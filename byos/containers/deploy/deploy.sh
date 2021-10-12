@@ -115,6 +115,7 @@ az feature register --name WindowsPreview --namespace Microsoft.ContainerService
 az feature register --name PodSecurityPolicyPreview --namespace Microsoft.ContainerService
 az feature register --name EnablePodIdentityPreview --namespace Microsoft.ContainerService
 az feature register --name AKS-AzureKeyVaultSecretsProvider --namespace Microsoft.ContainerService
+az feature register --name AKS-OpenServiceMesh  --namespace Microsoft.ContainerService
 
 echo "Registering providers required..."
 az provider register --namespace Microsoft.OperationsManagement
@@ -246,7 +247,8 @@ registryPassword="$(az acr credential show -n $registryName -g $teamRG --query '
 registryLoginServer="$registryName.azurecr.io"
 
 echo "Loading data in SQL database..."
-az container create -g $proctorRG --name dataload --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $registryPassword \
+az container create -g $proctorRG --name dataload --restart-policy OnFailure \
+    --image $registryLoginServer/dataload:1.0 --registry-login-server $registryLoginServer --registry-username $registryName --registry-password $registryPassword \
     --secure-environment-variables SQLFQDN=$sqlServerName.database.windows.net SQLUSER=$sqlServerUsername SQLPASS=$sqlServerPassword SQLDB=$sqlDBName
 
 logs=$(az container logs -g $proctorRG --name dataload)
