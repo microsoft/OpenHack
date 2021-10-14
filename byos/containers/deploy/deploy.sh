@@ -18,7 +18,7 @@ declare tenantId=""
 declare randstr=""
 
 # Initialize parameters specified from command line
-while getopts ":l:g:o:f:u:p:s:t:a:" arg; do
+while getopts ":l:g:o:f:u:p:s:t:a" arg; do
     case "${arg}" in
         l)
             region=${OPTARG}
