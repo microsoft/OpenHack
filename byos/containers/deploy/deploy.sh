@@ -205,7 +205,7 @@ then
 
     # Create Azure SQL DB
     echo "Creating Azure SQL DB..."
-    az sql db create -g $teamRG -s $sqlServerName -n $sqlDBName
+    az sql db create -g $teamRG -s $sqlServerName -n $sqlDBName --bsr local
 
 else
     echo "Failed to create SQL Server."
