@@ -39,6 +39,17 @@ create_azure_resources() {
     fi
 }
 
+delete_azure_resources() {
+    local _resources_prefix="$1"
+
+    _azure_login
+
+    az group delete --resource-group "${_resources_prefix}rg" --yes --no-wait
+    az group delete --resource-group "${_resources_prefix}staterg" --yes --no-wait
+
+    _azure_logout
+}
+
 get_unique_name() {
     if [ ${#TEAM_NAME} -eq 0 ]; then
         # Generate unique name
