@@ -27,6 +27,7 @@ _azure_logout() {
 }
 
 create_azure_resources() {
+    declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
     if [ ${AZURE_DEPLOYMENT} == true ]; then
         _azure_login
 

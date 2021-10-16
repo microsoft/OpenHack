@@ -15,7 +15,6 @@ declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
 declare -r AZURE_SP_JSON="azuresp.json"
 declare -r DETAILS_FILE="details.json"
-declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
 
 if [ -f "devvars.sh" ]; then
     source devvars.sh
@@ -148,11 +147,13 @@ ado_logout(){
 save_details(){
     jq -n \
         --arg teamName "${UNIQUE_NAME}" \
+        --arg orgName "${ADO_ORG_NAME}" \
+        --arg boardUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_boards/board/t/${UNIQUE_NAME}%20Team/Stories" \
         --arg projectUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}" \
         --arg teamUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams" \
         --arg repoUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
+        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
 }
 
 # EXECUTE
