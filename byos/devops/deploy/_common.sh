@@ -8,10 +8,10 @@ check_azuresp_json() {
 
 _azure_parse_json() {
     _azuresp_json=$(cat "${AZURE_SP_JSON}")
-    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r '.clientId' | xargs)
-    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r '.clientSecret' | xargs)
-    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r '.subscriptionId' | xargs)
-    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r '.tenantId' | xargs)
+    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -c -r '.clientId')
+    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -c -r '.clientSecret')
+    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -c -r '.subscriptionId')
+    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -c -r '.tenantId')
 }
 
 _azure_login() {
