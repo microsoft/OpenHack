@@ -5,7 +5,7 @@ source _helpers.sh
 source _common.sh
 
 declare -r AZURE_SP_JSON="azuresp.json"
-declare -r DETAILS_FILE="details.json"
+declare -r DETAILS_FILE="details-gh.json"
 
 if [ -f "devvars.sh" ]; then
     source devvars.sh

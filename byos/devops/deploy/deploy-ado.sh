@@ -14,7 +14,7 @@ declare -r REPO_TEMPLATE="https://github.com/Azure-Samples/openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
 declare -r AZURE_SP_JSON="azuresp.json"
-declare -r DETAILS_FILE="details.json"
+declare -r DETAILS_FILE="details-ado.json"
 
 if [ -f "devvars.sh" ]; then
     source devvars.sh
