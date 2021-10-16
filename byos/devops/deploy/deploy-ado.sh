@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Includes
+source _helpers.sh
+source _common.sh
+
 declare AZURE_LOCATION=""
 declare ADO_ORG_NAME=""
 declare TEAM_NAME=""
@@ -9,23 +13,13 @@ declare -r ADO_ENDPOINT="https://dev.azure.com"
 declare -r REPO_TEMPLATE="https://github.com/Azure-Samples/openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
-
+declare -r AZURE_SP_JSON="azuresp.json"
+declare -r DETAILS_FILE="details.json"
 declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
 
-# Helpers
-_information() {
-    echo "##[command] $@" 2>&1
-}
-
-_error() {
-    echo "##[error] $@" 2>&1
-}
-
-_debug() {
-    if [ ${DEBUG_FLAG} == true ]; then
-        echo "##[debug] $@" 2>&1
-    fi
-}
+if [ -f "devvars.sh" ]; then
+    source devvars.sh
+fi
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -66,7 +60,6 @@ if [ ${#AZURE_LOCATION} -eq 0 ]; then
 fi
 
 declare -a supported_azure_regions=("centralus" "uksouth" "eastasia" "southeastasia" "brazilsouth" "canadacentral" "southindia" "australiaeast" "westeurope" "westus2")
-
 if [[ ! "${supported_azure_regions[*]}" =~ "${AZURE_LOCATION}" ]]; then
     _error "Provided region (${AZURE_LOCATION}) is not supported."
     _error "Supported regions:"
@@ -80,32 +73,17 @@ if [ ${#ADO_ORG_NAME} -eq 0 ]; then
     exit 1
 fi
 
-# Check for programs
-if ! [ -x "$(command -v az)" ]; then
-    _error "az is not installed!"
-    exit 1
-elif ! [ -x "$(command -v jq)" ]; then
-    _error "jq is not installed!"
+# Check for AZURE_DEVOPS_EXT_PAT
+if [ -z ${AZURE_DEVOPS_EXT_PAT+x} ]; then
+    _error "AZURE_DEVOPS_EXT_PAT does not set!"
     exit 1
 fi
 
-check_tool_semver() {
-    local _tool_name="$1"
-    local _tool_ver="$2"
-    local _tool_min_ver="$3"
-
-    _semver=$(./semver2.sh "${_tool_ver}" "${_tool_min_ver}")
-
-    if [ "${_semver}" -lt 0 ]; then
-        _error "${_tool_name} version ${_tool_ver} is lower then required! Expected minimum ${_tool_min_ver}"
-        exit 1
-    fi
-}
-
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.28.0"
+# Check for programs
+check_commands
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.29.0"
 
 _azdevopsver=$(az extension show --only-show-errors --name azure-devops --output tsv --query version)
-
 if [ "${#_azdevopsver}" -eq 0 ]; then
     az extension add --name azure-devops
 else
@@ -114,64 +92,6 @@ else
         az extension update --name azure-devops
     fi
 fi
-
-if [ -f "devvars.sh" ]; then
-    . devvars.sh
-fi
-
-# Check for AZURE_DEVOPS_EXT_PAT
-if [ -z ${AZURE_DEVOPS_EXT_PAT+x} ]; then
-    _error "AZURE_DEVOPS_EXT_PAT does not set!"
-    exit 1
-fi
-
-if [ ${#TEAM_NAME} -eq 0 ]; then
-    # Generate unique name
-    UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
-    UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
-else
-    UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
-fi
-
-# AZURE AUTH
-# Check for azuresp.json
-AZURE_SP_JSON="azuresp.json"
-if [ ! -f "${AZURE_SP_JSON}" ]; then
-    az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
-    # wait for the token to sync across aad
-    sleep 60
-fi
-
-_azure_login() {
-    _azuresp_json=$(cat azuresp.json)
-    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
-    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
-    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
-    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
-    az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-    az account set --subscription "${ARM_SUBSCRIPTION_ID}"
-}
-
-_azure_logout() {
-    az logout
-    az cache purge
-    az account clear
-}
-
-# AZURE RESOURCES
-create_azure_resources() {
-    local _azure_resource_name="$1"
-
-    if [ ${AZURE_DEPLOYMENT} == true ]; then
-        _azure_login
-
-        az bicep install
-        _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-        az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
-
-        _azure_logout
-    fi
-}
 
 # AZURE DEVOPS
 
@@ -193,6 +113,7 @@ ado_repo_import(){
 }
 
 ado_extensions_install(){
+    # az devops extension show --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform" --output tsv --query version --only-show-errors; echo "$?"
     az devops extension install --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform"
 }
 
@@ -230,25 +151,49 @@ save_details(){
         --arg teamUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams" \
         --arg repoUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > details.json
+        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
 }
 
 # EXECUTE
+_information "Getting unique name..."
+get_unique_name
+
+_information "Checking for ${AZURE_SP_JSON} file..."
+check_azuresp_json
+
+_information "Creating Azure resources..."
 create_azure_resources
+
+_information "Configuring ADO defaults..."
 ado_config_defaults
+
+_information "Configuring ADO project..."
 ado_project_create
+
+_information "Importing template repo..."
 ado_repo_import
+
+_information "instaling ADO extensions..."
 ado_extensions_install
+
+_information "Creating ADO service connecton..."
 ado_serviceconnection_create
+
+_information "Creating ADO variable groups..."
 ado_variablegroup_create
+
+_information "ADO logout..."
 ado_logout
+
+_information "Saving details to ${DETAILS_FILE} file..."
 save_details
 
 # OUTPUT
-echo "Team Name: ${UNIQUE_NAME}"
-echo "Project URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}"
-echo "Team URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams"
-echo "Repo URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}"
-echo "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
-
-echo 'Done!'
+echo -e "\n"
+_information "Team Name: ${UNIQUE_NAME}"
+_information "Project URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}"
+_information "Team URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams"
+_information "Repo URL: ${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}"
+_information "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
+echo -e "\n"
+_success "Done!"

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Includes
+source _helpers.sh
+source _common.sh
+
 declare AZURE_LOCATION=""
 declare GITHUB_ORG_NAME="CSE-OpenHackContent"
 declare TEAM_NAME=""
@@ -10,23 +14,13 @@ declare -r GITHUB_TEMPLATE_OWNER="Azure-Samples"
 declare -r GITHUB_TEMPLATE_REPO="openhack-devops-team"
 declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-o <GITHUB_ORG_NAME> -t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
-
+declare -r AZURE_SP_JSON="azuresp.json"
+declare -r DETAILS_FILE="details.json"
 declare -r BUILD_ID=$(head -3 /dev/urandom | tr -cd '[:digit:]' | cut -c -4)
 
-# Helpers
-_information() {
-    echo "##[command] $@" 2>&1
-}
-
-_error() {
-    echo "##[error] $@" 2>&1
-}
-
-_debug() {
-    if [ ${DEBUG_FLAG} == true ]; then
-        echo "##[debug] $@" 2>&1
-    fi
-}
+if [ -f "devvars.sh" ]; then
+    source devvars.sh
+fi
 
 # Verify the type of input and number of values
 # Display an error message if the input is not correct
@@ -67,7 +61,6 @@ if [ ${#AZURE_LOCATION} -eq 0 ]; then
 fi
 
 declare -a unsupported_azure_regions=("koreasouth" "westindia" "australiacentral")
-
 if [[ "${unsupported_azure_regions[*]}" =~ "${AZURE_LOCATION}" ]]; then
     _error "Provided region (${AZURE_LOCATION}) is not supported."
     _error "Unsupported regions:"
@@ -75,44 +68,10 @@ if [[ "${unsupported_azure_regions[*]}" =~ "${AZURE_LOCATION}" ]]; then
     exit 1
 fi
 
-# if [ ${#GITHUB_ORG_NAME} -eq 0 ]; then
-#     _error "Required GITHUB_ORG_NAME parameter is not set!"
-#     _error "${USAGE_HELP}"
-#     exit 1
-# fi
-
-# Check for programs
-if ! [ -x "$(command -v az)" ]; then
-    _error "az is not installed!"
+if [ ${#GITHUB_ORG_NAME} -eq 0 ]; then
+    _error "Required GITHUB_ORG_NAME parameter is not set!"
+    _error "${USAGE_HELP}"
     exit 1
-elif ! [ -x "$(command -v jq)" ]; then
-    _error "jq is not installed!"
-    exit 1
-elif ! [ -x "$(command -v gh)" ]; then
-    _error "gh is not installed!"
-    exit 1
-elif ! [ -x "$(command -v curl)" ]; then
-    _error "curl is not installed!"
-    exit 1
-fi
-
-check_tool_semver() {
-    local _tool_name="$1"
-    local _tool_ver="$2"
-    local _tool_min_ver="$3"
-
-    _semver=$(./semver2.sh "${_tool_ver}" "${_tool_min_ver}")
-
-    if [ "${_semver}" -lt 0 ]; then
-        _error "${_tool_name} version ${_tool_ver} is lower then required! Expected minimum ${_tool_min_ver}"
-        exit 1
-    fi
-}
-
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.28.0"
-
-if [ -f "devvars.sh" ]; then
-    . devvars.sh
 fi
 
 # Check for GITHUB_TOKEN
@@ -121,57 +80,16 @@ if [ -z ${GITHUB_TOKEN+x} ]; then
     exit 1
 fi
 
-if [ ${#TEAM_NAME} -eq 0 ]; then
-    # Generate unique name
-    UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
-    UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
-else
-    UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
+# Check for programs
+check_commands
+if ! [ -x "$(command -v gh)" ]; then
+    _error "gh is not installed!"
+    exit 1
+elif ! [ -x "$(command -v curl)" ]; then
+    _error "curl is not installed!"
+    exit 1
 fi
-
-# AZURE AUTH
-# Check for azuresp.json
-AZURE_SP_JSON="azuresp.json"
-if [ ! -f "${AZURE_SP_JSON}" ]; then
-    az ad sp create-for-rbac --sdk-auth --role Owner > azuresp.json
-    # wait for the token to sync across aad
-    sleep 60
-fi
-
-_azure_parse_json() {
-    _azuresp_json=$(cat azuresp.json)
-    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -r ".clientId")
-    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -r ".clientSecret")
-    export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -r ".subscriptionId")
-    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -r ".tenantId")
-}
-
-_azure_login() {
-    _azure_parse_json
-    az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-    az account set --subscription "${ARM_SUBSCRIPTION_ID}"
-}
-
-_azure_logout() {
-    az logout
-    az cache purge
-    az account clear
-}
-
-# AZURE RESOURCES
-create_azure_resources() {
-    local _azure_resource_name="$1"
-
-    if [ ${AZURE_DEPLOYMENT} == true ]; then
-        _azure_login
-
-        az bicep install
-        _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-        az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
-
-        _azure_logout
-    fi
-}
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.29.0"
 
 # Call GitHub API helper
 gh_call_api() {
@@ -306,8 +224,7 @@ gh_create_repository_secrets(){
 }
 
 gh_logout(){
-    # az devops logout
-    export AZURE_DEVOPS_EXT_PAT=0
+    export GITHUB_TOKEN=0
 }
 
 save_details(){
@@ -321,46 +238,52 @@ save_details(){
         --arg teamUrl "${_team_url}" \
         --arg repoUrl "${_repo_url}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > details.json
+        '{teamName: $teamName, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
 }
 
 # EXECUTE
-echo "Creating Azure resources..."
-create_azure_resources "${UNIQUE_NAME}"
+_information "Getting unique name..."
+get_unique_name
 
-echo "Creating organization repository..."
+_information "Checking for ${AZURE_SP_JSON} file..."
+check_azuresp_json
+
+_information "Creating Azure resources..."
+create_azure_resources
+
+_information "Creating organization repository..."
 organization_repository=$(gh_create_organization_repository "${UNIQUE_NAME}")
 _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
 
-echo "Creating GitHub team..."
+_information "Creating GitHub team..."
 team=$(gh_create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
-_team_slug=$(echo "${team}" | jq -c -r '.slug')
 
-echo "Updating team repository permissions..."
+_information "Updating team repository permissions..."
+_team_slug=$(echo "${team}" | jq -c -r '.slug')
 team_repository_permissions=$(gh_update_team_repository_permissions "${_team_slug}" "${_organization_repository_fullname}" "admin")
 
-echo "Creating repository project..."
+_information "Creating repository project..."
 repository_project=$(gh_create_repository_project "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 
-echo "Creating repository secrets..."
+_information "Creating repository secrets..."
 gh_create_repository_secrets "${_organization_repository_fullname}"
 
-echo "GitHub logout..."
+_information "GitHub logout..."
 gh_logout
 
-# OUTPUT
 _team_url=$(echo "${team}" | jq -c -r '.html_url')
 _repository_url=$(echo "${organization_repository}" | jq -c -r '.html_url')
 _project_url=$(echo "${repository_project}" | jq -c -r '.html_url')
 
+_information "Saving details to ${DETAILS_FILE} file..."
 save_details "${_project_url}" "${_team_url}" "${_repository_url}"
 
+# OUTPUT
 echo -e "\n"
-echo "Team Name: ${UNIQUE_NAME}"
-echo "Project URL: ${_project_url}"
-echo "Team URL: ${_team_url}"
-echo "Repo URL: ${_repository_url}"
-echo "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
-
+_information "Team Name: ${UNIQUE_NAME}"
+_information "Project URL: ${_project_url}"
+_information "Team URL: ${_team_url}"
+_information "Repo URL: ${_repository_url}"
+_information "Azure RG for TF State: https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview"
 echo -e "\n"
-echo "Done!"
+_success "Done!"
