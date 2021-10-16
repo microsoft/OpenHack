@@ -47,13 +47,3 @@ get_unique_name() {
         UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
     fi
 }
-
-check_commands() {
-    if ! [ -x "$(command -v az)" ]; then
-        _error "az is not installed!"
-        exit 1
-    elif ! [ -x "$(command -v jq)" ]; then
-        _error "jq is not installed!"
-        exit 1
-    fi
-}

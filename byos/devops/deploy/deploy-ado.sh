@@ -80,7 +80,8 @@ if [ -z ${AZURE_DEVOPS_EXT_PAT+x} ]; then
 fi
 
 # Check for programs
-check_commands
+declare -a commands=("az" "jq")
+check_commands "${commands[@]}"
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.29.0"
 
 _azdevopsver=$(az extension show --only-show-errors --name azure-devops --output tsv --query version)

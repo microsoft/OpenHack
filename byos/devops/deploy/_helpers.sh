@@ -47,3 +47,16 @@ check_tool_semver() {
         exit 1
     fi
 }
+
+check_commands() {
+    local _commands=("$@")
+
+    for _command in "${_commands[@]}"
+    do
+        echo "Checking ${_command} ..."
+        if ! [ -x "$(command -v ${_command})" ]; then
+            _error "${_command} is not installed!"
+            exit 1
+        fi
+    done
+}

@@ -81,18 +81,12 @@ if [ -z ${GITHUB_TOKEN+x} ]; then
 fi
 
 # Check for programs
-check_commands
-if ! [ -x "$(command -v gh)" ]; then
-    _error "gh is not installed!"
-    exit 1
-elif ! [ -x "$(command -v curl)" ]; then
-    _error "curl is not installed!"
-    exit 1
-fi
+declare -a commands=("az" "jq" "gh" "curl")
+check_commands "${commands[@]}"
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.29.0"
 
 # Call GitHub API helper
-gh_call_api() {
+_gh_call_api() {
     local _api_request_type="$1"
     local _api_uri="$2"
     local _api_body="$3"
@@ -131,7 +125,7 @@ _gh_create_templatebase_repository() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"owner": "'"${GITHUB_ORG_NAME}"'","name": "'"${_templatebase_repository_name}"'", "description": "Repo for '"${_templatebase_repository_name}"'", "include_all_branches": true, "private": true}'
 
-    gh_call_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
+    _gh_call_api "POST" "${_api_uri}" "${_api_body}" "baptiste-preview"
 }
 
 # https://docs.github.com/en/rest/reference/repos#update-a-repository
@@ -142,7 +136,7 @@ _gh_update_repository() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"has_issues": true, "has_projects": true, "has_wiki": true, "has_issues": true}'
 
-    gh_call_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
+    _gh_call_api "PATCH" "${_api_uri}" "${_api_body}" "nebula-preview"
 }
 
 gh_create_organization_repository() {
@@ -165,7 +159,7 @@ gh_create_team() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_team_name}"'", "description": "Team for '"${_team_name}"'", "repo_names": ["'"${_repository_full_name}"'"] ,"privacy": "secret"}'
 
-    gh_call_api "POST" "${_api_uri}" "${_api_body}"
+    _gh_call_api "POST" "${_api_uri}" "${_api_body}"
 }
 
 # UPDATE TEAM REPOSITORY PERMISSIONS
@@ -179,7 +173,7 @@ gh_update_team_repository_permissions() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"permission": "'"${_team_permission}"'"}'
 
-    gh_call_api "PUT" "${_api_uri}" "${_api_body}"
+    _gh_call_api "PUT" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE A REPOSITORY PROJECT
@@ -192,7 +186,7 @@ gh_create_repository_project() {
     _api_uri="${GITHUB_API_ENDPOINT}${_api_path}"
     _api_body='{"name": "'"${_repository_project_name}"'", "body": "Repo Project for '"${_repository_project_name}"'"}'
 
-    gh_call_api "POST" "${_api_uri}" "${_api_body}"
+    _gh_call_api "POST" "${_api_uri}" "${_api_body}"
 }
 
 # CREATE REPOSITORY SECRET
