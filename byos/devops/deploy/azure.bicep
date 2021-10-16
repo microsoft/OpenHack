@@ -1,13 +1,16 @@
 targetScope = 'subscription'
 
-param uniquer string
+param uniquer string = uniqueString(newGuid())
 param location string = deployment().location
+param resourcesPrefix string = ''
 param spPrincipalId string
 
-var resourceGroupName = '${uniquer}staterg'
+var namePrefix = 'devopsoh'
+var resourcesPrefixCalculated = empty(resourcesPrefix) ? '${namePrefix}${uniquer}' : resourcesPrefix
+var resourceGroupName = '${resourcesPrefixCalculated}staterg'
 
 module stateResourceGroup './azureResourceGroup.bicep' = {
-  name: '${deployment().name}-resourceGroupDeployment'
+  name: '${resourcesPrefixCalculated}-resourceGroupDeployment'
   params: {
     resourceGroupName: resourceGroupName
     location: location
@@ -15,9 +18,9 @@ module stateResourceGroup './azureResourceGroup.bicep' = {
 }
 
 module stateStorageAccount './azureStorageAccounts.bicep' = {
-  name: 'storageAccountpDeployment'
+  name: 'storageAccountDeployment'
   params: {
-    storageAccountName: '${uniquer}statest'
+    storageAccountName: '${resourcesPrefixCalculated}statest'
     spPrincipalId: spPrincipalId
   }
   scope: resourceGroup(resourceGroupName)

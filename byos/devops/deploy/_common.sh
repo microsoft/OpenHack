@@ -33,7 +33,7 @@ create_azure_resources() {
 
         az bicep upgrade
         _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
-        az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters uniquer="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
+        az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters resourcesPrefix="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
 
         _azure_logout
     fi
