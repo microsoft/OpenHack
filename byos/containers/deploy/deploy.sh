@@ -18,7 +18,7 @@ declare tenantId=""
 declare randstr=""
 
 # Initialize parameters specified from command line
-while getopts ":l:g:o:f:u:p:s:t:a:" arg; do
+while getopts ":l:g:o:f:u:p:s:t:a" arg; do
     case "${arg}" in
         l)
             region=${OPTARG}
@@ -205,7 +205,7 @@ then
 
     # Create Azure SQL DB
     echo "Creating Azure SQL DB..."
-    az sql db create -g $teamRG -s $sqlServerName -n $sqlDBName
+    az sql db create -g $teamRG -s $sqlServerName -n $sqlDBName --bsr local
 
 else
     echo "Failed to create SQL Server."

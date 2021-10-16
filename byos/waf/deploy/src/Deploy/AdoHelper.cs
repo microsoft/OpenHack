@@ -63,7 +63,7 @@ namespace Deploy
 
                 OperationReference operation = projectClient.QueueCreateProject(projectCreateParams).Result;
 
-                Operation completedOperation = WaitForLongRunningOperation(_connection, operation.Id, 5, 30).Result;
+                Operation completedOperation = WaitForLongRunningOperation(_connection, operation.Id, 5, 60).Result;
 
                 if (completedOperation.Status == OperationStatus.Succeeded)
                 {
@@ -141,6 +141,8 @@ namespace Deploy
             Console.WriteLine($"- Pushing repo '{repo.Name}'...");
 
             diag.Process.Start("git", $@"init {Path.GetFullPath(path)}").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} config user.email ""{org}@localhost.com""").WaitForExit();
+            diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} config user.name ""{org}""").WaitForExit();
             diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} branch -m main").WaitForExit();
             diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} remote add {org} {repo.RemoteUrl}").WaitForExit();
             diag.Process.Start("git", $@"-C {Path.GetFullPath(path)} add .").WaitForExit();

@@ -12,33 +12,18 @@ namespace Deploy
     {
         static void Main(string[] args)
         {
-            VssCredentials creds = null;
             string accessToken = string.Empty;
             string path = string.Empty;
             string authFile = string.Empty;
             string subscriptionId = string.Empty;
-            string organization = string.Empty;
+            string organizationId = GenerateOrgId();
 
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(o =>
                 {
-                    if (String.IsNullOrWhiteSpace(o.AccessToken))
+                    if (!String.IsNullOrWhiteSpace(o.AccessToken))
                     {
-                        throw new ArgumentNullException(@"Argument ""access token"" was not supplied.");
-                    }
-                    else
-                    {
-                        accessToken = o.AccessToken;
-                        creds = new VssBasicCredential(string.Empty, o.AccessToken);
-                    }
-
-                    if (String.IsNullOrWhiteSpace(o.Organization))
-                    {
-                        throw new ArgumentNullException(@"Argument ""organization"" was not supplied.");
-                    }
-                    else
-                    {
-                        organization = o.Organization;
+                        accessToken = o.AccessToken.Replace("\"", "");
                     }
 
                     if (String.IsNullOrWhiteSpace(o.Source))
@@ -75,18 +60,92 @@ namespace Deploy
                     {
                         subscriptionId = o.SubscriptionId;
                     }
+
+                    if (!String.IsNullOrWhiteSpace(o.OrganizationId))
+                    {
+                        organizationId = o.OrganizationId;
+                    }
                 });
 
-            DeployDevOps(creds, accessToken, organization, path);
-            DeployAzureTenant(authFile, subscriptionId, path);
+            var azure = GenerateAzureInstance(authFile, subscriptionId);
+            DeployAzureDevOpsTenant(azure, subscriptionId, path, organizationId);
+            var pat = GeneratePat(organizationId, accessToken);
+
+            DeployAzureTenant(azure, subscriptionId, path + "/repos", organizationId);
+            DeployDevOps(pat, path + "/repos", organizationId);
         }
 
-        static void DeployDevOps(VssCredentials credentials, string accessToken, string organization, string path) {
+        static string GenerateOrgId()
+        {
+            return new Random().Next(0, 1000000).ToString("D6");
+        }
+
+        static IAzure GenerateAzureInstance(string authFile, string subscriptionId)
+        {
+            var credentials = SdkContext.AzureCredentialsFactory.FromFile(authFile);
+
+            return Azure
+                    .Configure()
+                    .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
+                    .Authenticate(credentials)
+                    .WithSubscription(subscriptionId);
+        }
+
+        static string GeneratePat(string orgId, string accessToken)
+        {
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                Console.WriteLine();
+                Console.Write($"Token not provided. Enter PAT manually (WAFOpenHack{orgId}): ");
+                accessToken = Console.ReadLine();
+
+                return accessToken;
+            }
+            else
+            {
+                var azureHelper = new AzureHelper(null, null, orgId);
+
+                return azureHelper.GeneratePat(accessToken).Result;
+            }
+        }
+
+        static void DeployAzureDevOpsTenant(IAzure azure, string subscriptionId, string path, string orgId)
+        {
+            Console.WriteLine("*********************************");
+            Console.WriteLine("*                               *");
+            Console.WriteLine("* Deploying Azure DevOps Tenant *");
+            Console.WriteLine("*                               *");
+            Console.WriteLine("*********************************");
+
+            var azureHelper = new AzureHelper(azure, subscriptionId, orgId);
+            azureHelper.DeployAzDoTemplate(path + "/azdo");
+
+            Console.WriteLine();
+        }
+
+        static void DeployAzureTenant(IAzure azure, string subscriptionId, string path, string orgId)
+        {
+            Console.WriteLine("*********************************");
+            Console.WriteLine("*                               *");
+            Console.WriteLine("* Deploying Azure Resources     *");
+            Console.WriteLine("*                               *");
+            Console.WriteLine("*********************************");
+
+            var azureHelper = new AzureHelper(azure, subscriptionId, orgId);
+            azureHelper.DeployTemplate(path + "/bicep");
+
+            Console.WriteLine();
+        }
+
+        static void DeployDevOps(string accessToken, string path, string orgId)
+        {
+            var credentials = new VssBasicCredential(string.Empty, accessToken);
+            var organization = "WAFOpenHack" + orgId;
             var adoHelper = new AdoHelper(credentials, "https://dev.azure.com/" + organization);
 
             Console.WriteLine("*********************************");
             Console.WriteLine("*                               *");
-            Console.WriteLine("* Deploying Azure DevOps Tenant *");
+            Console.WriteLine("* Deploying Azure DevOps Repos  *");
             Console.WriteLine("*                               *");
             Console.WriteLine("*********************************");
 
@@ -95,37 +154,16 @@ namespace Deploy
             var bicepTempRepo = adoHelper.CreateRepository(bicepProject, "temp", true);
             adoHelper.RemoveRepository(bicepProject, "Bicep", isDefault: true);
             var bicepRepo = adoHelper.CreateRepository(bicepProject, "bicep");
-            adoHelper.CommitRepository(organization, bicepProject, bicepRepo, accessToken, path + "\\bicep");
+            adoHelper.CommitRepository(organization, bicepProject, bicepRepo, accessToken, path + "/bicep");
             adoHelper.RemoveRepository(bicepProject, "temp", isTemp: true);
 
             // Create Portal project
             var portalProject = adoHelper.CreateProject("Portal");
             var processorRepo = adoHelper.CreateRepository(portalProject, "processor");
-            adoHelper.CommitRepository(organization, portalProject, processorRepo, accessToken, path + "\\portal\\processor");
+            adoHelper.CommitRepository(organization, portalProject, processorRepo, accessToken, path + "/portal/processor");
             var webRepo = adoHelper.CreateRepository(portalProject, "web");
-            adoHelper.CommitRepository(organization, portalProject, webRepo, accessToken, path + "\\portal\\web");
+            adoHelper.CommitRepository(organization, portalProject, webRepo, accessToken, path + "/portal/web");
             adoHelper.RemoveRepository(portalProject, "Portal", isDefault: true);
-
-            Console.WriteLine();
-        }
-
-        static void DeployAzureTenant(string authFile, string subscriptionId, string path) {
-            var credentials = SdkContext.AzureCredentialsFactory.FromFile(authFile);
-
-            Console.WriteLine("*********************************");
-            Console.WriteLine("*                               *");
-            Console.WriteLine("* Deploying Azure Resources     *");
-            Console.WriteLine("*                               *");
-            Console.WriteLine("*********************************");
-
-            var azure = Azure
-                            .Configure()
-                            .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
-                            .Authenticate(credentials)
-                            .WithSubscription(subscriptionId);
-
-            var azureHelper = new AzureHelper(azure);
-            azureHelper.DeployTemplate(subscriptionId, path + "\\bicep");
 
             Console.WriteLine();
         }
