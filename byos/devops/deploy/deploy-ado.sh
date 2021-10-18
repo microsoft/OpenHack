@@ -116,6 +116,7 @@ ado_extensions_install(){
     # az devops extension show --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform" --output tsv --query version --only-show-errors; echo "$?"
     az devops extension install --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform"
     az devops extension install --publisher-id "mspremier" --extension-id "CreateWorkItem"
+    az devops extension install --publisher-id "CSE-DevOps" --extension-id "create-pr-comment-task"
 }
 
 ado_serviceconnection_create(){
