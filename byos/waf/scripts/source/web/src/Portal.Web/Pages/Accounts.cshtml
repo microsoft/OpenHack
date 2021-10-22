@@ -1,0 +1,70 @@
+﻿@page
+@using Portal.Data.Entities
+@model AccountsModel
+@{
+    Layout = "_LayoutAuth";
+    ViewData["Title"] = "Home";
+}
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="profile">
+                <div class="welcome">Welcome <div class="name">@string.Concat(this.Model.Profile.FirstName, " ", this.Model.Profile.LastName)</div></div>
+                @if (this.Model.Profile.LastLoginDate == DateTimeOffset.MinValue)
+                {
+                    <div class="lastLogin">Last Login: <em>Never</em></div>
+                } else {
+                    <div class="lastLogin">Last Login: @this.Model.Profile.LastLoginDate.ToString("MMM dd, yyyy hh:mm:ss tt")</div>
+                }
+            </div>
+            <h5 class="mt-5 mb-3">My Accounts</h5>
+            <div class="accountsList">
+            @foreach (var account in this.Model.Accounts)
+            {
+                <div class="row accountItem pt-3 pb-3">
+                    <div class="col acctNo"><span class="acctNo-inner">****@account.AccountNo.Substring(account.AccountNo.Length - 4)</span></div>
+                    <div class="col text-right acctInfo">@string.Format("{0:C}", account.CurrentBalance)<br /><span class="text">Available</span></div>
+                </div>        
+            }
+            </div>
+        </div>
+        <div class="col pt-4 pb-5 pl-0 pr-0 box-shadow bg-white register">
+            <div class="container pb-3">
+                <h2 class="mt-3 float-left">Debit Account <span class="col acctNo"><span class="acctNo-inner">****@this.Model.CurrentAccount.AccountNo.Substring(this.Model.CurrentAccount.AccountNo.Length - 4)</span></span></h2>
+                <h2 class="mt-3 float-right text-right"><span class="col acctInfo pr-0">@string.Format("{0:C}", this.Model.CurrentAccount.CurrentBalance)<br /><span class="text">Available</span></h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="transactions pl-0 pr-0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width:100px;">Date</th>
+                            <th class="text-left">Description</th>
+                            <th class="text-right" style="width:100px;">Deposits</th>
+                            <th class="text-right" style="width:100px;">Withdrawals</th>
+                            <th class="text-right" style="width:100px;">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var xtn in this.Model.Transactions)
+                        {
+                        <tr>
+                            <td class="text-center">@xtn.XtnDate.ToString("MMM dd")</td>
+                            <td>@xtn.Description</td>
+                            @if (xtn.XtnType == TransactionType.Credit) {
+                            <td class="text-right deposit">@string.Format("{0:C}", xtn.Amount)</td>
+                            <td class="text-right withdrawal"></td>
+                            } else {
+                            <td class="text-right deposit"></td>
+                            <td class="text-right withdrawal">-@string.Format("{0:C}", xtn.Amount)</td>
+                            }
+                            <td class="text-right">@string.Format("{0:C}", xtn.PostedBalance)</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
