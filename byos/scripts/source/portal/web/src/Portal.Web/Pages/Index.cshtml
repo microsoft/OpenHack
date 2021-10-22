@@ -1,0 +1,224 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div id="carousel-container" class="container-fluid" style="padding:0px;">
+    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carousel" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel" data-slide-to="1"></li>
+            <li data-target="#carousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block w-100" src="~/assets/1.jpeg" />
+                <div class="container">
+                    <div class="tagline pt-5">
+                        <h1 class="mb-4">Connecting all your banking needs</h1>
+                        <h4 class="mb-3">Making It Easy for You.</h4>
+                        <button type="button" class="btn btn-primary">Find out more</button>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="~/assets/2.jpeg" />
+                <div class="container">
+                    <div class="tagline pt-5">
+                        <h1 class="mb-4">Gives back to your community</h1>
+                        <h4 class="mb-3">Making It Easy for You.</h4>
+                        <button type="button" class="btn btn-primary">Find out more</button>
+                    </div>
+                </div>                
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="~/assets/3.jpeg" />
+                <div class="container">
+                    <div class="tagline pt-5">
+                        <h1 class="mb-4">Expand new possibilities with no hassle</h1>
+                        <h4 class="mb-3">Making It Easy for You.</h4>
+                        <button type="button" class="btn btn-primary">Find out more</button>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+<div class="gray-bg products">
+    <div class="container pt-5 pb-5">
+        <div class="text-center">
+            <h2>Presenting products and services that are right for you</h2>
+        </div>
+        <div class="row pt-5">
+            <div class="col-sm">
+                <i class="bi bi-bank"></i>
+                <h4 class="mt-4 mb-4">Online Business</h4>
+                Explore the power of simpler and smarter banking. Bank online with over 250 services.<br /><br />
+                <a href="#" class="dark">Apply Online</a>
+            </div>
+            <div class="col-sm">
+                <i class="bi bi-clipboard-data"></i>
+                <h4 class="mt-4 mb-4">Business Plan</h4>
+                Explore the power of simpler and smarter banking. Bank online with over 250 services.<br /><br />
+                <a href="#" class="dark">Take the first step</a>
+            </div>
+            <div class="col-sm">
+                <i class="bi bi-phone"></i>
+                <h4 class="mt-4 mb-4">Mobile Bank</h4>
+                Explore the power of simpler and smarter banking. Bank online with over 250 services.<br /><br />
+                <a href="#" class="dark">Find out more</a>
+            </div>
+            <div class="col-sm">
+                <i class="bi bi-globe"></i>
+                <h4 class="mt-4 mb-4">Online Deposit</h4>
+                Explore the power of simpler and smarter banking. Bank online with over 250 services.<br /><br />
+                <a href="#" class="dark">Learn More</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="business-banking">
+    <div class="container pt-5 pb-5">
+        <div class="text-center pb-5">
+            <h2>Business Banking</h2>
+        </div>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-link active" id="nav-basics-tab" data-toggle="tab" href="#nav-basics" role="tab" aria-controls="nav-basics" aria-selected="true">Investing Basics</a>
+                <a class="nav-link" id="nav-credit-tab" data-toggle="tab" href="#nav-credit" role="tab" aria-controls="nav-credit" aria-selected="false">Find a Credit Card</a>
+                <a class="nav-link" id="nav-payment-tab" data-toggle="tab" href="#nav-payment" role="tab" aria-controls="nav-payment" aria-selected="false">Payment Technologies</a>
+                <a class="nav-link" id="nav-benefits-tab" data-toggle="tab" href="#nav-benefits" role="tab" aria-controls="nav-benefits" aria-selected="false">Card Benefits</a>
+                <a class="nav-link" id="nav-wallets-tab" data-toggle="tab" href="#nav-wallets" role="tab" aria-controls="nav-wallets" aria-selected="false">Digital Wallets</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active pt-5 pb-5" id="nav-basics" role="tabpanel" aria-labelledby="nav-basics-tab">
+                <div class="row">
+                    <div class="col pr-5">
+                        <img src="~/assets/bb1.jpeg" />
+                    </div>
+                    <div class="col p-3">
+                        <h2 class="mb-5">Nothing is impossible. We  an help you achieve your goals!</h2>
+                        <span class="pitch">From the minimum amount of money needed to open an account to what types of investments to choose, we can help you start investing.</a>
+                        <br />
+                        <button type="button" class="btn btn-primary mt-5">Learn more</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade pt-5 pb-5" id="nav-credit" role="tabpanel" aria-labelledby="nav-credit-tab">
+                <div class="row">
+                    <div class="col pr-5">
+                        <img src="~/assets/bb2.jpeg" />
+                    </div>
+                    <div class="col p-3">
+                        <h2 class="mb-5">Find the card that's right for you. Explore the benefits.</h2>
+                        <span class="pitch">Our cards are designed to meet a diversity of customer needs. Talk to a represetative today to find the right one for you.</a>
+                        <br />
+                        <button type="button" class="btn btn-primary mt-5">Learn more</button>
+                    </div>
+                </div>                
+            </div>
+            <div class="tab-pane fade pt-5 pb-5" id="nav-payment" role="tabpanel" aria-labelledby="nav-payment-tab">
+                <div class="row">
+                    <div class="col pr-5">
+                        <img src="~/assets/bb3.jpeg" />
+                    </div>
+                    <div class="col p-3">
+                        <h2 class="mb-5">Transforming the way you pay. Explore new ways to pay.</h2>
+                        <span class="pitch">We offer an array of products that make it possible to pay anywhere, on any device. We’re bringing solutions to life to change the way you pay – through our innovative digital wallet service.</a>
+                        <br />
+                        <button type="button" class="btn btn-primary mt-5">Learn more</button>
+                    </div>
+                </div>                
+            </div>
+            <div class="tab-pane fade pt-5 pb-5" id="nav-benefits" role="tabpanel" aria-labelledby="nav-benefits-tab">
+                <div class="row">
+                    <div class="col pr-5">
+                        <img src="~/assets/bb4.jpeg" />
+                    </div>
+                    <div class="col p-3">
+                        <h2 class="mb-5">Debit and credit card protection tips to prevent financial fraud.</h2>
+                        <span class="pitch">Real-time identification of fraudulent activity by humans, or advanced bots or emulators. Our digital innovation can detect fraudulent access even when legitimate credentials are being used.</a>
+                        <br />
+                        <button type="button" class="btn btn-primary mt-5">Learn more</button>
+                    </div>
+                </div>                
+            </div>
+            <div class="tab-pane fade pt-5 pb-5" id="nav-wallets" role="tabpanel" aria-labelledby="nav-wallets-tab">
+                <div class="row">
+                    <div class="col pr-5">
+                        <img src="~/assets/bb5.jpeg" />
+                    </div>
+                    <div class="col p-3">
+                        <h2 class="mb-5">Privacy, innocation, and security in the digital payments world.</h2>
+                        <span class="pitch">Load credit, debit, reloadable prepaid or small business cards from participating Woodgrove Bank issuers. Your cards can be used across hundreds of thousands of supported merchants.</a>
+                        <br />
+                        <button type="button" class="btn btn-primary mt-5">Learn more</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="gray-bg news">
+    <div class="container pt-5 pb-5">
+        <div class="text-center pb-5">
+            <h2>Your news and information</h2>
+        </div>
+        <div class="row">
+            <div class="col">
+                <img src="~/assets/news1.jpeg" class="mb-4" />
+                <h5><a href="#">Relief Fund In Place At Woodgrove Bank: How You Can Help</a></h5>
+            </div>
+            <div class="col">
+                <img src="~/assets/news2.jpeg" class="mb-4" />
+                <h5><a href="#">When NOT Using Credit Cards Can Hurt You</a></h5>
+            </div>
+            <div class="col">
+                <img src="~/assets/news3.jpeg" class="mb-4" />
+                <h5><a href="#">Keep Your Children Safe from Financial Fraud</a></h5>
+            </div>
+            <div class="col">
+                <img src="~/assets/news4.jpeg" class="mb-4" />
+                <h5><a href="#">You're Making More Money. Here's How to Save</a></h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer-menu">
+    <div class="container pt-5 pb-5">
+        <div class="row pt-3 pb-5">
+            <div class="col-sm">
+                <h4 class="mb-4">Personal Banking</h4>
+                <a href="#">Personal Checking</a><br />
+                <a href="#">Personal Savings</a><br />
+                <a href="#">Personal Mortgages</a><br />
+                <a href="#">Personal Loans</a><br />
+                <a href="#">Personal Banking</a><br />
+            </div>
+            <div class="col-sm">
+                <h4 class="mb-4">Business Banking</h4>
+                <a href="#">Business Checking</a><br />
+                <a href="#">Business Loans</a><br />
+                <a href="#">Small Business Administration</a><br />
+                <a href="#">Additional Services</a><br />
+                <a href="#">E-Banking</a><br />
+            </div>
+            <div class="col-sm">
+                <h4 class="mb-4">Quick Links</h4>
+                <a href="#">About Woodgrove Bank</a><br />
+                <a href="#">Woodgrove Bank Services</a><br />
+                <a href="#">Credit Cards</a><br />
+                <a href="#">Woodgrove Bank Careers</a><br />
+            </div>
+            <div class="col-sm">
+                <h4 class="mb-4">News &amp; Blog</h4>
+                <a href="#">Woodgrove Bank Recent News</a><br />
+                <a href="#">Woodgrove Bank Blog</a><br />
+                <a href="#">Woodgrove Bank Marketing</a><br />
+                <a href="#">Woodgrove Bank FAQs</a><br />
+            </div>
+        </div>
+    </div>
+</div>

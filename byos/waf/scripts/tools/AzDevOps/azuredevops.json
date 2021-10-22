@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "devOpsOrgId": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "devOpsOrgNameUnique": "[concat('WAFOpenHack', parameters('devOpsOrgId'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.VisualStudio/account",
+            "apiVersion": "2014-02-26",
+            "name": "[variables('devOpsOrgNameUnique')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "tags": {},
+            "properties": {
+                "operationType": "Create",
+                "accountName": "[variables('devOpsOrgNameUnique')]"
+            },
+            "resources": []
+        }
+    ],
+    "outputs": {
+        "devOpsOrgName": {
+            "type": "string",
+            "value": "[variables('devOpsOrgNameUnique')]"
+        }
+    }
+}
