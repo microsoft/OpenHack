@@ -203,7 +203,7 @@ gh_create_repository_secrets(){
     _azure_parse_json
 
     _gh_create_repository_secret "ACTIONS_RUNNER_DEBUG" "${_organization_repository_fullname}" "false"
-    _gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
+    # _gh_create_repository_secret "RESOURCES_PREFIX" "${_organization_repository_fullname}" "${UNIQUE_NAME}"
     _gh_create_repository_secret "LOCATION" "${_organization_repository_fullname}" "${AZURE_LOCATION}"
     _gh_create_repository_secret "TFSTATE_RESOURCES_GROUP_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}staterg"
     _gh_create_repository_secret "TFSTATE_STORAGE_ACCOUNT_NAME" "${_organization_repository_fullname}" "${UNIQUE_NAME}statest"

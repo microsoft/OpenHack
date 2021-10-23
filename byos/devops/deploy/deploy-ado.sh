@@ -124,8 +124,8 @@ ado_serviceconnection_create(){
 
     ARM_SUBSCRIPTION_NAME=$(az account show --output tsv --query name)
     export AZURE_DEVOPS_EXT_AZURE_RM_SERVICE_PRINCIPAL_KEY="${ARM_CLIENT_SECRET}"
-    az devops service-endpoint azurerm create --name "AzureServiceConnection" --azure-rm-service-principal-id "${ARM_CLIENT_ID}" --azure-rm-subscription-id "${ARM_SUBSCRIPTION_ID}" --azure-rm-subscription-name "${ARM_SUBSCRIPTION_NAME}" --azure-rm-tenant-id "${ARM_TENANT_ID}"
-    # TODO: Grant access permission to all pipelines
+    id=$(az devops service-endpoint azurerm create --output tsv --query id --name "AzureServiceConnection" --azure-rm-service-principal-id "${ARM_CLIENT_ID}" --azure-rm-subscription-id "${ARM_SUBSCRIPTION_ID}" --azure-rm-subscription-name "${ARM_SUBSCRIPTION_NAME}" --azure-rm-tenant-id "${ARM_TENANT_ID}")
+    az devops service-endpoint update --id ${id} --enable-for-all true
 
     _azure_logout
 }
