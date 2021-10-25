@@ -67,7 +67,7 @@ resource web1vmFiles 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' =
     typeHandlerVersion: '1.7'
     autoUpgradeMinorVersion: true
     settings: {
-      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/Portal.Web.zip\' -OutFile Portal.Web.zip && powershell Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/Portal.Api.zip\' -OutFile Portal.Api.zip && powershell Expand-Archive -Path Portal.Web.zip -DestinationPath \'D:\\web\' && powershell Expand-Archive -Path Portal.Api.zip -DestinationPath \'D:\\api\''
+      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/Portal.Web.zip\' -OutFile Portal.Web.zip && powershell Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/Portal.Api.zip\' -OutFile Portal.Api.zip && powershell Expand-Archive -Path Portal.Web.zip -DestinationPath \'D:\\web\' && powershell Expand-Archive -Path Portal.Api.zip -DestinationPath \'D:\\api\''
     }
   }
 }
@@ -86,7 +86,7 @@ resource web1vmIIS 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
     autoUpgradeMinorVersion: true
     settings: {
       ConfigurationFunction: 'WindowsWebServer.ps1\\WindowsWebServer'
-      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/DSC/WindowsWebServer.zip'
+      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/WindowsWebServer.zip'
       Properties: {}
     }
     protectedSettings: {}
@@ -150,7 +150,7 @@ resource web2vmFiles 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' =
     typeHandlerVersion: '1.7'
     autoUpgradeMinorVersion: true
     settings: {
-      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/Portal.Web.zip\' -OutFile Portal.Web.zip && powershell Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/Portal.Api.zip\' -OutFile Portal.Api.zip && powershell Expand-Archive -Path Portal.Web.zip -DestinationPath \'D:\\web\' && powershell Expand-Archive -Path Portal.Api.zip -DestinationPath \'D:\\api\''
+      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/Portal.Web.zip\' -OutFile Portal.Web.zip && powershell Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/Portal.Api.zip\' -OutFile Portal.Api.zip && powershell Expand-Archive -Path Portal.Web.zip -DestinationPath \'D:\\web\' && powershell Expand-Archive -Path Portal.Api.zip -DestinationPath \'D:\\api\''
     }
   }
 }
@@ -169,7 +169,7 @@ resource web2vmIIS 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' = {
     autoUpgradeMinorVersion: true
     settings: {
       ConfigurationFunction: 'WindowsWebServer.ps1\\WindowsWebServer'
-      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/DSC/WindowsWebServer.zip'
+      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/WindowsWebServer.zip'
       Properties: {}
     }
     protectedSettings: {}
@@ -233,7 +233,7 @@ resource worker1vmFiles 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
     typeHandlerVersion: '1.7'
     autoUpgradeMinorVersion: true
     settings: {
-      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/Processor.zip\' -OutFile Processor.zip && powershell Expand-Archive -Path Processor.zip -DestinationPath \'D:\\jobs\''
+      commandToExecute: 'powershell.exe Invoke-WebRequest -Uri \'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/Processor.zip\' -OutFile Processor.zip && powershell Expand-Archive -Path Processor.zip -DestinationPath \'D:\\jobs\''
     }
   }
 }
@@ -252,7 +252,7 @@ resource worker1vmTasks 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
     autoUpgradeMinorVersion: true
     settings: {
       ConfigurationFunction: 'WorkerServer.ps1\\WorkerServer'
-      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/DSC/WorkerServer.zip'
+      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/WorkerServer.zip'
       Properties: {}
     }
     protectedSettings: {}
@@ -431,8 +431,8 @@ resource sqlsvr1sqlDatabase 'Microsoft.Compute/virtualMachines/extensions@2020-1
     autoUpgradeMinorVersion: true
     settings: {
       ConfigurationFunction: 'SqlServer.ps1\\SqlServer'
-      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/DSC/SqlServer.zip'
-      ConfigurationData: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/dsc/DSC/ConfigurationData.psd1'
+      ModulesUrl: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/SqlServer.zip'
+      ConfigurationData: 'https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/waf/source/DSC/ConfigurationData.psd1'
       Properties: [
         {
           Name: 'ServerCredential'

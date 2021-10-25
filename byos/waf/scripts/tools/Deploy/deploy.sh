@@ -1,5 +1,9 @@
 #!/bin/sh
 
+deviceLogin=false
+verbose=false
+manualPat=false
+
 while getopts u:p:s:t:dvm flag
 do
     case "${flag}" in
