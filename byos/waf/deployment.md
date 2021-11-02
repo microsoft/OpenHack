@@ -10,6 +10,31 @@ Because of the complexity of the deployment, it is _highly_ recommended to use D
 
 It is also worth noting that, unless limits have been increased, typical Azure tenants may not have the necessary compute allocation to deploy the initial resources.
 
+## Artifacts
+
+Beyond the deployment of the environments as described below, the following artifacts from the OpenHack _source_ should be deployed to their respective portal environment so that they are accessible to coaches and attendees during the event.
+
+### Coach's Portal
+
+The following artifacts should be deployed to the coach's portal:
+
+* Coach's Guides: `/resources/guides/challenges/**/*`
+* PowerPoint Decks
+    * Tech Scenario: `/resources/ppt/OpenHack_Tech Scenario_Attendee_Coach_Deck_WAF.pptx`
+    * Virtual Coach Standup: `/resources/ppt/OpenHack_Virtual_Coach Standup_WAF.pptx`
+    * Virtual Know Before You Go (KBYG) Coach Prep: `/resources/ppt/OpenHack_Virtual_KBYG.Coach Prep Deck_WAF.pptx`
+    * Virtual Opening Deck: `/resources/ppt/OpenHack_Virtual_Opening Deck_WAF.pptx`
+* Sample Issues: `/resources/Sample_Issues.docx`
+* Success Matrix: `/resources/successMatrix.xlsx`
+
+### Attendee's Portal
+
+The following artifacts should be deployed to the attendee's portal:
+
+* Woodgrove Bank WAF Assessment: `/tools/Woodgrove_Bank_Assessment_2021-08-31.docx`
+* Architecture Assessment Template: `/tools/Architecture_Assessment.docx`
+* k6 Demo and Documentation: `/tools/k6/**/*`
+
 ## Deployment
 
 Please fully read this section _prior to_ attempting a deployment. As stated above, Docker is recommended for deploying the OpenHack due to the deployment complexity. Therefore, all instructions will be based on this approach. Also, the Docker image is only required for _deployment_. Once the OpenHack has been deployed to your Azure and DevOps tenants, you can delete the local Docker image to reclaim space.
