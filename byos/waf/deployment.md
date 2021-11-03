@@ -29,7 +29,7 @@ The following artifacts should be deployed to the coach's portal:
 
 ### Attendee's Portal
 
-The following artifacts should be deployed to the attendee's portal:
+The following artifacts will be deployed to the public artifacts repo:
 
 * Woodgrove Bank WAF Assessment: `/tools/Woodgrove_Bank_Assessment_2021-08-31.docx`
 * Architecture Assessment Template: `/tools/Architecture_Assessment.docx`
@@ -39,50 +39,38 @@ The following artifacts should be deployed to the attendee's portal:
 
 Please fully read this section _prior to_ attempting a deployment. As stated above, Docker is recommended for deploying the OpenHack due to the deployment complexity. Therefore, all instructions will be based on this approach. Also, the Docker image is only required for _deployment_. Once the OpenHack has been deployed to your Azure and DevOps tenants, you can delete the local Docker image to reclaim space.
 
-Deployment can be accomplished two ways: fully-automated and semi-automated. Both approaches are shared in detail below. All available parameters are listed, as well. Finally, some examples are provided for different scenarios.
+All available parameters for deployments are listed below. Additionally, some examples are provided for different scenarios.
 
 >NOTE: During the deployment, generating the ARM template from the Bicep definition files will generate some warnings. This is expected and due to the Azure REST API not being updated.
 
-### Fully-automated deployment
-
-A fully-automated deployment **requires** that the one performing the deployment is a _Global Admin_ on the Azure tenant. This requirement is due to assigning the appropriate permissions (e.g. "admin consent") to the generated Azure AD app registrations. In a fully-automated deployment, the necessary app registrations are created automatically, are granted "admin consent," and a Personal Access Token (PAT) is automatically created in Azure DevOps.
-
-Unless you are the IT manager of your company or attempting to deploy the OpenHack artifacts to a _personal_ subscription, this approach will not be available to you and, therefore, you should follow the semi-automated deployment method.
-
-### Semi-automated deployment
-
-In a semi-automated deployment, only a single service principal is created with RBAC privileges in the Azure tenant. You will be required to create a PAT in Azure DevOps during the deployment process.
-
-A semi-automated deployment will be the necessary approach for most users, _including Microsoft employees_ wishing to deploy the OpenHack into their AIRS subscription.
+In a deployment, only a single service principal is created with RBAC privileges in the Azure tenant. You will be required to supply a pre-configured Azure DevOps tenant and a PAT for the deployment process.
 
 ### Stages of deployment
 
 The deployment has four basic stages:
 
-1) Create the required Azure identities
-2) Deploy an Azure DevOps tenant
-3) Deploy Azure portal artifacts
-4) Deploy Azure DevOps artifacts
+1) Create the required Azure identity
+2) Deploy Azure portal artifacts
+3) Deploy Azure DevOps artifacts
 
 ### Available parameters
 
-The Azure AD REST APIs, unfortunately, are inconsistent with the returned JWT tokens. Therefore, a few different endpoints are required for deployment. For this reason, you will notice below that your Azure AD username and password are always required regardless of using a username/password or device login.
+Azure AD username and password are always required if you are **NOT** using a device login.
 
 | Flag | Required | Description |
 | :--: | :------: | ----------- |
-| `-u` | **Yes** | Your Azure AD account email address. |
-| `-p` | **Yes** | Your Azure AD account password.<br /><br />NOTE: It may be helpful to enclose your password in single quotes if your password contains special characters. |
+| `-u` | | **REQUIRED IF NOT USING "Device Login."**<br />Your Azure AD account email address. |
+| `-p` | | **REQUIRED IF NOT USING "Device Login."**<br />Your Azure AD account password.<br /><br />NOTE: It may be helpful to enclose your password in single quotes if your password contains special characters. |
 | `-t` | **Yes** | Your Azure tenant unique ID (e.g., a GUID). |
-| `-s` | **Yes** | Your Azure subscription ID (e.g., a GUID). | |
+| `-s` | **Yes** | Your Azure subscription ID (e.g., a GUID). |
+| `-a` | **Yes** | The name of your pre-created Azure DevOps tenant. |
+| `-m` | **Yes** | Your _manually created_ Azure DevOps Personal Access Token (PAT). |
 | `-d` | | If your tenant requires multi-factor authentication (MFA), this flag is **required**. This will allow you to authenticate in a browser in order to run Azure CLI commands as MFA restricts username/password authentication via `az login`. |
-| `-m` | | If you are **NOT** a Global Admin on your Azure tenant, this flag is **required**. Setting this flag will provide you the opportunity to _manually_ create and apply an Azure DevOps PAT during the deployment process. |
 | `-v` | | Enables verbose logging. |
 
 ### Manually generating a Personal Access Token (PAT) in Azure DevOps
 
-If you are executing a semi-automated deployment (setting the `-m` flag), you will be prompted to create and provide a PAT _after the second stage_ of the deployment completes the creation of your Azure DevOps tenant.
-
-The deployment script will inform you of the name of your newly created tenant (e.g. WAFOpenHack###### ). You will need to create a PAT with the two permissions listed below. Note that it is not important what name you assign to the PAT or its expiration date. The only requirements are that the PAT is assigned to the newly-created organization and setting the two permissions:
+You will need to create a PAT with the two permissions listed below. Note that it is not important what name you assign to the PAT or its expiration date. The only requirements are that the PAT is assigned to your Azure DevOps organization and setting the two permissions:
 
 1) **Code** - _Full_
 2) **Project and Team** - _Read, write, & manage_
@@ -100,47 +88,29 @@ If you need help creating a PAT, review the [documentation](https://docs.microso
 Prior to running any of the below examples, you will need to first build an image. In the project's root folder execute the following:
 
 ```bash
-docker build -t wafopenhack
+docker build . -t wafopenhack
 ```
 
 This will create a Docker container image called _wafopenhack_. You can actually choose whatever you'd like for the name of the container. However, the examples below assumes that you've chosen this name for your image.
 
 > NOTE: Creating an image for the first time may take a few minutes and is largely dependent on how fast resources (other image layers) can be downloaded and the deployment application compiling.
 
-#### Fully-automated deployment
-
-Again, in order to execute this deployment you must be a _Global Admin_ on your Azure tenant _and_ MFA must **NOT** be required.
-
-```bash
-docker run -it wafopenhack -u <email> -p <password> -s <subscriptionId> -t <tenantId>
-```
-
 #### Using device login
 
 This approach is used for Azure AD tenants _requiring_ MFA authentication.
 
 ```bash
-docker run -it wafopenhack -u <email> -p <password> -s <subscriptionId> -t <tenantId> -d
+docker run -it wafopenhack -s <subscriptionId> -t <tenantId> -a <devOpsTenant> -m <PAT> -d
 ```
 
 Upon running this, you will be directed to a website where you will need to enter a code and authenticate. Upon successful authentication, the script will proceed.
 
-#### Using a manually-generated PAT
+#### Using a username and password
 
-This approach is used for Azure AD tenants _requiring_ MFA authentication.
-
-```bash
-docker run -it wafopenhack -u <email> -p <password> -s <subscriptionId> -t <tenantId> -m
-```
-
-As stated above, after your Azure DevOps tenant has been created, you will prompted to manually enter a PAT. Follow the requirements stated above for creating a PAT with the necessary permissions. Once, you've created the PAT, enter it at the prompt (copy and paste), then the deployment will continue.
-
-#### Microsoft AIRS subscriptions (for Microsoft employees)
-
-As stated previously, because of security limitations within the Microsoft tenant, you must use a combination of the device login and manually-generated PAT.
+This approach is used for Azure AD tenants _not_ requiring MFA authentication.
 
 ```bash
-docker run -it wafopenhack -u <email> -p <password> -s <subscriptionId> -t <tenantId> -d -m
+docker run -it wafopenhack -u <email> -p <password> -s <subscriptionId> -t <tenantId> -a <devOpsTenant> -m <PAT>
 ```
 
 ## Assistance

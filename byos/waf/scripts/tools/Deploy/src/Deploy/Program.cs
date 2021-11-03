@@ -17,6 +17,8 @@ namespace Deploy
             string authFile = string.Empty;
             string subscriptionId = string.Empty;
             string organizationId = GenerateOrgId();
+            // The following line was added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            string devops = string.Empty;
 
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(o =>
@@ -65,14 +67,28 @@ namespace Deploy
                     {
                         organizationId = o.OrganizationId;
                     }
+
+                      // The following lines were added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+                    if (!String.IsNullOrWhiteSpace(o.DevOps))
+                    {
+                        devops = o.DevOps.Replace("\"", "");
+                    }
                 });
 
             var azure = GenerateAzureInstance(authFile, subscriptionId);
-            DeployAzureDevOpsTenant(azure, subscriptionId, path, organizationId);
+        
+            // The following line was commented out by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            //DeployAzureDevOpsTenant(azure, subscriptionId, path, organizationId);
+
             var pat = GeneratePat(organizationId, accessToken);
 
             DeployAzureTenant(azure, subscriptionId, path + "/repos", organizationId);
-            DeployDevOps(pat, path + "/repos", organizationId);
+
+            // The following line was commented out by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            //DeployDevOps(pat, path + "/repos", organizationId);
+
+            // The following line was added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            DeployDevOps(pat, path + "/repos", devops);
         }
 
         static string GenerateOrgId()
@@ -96,16 +112,26 @@ namespace Deploy
             if (string.IsNullOrEmpty(accessToken))
             {
                 Console.WriteLine();
-                Console.Write($"Token not provided. Enter PAT manually (WAFOpenHack{orgId}): ");
+                // The following line was commented out by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+                //Console.Write($"Token not provided. Enter PAT manually (WAFOpenHack{orgId}): ");
+
+                // The following line was added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+                Console.Write($"Token not provided. Enter PAT manually: ");
                 accessToken = Console.ReadLine();
 
                 return accessToken;
             }
             else
             {
+                // The following lines were commented out by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+                /*
                 var azureHelper = new AzureHelper(null, null, orgId);
-
+                    
                 return azureHelper.GeneratePat(accessToken).Result;
+                */
+
+                // The following line was added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+                return accessToken;
             }
         }
 
@@ -140,7 +166,11 @@ namespace Deploy
         static void DeployDevOps(string accessToken, string path, string orgId)
         {
             var credentials = new VssBasicCredential(string.Empty, accessToken);
-            var organization = "WAFOpenHack" + orgId;
+            // The following line was commented out by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            // var organization = "WAFOpenHack" + orgId;
+
+            // The following line was added by JoshuaD due to no longer being able to deploy an Azure DevOps tenant via the Azure portal
+            var organization = orgId;
             var adoHelper = new AdoHelper(credentials, "https://dev.azure.com/" + organization);
 
             Console.WriteLine("*********************************");
