@@ -117,6 +117,8 @@ ado_extensions_install(){
     az devops extension install --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform"
     az devops extension install --publisher-id "mspremier" --extension-id "CreateWorkItem"
     az devops extension install --publisher-id "CSE-DevOps" --extension-id "create-pr-comment-task"
+    az devops extension install --publisher-id "Foxholenl" --extension-id "Gitleaks"
+    az devops extension install --publisher-id "sariftools" --extension-id "scans"
 }
 
 ado_serviceconnection_create(){
