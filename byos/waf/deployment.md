@@ -61,8 +61,8 @@ Azure AD username and password are always required if you are **NOT** using a de
 | :--: | :------: | ----------- |
 | `-u` | | **REQUIRED IF NOT USING "Device Login."**<br />Your Azure AD account email address. |
 | `-p` | | **REQUIRED IF NOT USING "Device Login."**<br />Your Azure AD account password.<br /><br />NOTE: It may be helpful to enclose your password in single quotes if your password contains special characters. |
-| `-t` | **Yes** | Your Azure tenant unique ID (e.g., a GUID). |
-| `-s` | **Yes** | Your Azure subscription ID (e.g., a GUID). |
+| `-t` | **Yes** | Your Azure tenant unique ID (for example, a GUID). |
+| `-s` | **Yes** | Your Azure subscription ID (for example, a GUID). |
 | `-a` | **Yes** | The name of your pre-created Azure DevOps tenant. |
 | `-m` | **Yes** | Your _manually created_ Azure DevOps Personal Access Token (PAT). |
 | `-d` | | If your tenant requires multi-factor authentication (MFA), this flag is **required**. This will allow you to authenticate in a browser in order to run Azure CLI commands as MFA restricts username/password authentication via `az login`. |
