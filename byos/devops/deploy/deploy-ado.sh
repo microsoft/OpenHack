@@ -81,7 +81,7 @@ fi
 # Check for programs
 declare -a commands=("az" "jq")
 check_commands "${commands[@]}"
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.29.0"
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.30.0"
 
 _azdevopsver=$(az extension show --only-show-errors --name azure-devops --output tsv --query version)
 if [ "${#_azdevopsver}" -eq 0 ]; then

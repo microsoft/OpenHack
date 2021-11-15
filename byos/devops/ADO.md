@@ -11,7 +11,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
 - [Azure DevOps organization](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/create-organization?view=azure-devops) with [Project Collection Administrators](https://docs.microsoft.com/en-us/azure/devops/organizations/security/lookup-organization-owner-admin?view=azure-devops#show-members-of-the-project-collection-administrators-group) membership
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
-- [Azure CLI 2.28.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
+- [Azure CLI 2.30.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
 > **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for the Azure DevOps deployment scenario.
@@ -79,7 +79,7 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 > **NOTE** New Azure DevOps organization dedicated only for the OpenHack is highly recommended!
 
-Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `Full Access`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
+Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `Build:Read & execute; Code:Full; Extensions:Read & manage; Marketplace:Acquire; Project and Team:Read, write, & manage; Release: Read, write, & manage; Service Connections:Read, query, & manage; Variable Groups:Read, create, & manage`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
 
 > **NOTE**
 >
