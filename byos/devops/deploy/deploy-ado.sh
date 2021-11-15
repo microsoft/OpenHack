@@ -10,7 +10,7 @@ declare TEAM_NAME=""
 declare AZURE_DEPLOYMENT=true
 
 declare -r ADO_ENDPOINT="https://dev.azure.com"
-declare -r REPO_TEMPLATE="https://github.com/Azure-Samples/openhack-devops-team"
+declare -r REPO_TEMPLATE="https://github.com/Microsoft-OpenHack/devops-artifacts"
 declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> -o <ADO_ORG_NAME> [-t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
 declare -r AZURE_SP_JSON="azuresp.json"

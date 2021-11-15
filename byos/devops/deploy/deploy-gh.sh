@@ -10,8 +10,8 @@ declare TEAM_NAME=""
 declare AZURE_DEPLOYMENT=true
 
 declare -r GITHUB_API_ENDPOINT="https://api.github.com"
-declare -r GITHUB_TEMPLATE_OWNER="Azure-Samples"
-declare -r GITHUB_TEMPLATE_REPO="openhack-devops-team"
+declare -r GITHUB_TEMPLATE_OWNER="Microsoft-OpenHack"
+declare -r GITHUB_TEMPLATE_REPO="devops-artifacts"
 declare -r NAME_PREFIX="devopsoh"
 declare -r USAGE_HELP="Usage: ./deploy-gh.sh -l <AZURE_LOCATION> [-o <GITHUB_ORG_NAME> -t <TEAM_NAME> -a <AZURE_DEPLOYMENT> true/false]"
 declare -r AZURE_SP_JSON="azuresp.json"
