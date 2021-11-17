@@ -246,13 +246,10 @@ _information "Creating Azure resources..."
 create_azure_resources
 
 _information "Creating organization repository..."
-echo "${organization_repository}"
 organization_repository=$(gh_create_organization_repository "${UNIQUE_NAME}")
 _organization_repository_fullname=$(echo "${organization_repository}" | jq -c -r '.full_name')
-echo "${_organization_repository_fullname}"
 
 _information "Creating GitHub team..."
-echo "${UNIQUE_NAME}"
 team=$(gh_create_team "${UNIQUE_NAME}" "${_organization_repository_fullname}")
 
 _information "Updating team repository permissions..."
