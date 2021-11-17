@@ -4,6 +4,7 @@ param vnet_name string
 param elb_name string
 param nsg_name string
 param storage_web string
+param storage_proc string
 param storage_sql string
 param web1vm_dnslabel string
 param web2vm_dnslabel string
@@ -39,6 +40,7 @@ module storage './storage.bicep' = {
   params: {
     region: region
     storageWeb: storage_web
+    storageProc: storage_proc
     storageSql: storage_sql
   }
 }

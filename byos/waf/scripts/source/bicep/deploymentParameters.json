@@ -20,6 +20,9 @@
       "storage_web": {
         "value": null
       },
+      "storage_proc": {
+        "value": null
+      },
       "storage_sql": {
         "value": null
       },

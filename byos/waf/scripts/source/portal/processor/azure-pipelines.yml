@@ -8,46 +8,89 @@ pool:
   workspace:
     clean: all
 
-jobs:
-- job: Job_0
+stages:
+- stage: BUILD
   displayName: 'Build and Test'
-  steps:
-  - task: DotNetCoreCLI@2
-    displayName: Nuget Restore
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
-      
-  - task: DotNetCoreCLI@2
-    displayName: 'Build'
-    inputs:
-      projects: '**/*.csproj'
-  
-  - task: DotNetCoreCLI@2
-    displayName: Test
-    inputs:
-      command: test
-      projects: '**/Processor.sln'
-      arguments: '--no-build --logger trx --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
-  
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage results'
-    inputs:
-      codeCoverageTool: cobertura
-      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+  jobs:
+  - job: 'Build'
+    displayName: 'Build and Test'
+    steps:
+    - checkout: self
+      displayName: 'Checkout source'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Build Processor Package'
-    inputs:
-      command: publish
-      publishWebProjects: False
-      projects: './src/Processor/Processor.csproj'
-      arguments: '-c Release -r win10-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)'
-      zipAfterPublish: True 
- 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Processor Artifact'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: drop
-    condition: succeeded()
+    - task: DotNetCoreCLI@2
+      displayName: Nuget Restore
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+        
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        projects: '**/*.csproj'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: '**/Processor.sln'
+        arguments: '--no-build --logger trx --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
+    
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage results'
+      inputs:
+        codeCoverageTool: cobertura
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Processor Package'
+      inputs:
+        command: publish
+        publishWebProjects: False
+        projects: './src/Processor/Processor.csproj'
+        arguments: '-c Release -r win10-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: True 
+  
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Processor Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: drop
+      condition: succeeded()
+- stage: PROD
+  displayName: 'Production'
+  dependsOn: 'BUILD'
+  variables:
+    - group: 'PROD'
+  jobs:
+  - deployment: 'Processor'
+    environment:
+      name: 'Prod'
+      resourceType: VirtualMachine
+      tags: 'prod,worker'
+    strategy:
+      rolling:
+        maxParallel: 1
+        deploy:
+          steps:
+            - task: ExtractFiles@1
+              displayName: 'Extract files'
+              inputs:
+                archiveFilePatterns: '$(Pipeline.Workspace)/drop/**/Processor.zip'
+                destinationFolder: '$(Pipeline.Workspace)/processor/'
+            - powershell: |
+                # JSON transform, load appsettings
+                $filePath = '$(Pipeline.Workspace)/processor/appsettings.json'
+                $json = (Get-Content -Path $filePath) | ConvertFrom-Json
+
+                # update settings
+                $json.ConnectionStrings.PortalContext = $env:PORTAL_CONTEXT
+
+                # save appsettings
+                $json | ConvertTo-Json | Set-Content $filePath
+              displayName: 'Transform settings'
+              env:
+                PORTAL_CONTEXT: $(ConnectionStrings.PortalContext)
+            - powershell: |
+                Get-ChildItem $(Pipeline.Workspace)/processor/ | Copy-Item -Destination D:/jobs
+              displayName: 'Copy files to "jobs" folder'

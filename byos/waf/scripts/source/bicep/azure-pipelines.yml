@@ -6,23 +6,77 @@ trigger:
 pool:
   vmImage: ubuntu-18.04
 
-jobs:
-- job: Job_0
-  displayName: 'Build ARM Package'
-  steps:
-  - bash: |
-     curl -Lo bicep.bin https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
-     chmod +x ./bicep.bin
-    displayName: 'Install Azure Bicep'
+variables:
+- name: armServiceConnectionName
+  value: 'NAME_OF_YOUR_SERVICE_CONNECTION'
 
-  - bash: |
-     bicep build --outdir $(Build.ArtifactStagingDirectory) main.bicep
-     cp deploymentParameters.json $(Build.ArtifactStagingDirectory)
+stages:
+- stage: BUILD
+  displayName: 'Build'
+  jobs:
+  - job: 'Build'
     displayName: 'Build ARM Template'
- 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish ARM Artifact'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: drop
-    condition: succeeded()
+    steps:
+    - checkout: self
+      displayName: 'Checkout source'
+
+    - bash: |
+        curl -Lo bicep.bin https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+        chmod +x ./bicep.bin
+      displayName: 'Install Azure Bicep'
+
+    - bash: |
+        bicep build --outdir $(Build.ArtifactStagingDirectory) main.bicep
+        cp deploymentParameters.json $(Build.ArtifactStagingDirectory)
+      displayName: 'Build ARM template'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish ARM artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: drop
+      condition: succeeded()
+- stage: PROD
+  displayName: 'Production'
+  variables: 
+    - group: 'PROD'
+  jobs:
+  - deployment: 'ARM_Template'
+    displayName: 'Deploy ARM Template'
+    environment: 'Prod'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: '$(armServiceConnectionName)'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az group create -n '$(resourceGroup)' -l '$(region)'
+                az deployment group create -g $(resourceGroup) -n $(deploymentName) \
+                  --template-file $(Pipeline.Workspace)/drop/main.json \
+                  --parameters \
+                    resource_group_name='$(resourceGroup)' \
+                    region='$(region)' \
+                    vnet_name='$(vnetName)' \
+                    elb_name='$(elbName)' \
+                    nsg_name='$(nsgName)' \
+                    storage_web='$(storageWeb)' \
+                    storage_proc='$(storageProc)' \
+                    storage_sql='$(storageSql)' \
+                    web1vm_dnslabel='$(web1vmDnsLabel)' \
+                    web2vm_dnslabel='$(web2vmDnsLabel)' \
+                    worker1vm_dnslabel='$(worker1vmDnsLabel)' \
+                    sqlsvr1vm_dnslabel='$(sqlsvr1vmDnsLabel)' \
+                    external_load_balancer_dnslabel='$(elbDnsLabel)' \
+                    admin_username='$(adminUsername)' \
+                    admin_password=$ADMIN_PASSWORD \
+                    sql_admin_username='$(sqlAdminUsername)' \
+                    sql_admin_password=$SQL_ADMIN_PASSWORD
+            env:
+              ADMIN_PASSWORD: $(adminPassword)
+              SQL_ADMIN_PASSWORD: $(sqlAdminPassword)
+            displayName: 'Deploy ARM template to Azure'
+  

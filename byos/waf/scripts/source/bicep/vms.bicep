@@ -423,6 +423,7 @@ resource sqlsvr1sqlDatabase 'Microsoft.Compute/virtualMachines/extensions@2020-1
   location: region
   dependsOn: [
     sqlsvr1vm
+    sqlsvr1sql
   ]
   properties: {
     publisher: 'Microsoft.Powershell'

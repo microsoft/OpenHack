@@ -8,62 +8,108 @@ pool:
   workspace:
     clean: all
 
-jobs:
-- job: Job_0
+stages:
+- stage: BUILD
   displayName: 'Build and Test'
-  steps:
-  - task: DotNetCoreCLI@2
-    displayName: Nuget Restore
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
-      
-  - task: DotNetCoreCLI@2
-    displayName: 'Build'
-    inputs:
-      projects: '**/*.csproj'
-  
-  - task: DotNetCoreCLI@2
-    displayName: Test
-    inputs:
-      command: test
-      projects: '**/PortalWebApp.sln'
-      arguments: '--no-build --logger trx --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
-  
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage results'
-    inputs:
-      codeCoverageTool: cobertura
-      summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+  jobs:
+  - job: 'Build'
+    displayName: 'Build and Test'
+    steps:
+    - checkout: self
+      displayName: 'Checkout source'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Build Web Package'
-    inputs:
-      command: publish
-      publishWebProjects: True
-      projects: './src/Portal.Web/Portal.Web.csproj'
-      arguments: '--output $(Build.ArtifactStagingDirectory)/web'
-      zipAfterPublish: True
+    - task: DotNetCoreCLI@2
+      displayName: Nuget Restore
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+        
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        projects: '**/*.csproj'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: '**/PortalWebApp.sln'
+        arguments: '--no-build --logger trx --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura,opencover'
+    
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage results'
+      inputs:
+        codeCoverageTool: cobertura
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Build Api Package'
-    inputs:
-      command: publish
-      publishWebProjects: False
-      projects: './src/Portal.Api/Portal.Api.csproj'
-      arguments: '--output $(Build.ArtifactStagingDirectory)/api'
-      zipAfterPublish: True
-  
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Web Artifact'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/web'
-      ArtifactName: drop
-    condition: succeeded()
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Web Package'
+      inputs:
+        command: publish
+        publishWebProjects: True
+        projects: './src/Portal.Web/Portal.Web.csproj'
+        arguments: '--output $(Build.ArtifactStagingDirectory)/web'
+        zipAfterPublish: True
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Api Artifact'
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
-      ArtifactName: drop
-    condition: succeeded()
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Api Package'
+      inputs:
+        command: publish
+        publishWebProjects: False
+        projects: './src/Portal.Api/Portal.Api.csproj'
+        arguments: '--output $(Build.ArtifactStagingDirectory)/api'
+        zipAfterPublish: True
+    
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Web Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/web'
+        ArtifactName: drop
+      condition: succeeded()
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Api Artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
+        ArtifactName: drop
+      condition: succeeded()
+- stage: PROD
+  displayName: 'Production'
+  dependsOn: 'BUILD'
+  variables:
+    - group: 'PROD'
+  jobs:
+  - deployment: 'WEB'
+    displayName: 'Deploy Web'
+    environment: 
+      name: 'Prod'
+      resourceType: VirtualMachine
+      tags: 'prod,web'
+    strategy:
+      rolling:
+        maxParallel: 1
+        deploy:
+          steps:
+            - task: IISWebAppDeploymentOnMachineGroup@0
+              displayName: 'Deploying Website'
+              inputs:
+                WebSiteName: 'WoodgroveBankUI'
+                Package: '$(Pipeline.Workspace)/drop/**/Portal.Web.zip'
+                TakeAppOfflineFlag: true
+  - deployment: 'API'
+    displayName: 'Deploy Api'
+    environment:
+      name: 'Prod'
+      resourceType: VirtualMachine
+      tags: 'prod,api'      
+    strategy:
+      rolling:
+        maxParallel: 1
+        deploy:
+          steps:
+            - task: IISWebAppDeploymentOnMachineGroup@0
+              displayName: 'Deploying API'
+              inputs:
+                WebSiteName: 'WoodgroveBankAPI'
+                Package: '$(Pipeline.Workspace)/drop/**/Portal.API.zip'
+                TakeAppOfflineFlag: true
