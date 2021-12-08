@@ -142,7 +142,7 @@ resource web2vmFiles 'Microsoft.Compute/virtualMachines/extensions@2020-12-01' =
   name: 'web2/DownloadWebFiles'
   location: region
   dependsOn: [
-    web1vm
+    web2vm
   ]
   properties: {
     publisher: 'Microsoft.Compute'
@@ -225,7 +225,7 @@ resource worker1vmFiles 'Microsoft.Compute/virtualMachines/extensions@2020-12-01
   name: 'worker1/DownloadWebFiles'
   location: region
   dependsOn: [
-    web1vm
+    worker1vm
   ]
   properties: {
     publisher: 'Microsoft.Compute'

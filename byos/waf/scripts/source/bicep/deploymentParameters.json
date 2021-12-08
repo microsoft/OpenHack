@@ -2,55 +2,49 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "resource_group_name": {
-        "value": null
-      },
       "region": {
         "value": null
       },
-      "vnet_name": {
+      "vnetName": {
         "value": null
       },
-      "elb_name": {
+      "elbName": {
         "value": null
       },
-      "nsg_name": {
+      "storageWeb": {
         "value": null
       },
-      "storage_web": {
+      "storageProc": {
         "value": null
       },
-      "storage_proc": {
+      "storageSql": {
         "value": null
       },
-      "storage_sql": {
+      "web1vmDnsLabel": {
         "value": null
       },
-      "web1vm_dnslabel": {
+      "web2vmDnsLabel": {
         "value": null
       },
-      "web2vm_dnslabel": {
+      "worker1vmDnsLabel": {
         "value": null
       },
-      "worker1vm_dnslabel": {
+      "sqlsvr1vmDnsLabel": {
         "value": null
       },
-      "sqlsvr1vm_dnslabel": {
+      "elbDnsLabel": {
         "value": null
       },
-      "external_load_balancer_dnslabel": {
+      "adminUsername": {
         "value": null
       },
-      "admin_username": {
+      "adminPassword": {
         "value": null
       },
-      "admin_password": {
+      "sqlAdminUsername": {
         "value": null
       },
-      "sql_admin_username": {
-        "value": null
-      },
-      "sql_admin_password": {
+      "sqlAdminPassword": {
         "value": null
       }
     }

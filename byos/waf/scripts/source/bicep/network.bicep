@@ -1,7 +1,6 @@
 param region string
 param vnetName string
 param elbName string
-param nsgName string
 param web1vmDnslabel string
 param web2vmDnslabel string
 param worker1vmDnslabel string
@@ -47,7 +46,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 }
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
-  name: nsgName
+  name: 'nsg-webapp'
   location: region
   properties: {
     securityRules: [

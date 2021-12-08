@@ -89,22 +89,21 @@ namespace Deploy
             var armTemplateString = File.ReadAllText(templateFileName);
             var parsedTemplate = JObject.Parse(armTemplateString);
 
-            parsedTemplate.SelectToken("parameters.resource_group_name")["defaultValue"] = "webapp";
-            parsedTemplate.SelectToken("parameters.region")["defaultValue"] = "eastus";
-            parsedTemplate.SelectToken("parameters.vnet_name")["defaultValue"] = "vnet-webapp";
-            parsedTemplate.SelectToken("parameters.elb_name")["defaultValue"] = "elbwebapp";
-            parsedTemplate.SelectToken("parameters.nsg_name")["defaultValue"] = "nsg-webapp";
-            parsedTemplate.SelectToken("parameters.storage_web")["defaultValue"] = "storwoodgroveweb" + _orgId;
-            parsedTemplate.SelectToken("parameters.storage_sql")["defaultValue"] = "storwoodgrovesql" + _orgId;
-            parsedTemplate.SelectToken("parameters.web1vm_dnslabel")["defaultValue"] = "woodgroveweb1" + _orgId;
-            parsedTemplate.SelectToken("parameters.web2vm_dnslabel")["defaultValue"] = "woodgroveweb2" + _orgId;
-            parsedTemplate.SelectToken("parameters.worker1vm_dnslabel")["defaultValue"] = "woodgroveworker1" + _orgId;
-            parsedTemplate.SelectToken("parameters.sqlsvr1vm_dnslabel")["defaultValue"] = "woodgrovesql1" + _orgId;
-            parsedTemplate.SelectToken("parameters.external_load_balancer_dnslabel")["defaultValue"] = "woodgroveelb" + _orgId;
-            parsedTemplate.SelectToken("parameters.admin_username")["defaultValue"] = "cloudadmin";
-            parsedTemplate.SelectToken("parameters.admin_password")["defaultValue"] = "Pass@word1234!";
-            parsedTemplate.SelectToken("parameters.sql_admin_username")["defaultValue"] = "cloudsqladmin";
-            parsedTemplate.SelectToken("parameters.sql_admin_password")["defaultValue"] = "(Pass@word)1234!";
+            parsedTemplate.SelectToken("parameters.region")["defaultValue"] = "eastus2";
+            parsedTemplate.SelectToken("parameters.vnetName")["defaultValue"] = "vnet-webapp";
+            parsedTemplate.SelectToken("parameters.elbName")["defaultValue"] = "elbwebapp";
+            parsedTemplate.SelectToken("parameters.storageWeb")["defaultValue"] = "storwdgrvweb" + _orgId;
+            parsedTemplate.SelectToken("parameters.storageProc")["defaultValue"] = "storwdgrvproc" + _orgId;
+            parsedTemplate.SelectToken("parameters.storageSql")["defaultValue"] = "storwdgrvsql" + _orgId;
+            parsedTemplate.SelectToken("parameters.web1vmDnsLabel")["defaultValue"] = "woodgroveweb1" + _orgId;
+            parsedTemplate.SelectToken("parameters.web2vmDnsLabel")["defaultValue"] = "woodgroveweb2" + _orgId;
+            parsedTemplate.SelectToken("parameters.worker1vmDnsLabel")["defaultValue"] = "woodgroveworker1" + _orgId;
+            parsedTemplate.SelectToken("parameters.sqlsvr1vmDnsLabel")["defaultValue"] = "woodgrovesql1" + _orgId;
+            parsedTemplate.SelectToken("parameters.elbDnsLabel")["defaultValue"] = "woodgroveelb" + _orgId;
+            parsedTemplate.SelectToken("parameters.adminUsername")["defaultValue"] = "cloudadmin";
+            parsedTemplate.SelectToken("parameters.adminPassword")["defaultValue"] = "Pass@word1234!";
+            parsedTemplate.SelectToken("parameters.sqlAdminUsername")["defaultValue"] = "cloudsqladmin";
+            parsedTemplate.SelectToken("parameters.sqlAdminPassword")["defaultValue"] = "(Pass@word)1234!";
 
             return parsedTemplate.ToString();
         }

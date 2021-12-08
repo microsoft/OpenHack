@@ -1,62 +1,56 @@
-param resource_group_name string
 param region string
-param vnet_name string
-param elb_name string
-param nsg_name string
-param storage_web string
-param storage_proc string
-param storage_sql string
-param web1vm_dnslabel string
-param web2vm_dnslabel string
-param worker1vm_dnslabel string
-param sqlsvr1vm_dnslabel string
-param external_load_balancer_dnslabel string
-param admin_username string
+param vnetName string
+param elbName string
+param storageWeb string
+param storageProc string
+param storageSql string
+param web1vmDnsLabel string
+param web2vmDnsLabel string
+param worker1vmDnsLabel string
+param sqlsvr1vmDnsLabel string
+param elbDnsLabel string
+param adminUsername string
 @secure()
-param admin_password string
-param sql_admin_username string
+param adminPassword string
+param sqlAdminUsername string
 @secure()
-param sql_admin_password string
-
-module network './network.bicep' = {
-  name: 'network'
-  scope: resourceGroup(resource_group_name)
-  params: {
-    region: region
-    vnetName: vnet_name
-    elbName: elb_name
-    nsgName: nsg_name
-    web1vmDnslabel: web1vm_dnslabel
-    web2vmDnslabel: web2vm_dnslabel
-    worker1vmDnslabel: worker1vm_dnslabel
-    sqlsvr1vmDnslabel: sqlsvr1vm_dnslabel
-    elbDnsLabel: external_load_balancer_dnslabel
-  }
-}
+param sqlAdminPassword string
 
 module storage './storage.bicep' = {
   name: 'storage'
-  scope: resourceGroup(resource_group_name)
   params: {
     region: region
-    storageWeb: storage_web
-    storageProc: storage_proc
-    storageSql: storage_sql
+    storageWeb: storageWeb
+    storageProc: storageProc
+    storageSql: storageSql
+  }
+}
+
+module network './network.bicep' = {
+  name: 'network'
+  params: {
+    region: region
+    vnetName: vnetName
+    elbName: elbName
+    web1vmDnslabel: web1vmDnsLabel
+    web2vmDnslabel: web2vmDnsLabel
+    worker1vmDnslabel: worker1vmDnsLabel
+    sqlsvr1vmDnslabel: sqlsvr1vmDnsLabel
+    elbDnsLabel: elbDnsLabel
   }
 }
 
 module vms './vms.bicep' = {
   name: 'vms'
-  scope: resourceGroup(resource_group_name)
   params: {
     region: region
     web1vmNicId: network.outputs.web1vmNicId
     web2vmNicId: network.outputs.web2vmNicId
     worker1vmNicId: network.outputs.worker1vmNicId
     sqlsvr1vmNicId: network.outputs.sqlsvr1vmNicId
-    adminUsername: admin_username
-    adminPassword: admin_password
-    sqlAdminUsername: sql_admin_username
-    sqlAdminPassword: sql_admin_password
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    sqlAdminUsername: sqlAdminUsername
+    sqlAdminPassword: sqlAdminPassword
   }
 }

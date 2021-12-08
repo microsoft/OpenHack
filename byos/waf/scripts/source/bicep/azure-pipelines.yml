@@ -54,27 +54,25 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az group create -n '$(resourceGroup)' -l '$(region)'
-                az deployment group create -g $(resourceGroup) -n $(deploymentName) \
+                az group create -n '$(resourceGroup)-$(region)' -l '$(region)'
+                az deployment group create -g '$(resourceGroup)-$(region)' -n $(deploymentName) \
                   --template-file $(Pipeline.Workspace)/drop/main.json \
                   --parameters \
-                    resource_group_name='$(resourceGroup)' \
                     region='$(region)' \
-                    vnet_name='$(vnetName)' \
-                    elb_name='$(elbName)' \
-                    nsg_name='$(nsgName)' \
-                    storage_web='$(storageWeb)' \
-                    storage_proc='$(storageProc)' \
-                    storage_sql='$(storageSql)' \
-                    web1vm_dnslabel='$(web1vmDnsLabel)' \
-                    web2vm_dnslabel='$(web2vmDnsLabel)' \
-                    worker1vm_dnslabel='$(worker1vmDnsLabel)' \
-                    sqlsvr1vm_dnslabel='$(sqlsvr1vmDnsLabel)' \
-                    external_load_balancer_dnslabel='$(elbDnsLabel)' \
-                    admin_username='$(adminUsername)' \
-                    admin_password=$ADMIN_PASSWORD \
-                    sql_admin_username='$(sqlAdminUsername)' \
-                    sql_admin_password=$SQL_ADMIN_PASSWORD
+                    vnetName='$(vnetName)' \
+                    elbName='$(elbName)' \
+                    storageWeb='$(storageWeb)' \
+                    storageProc='$(storageProc)' \
+                    storageSql='$(storageSql)' \
+                    web1vmDnsLabel='$(web1vmDnsLabel)' \
+                    web2vmDnsLabel='$(web2vmDnsLabel)' \
+                    worker1vmDnsLabel='$(worker1vmDnsLabel)' \
+                    sqlsvr1vmDnsLabel='$(sqlsvr1vmDnsLabel)' \
+                    elbDnsLabel='$(elbDnsLabel)' \
+                    adminUsername='$(adminUsername)' \
+                    adminPassword=$ADMIN_PASSWORD \
+                    sqlAdminUsername='$(sqlAdminUsername)' \
+                    sqlAdminPassword=$SQL_ADMIN_PASSWORD
             env:
               ADMIN_PASSWORD: $(adminPassword)
               SQL_ADMIN_PASSWORD: $(sqlAdminPassword)
