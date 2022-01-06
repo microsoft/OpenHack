@@ -112,6 +112,11 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 ./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>]
 ```
 
+> **IMPORTANT!**
+>
+> Please keep default parameters (parameters mentioned in brackets []) for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+>
+
 > **Defaults for optional parameters**
 >
 > -o GitHubOrgName = CSE-OpenHackContent

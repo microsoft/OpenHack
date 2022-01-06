@@ -109,6 +109,11 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 ./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName> -a <AzureDeployment>]
 ```
 
+> **IMPORTANT!**
+>
+> Please keep default parameters (parameters mentioned in brackets []) for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+>
+
 > **NOTES**
 >
 > ADO supported regions and thus valid arguments for `AzureLocation` are:
