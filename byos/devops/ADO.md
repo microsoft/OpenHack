@@ -95,6 +95,13 @@ export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
 
 ### Deployment
 
+Make deployment script executable.
+
+```bash
+chmod +x deploy-ado.sh
+chmod +x semver2.sh
+```
+
 Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 
 > **NOTE**

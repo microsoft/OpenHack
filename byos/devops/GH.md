@@ -98,6 +98,13 @@ export GITHUB_TOKEN="<GitHubPAT>"
 
 ### Deployment
 
+Make deployment script executable.
+
+```bash
+chmod +x deploy-gh.sh
+chmod +x semver2.sh
+```
+
 Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
