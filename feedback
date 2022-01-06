@@ -1,2 +1,0 @@
-- It's not clear what sholud be created by deploy-gh.sh and how to check it 
-- senver2.sh doesn't have exec permission (./_helpers.sh: line 44: ./semver2.sh: Permission denied)
