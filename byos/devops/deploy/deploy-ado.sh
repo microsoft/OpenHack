@@ -81,13 +81,13 @@ fi
 # Check for programs
 declare -a commands=("az" "jq")
 check_commands "${commands[@]}"
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.30.0"
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.32.0"
 
 _azdevopsver=$(az extension show --only-show-errors --name azure-devops --output tsv --query version)
 if [ "${#_azdevopsver}" -eq 0 ]; then
     az extension add --name azure-devops
 else
-    _semver=$(./semver2.sh "${_azdevopsver}" "0.20.0")
+    _semver=$(./semver2.sh "${_azdevopsver}" "0.22.0")
     if [ "${_semver}" -lt 0 ]; then
         az extension update --name azure-devops
     fi
