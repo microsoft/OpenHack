@@ -82,7 +82,7 @@ fi
 # Check for programs
 declare -a commands=("az" "jq" "gh" "curl")
 check_commands "${commands[@]}"
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.30.0"
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.32.0"
 
 # Call GitHub API helper
 _gh_call_api() {

@@ -11,8 +11,8 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [Azure Subscription](https://azure.microsoft.com/) with [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles) role
 - [GitHub Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations) within [GitHub Enterprise Cloud](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-enterprise) with [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
-- [Azure CLI 2.30.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
-- [GitHub CLI 2.2.0](https://cli.github.com/) or higher
+- [Azure CLI 2.32.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
+- [GitHub CLI 2.4.0](https://cli.github.com/) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
 > **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **not supported** for GitHub deployment scenario.
@@ -98,6 +98,13 @@ export GITHUB_TOKEN="<GitHubPAT>"
 
 ### Deployment
 
+Make deployment script executable.
+
+```bash
+chmod +x deploy-gh.sh
+chmod +x semver2.sh
+```
+
 Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
@@ -111,6 +118,11 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 ```bash
 ./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>]
 ```
+
+> **IMPORTANT!**
+>
+> Please keep default parameters (parameters mentioned in brackets []) for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+>
 
 > **Defaults for optional parameters**
 >
