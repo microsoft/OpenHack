@@ -19,7 +19,12 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 ### GitHub Organization membership
 
-Make sure your OpenHack team members are part of a dedicated GitHub Organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
+Each OpenHack team will create **their own GitHub team within the GitHub organization that has already been created for all DevOps OpenHacks**.
+
+- Coaches should be added to the GitHub organization prior each OpenHack. This is managed by the OpenHack program team.
+- External coaches may need assistance accessing the GitHub organization. They should contact the OpenHack program team for support before the OpenHack delivery.
+
+Make sure your OpenHack team members are part of a dedicated GitHub organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
 
 ## Expected resources
 
