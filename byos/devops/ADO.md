@@ -16,6 +16,8 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 > **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for the Azure DevOps deployment scenario.
 
+> **NOTE:** If your team consists only Microsoft employees, and you have chosen Azure DevOps, then use only Microsoft tenant for new ADO organization
+
 ## Expected resources
 
 ### azuresp.json
