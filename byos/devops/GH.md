@@ -87,14 +87,6 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`.
 
-> **GitHub Personal Access Token authorization for use with SAML single sign-on**
->
-> If the GitHub organization you are planing on using to provision the environment uses SAML single sign-on (SSO) you must first authorize the token to access this organization. Follow this guide on how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
->
-> **Note** The deployment script uses a repository template from a Microsoft organization that has the SAML Signle Sign On enabled so you need to authorize your PAT for the Microsoft organization.
->
-> ![GH PAT SSQ](images/gh-pat-sso.png)
-
 Then set environment variable `GITHUB_TOKEN` with generated token.
 
 ```bash
