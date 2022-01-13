@@ -112,7 +112,7 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 >
 > If you are unsure, go to the Organization Settings page and check Region value.
 >
-> Organization Settings page: `https://dev.azure.com/<YourAdoOrgName>/_setting`
+> Organization Settings page: `https://dev.azure.com/<YourAdoOrgName>/_settings`
 
 ```bash
 ./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName> -a <AzureDeployment>]
@@ -143,6 +143,10 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 > -t TeamName = randomly generated number with 5 digits
 >
 > -a AzureDeployment = true (deploy Azure resources, if false, then just configure Azure DevOps)
+
+Example end of the output from `deploy-ado.sh` script
+
+![End of Azure DevOps Deployment](images/ado-deploy-end.png)
 
 ### Azure post-deployment steps
 
