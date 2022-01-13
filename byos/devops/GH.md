@@ -85,7 +85,7 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 ### GitHub pre-deployment steps
 
-Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`.
+Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, user, write:discussion, read:enterprise`.
 
 Then set environment variable `GITHUB_TOKEN` with generated token.
 
@@ -128,6 +128,10 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > -t TeamName = randomly generated number with 5 digits
 >
 > -a AzureDeployment = true (deploy Azure resources, if false, then just configure GitHub)
+
+Example end of the output from `deploy-gh.sh` script
+
+![End of GitHub Deployment](images/gh-deploy-end.png)
 
 ### Azure post-deployment steps
 
