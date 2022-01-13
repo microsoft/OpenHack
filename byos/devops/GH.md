@@ -19,7 +19,12 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 ### GitHub Organization membership
 
-Make sure your OpenHack team members are part of a dedicated GitHub Organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
+Each OpenHack team will create **their own GitHub team within the GitHub organization that has already been created for all DevOps OpenHacks**.
+
+- Coaches should be added to the GitHub organization prior each OpenHack. This is managed by the OpenHack program team.
+- External coaches may need assistance accessing the GitHub organization. They should contact the OpenHack program team for support before the OpenHack delivery.
+
+Make sure your OpenHack team members are part of a dedicated GitHub organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
 
 ## Expected resources
 
@@ -81,14 +86,6 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 ### GitHub pre-deployment steps
 
 Login to your [GitHub](https://github.com) account and [Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope: `repo, workflow, admin:org, admin:public_key, delete_repo, write:discussion, read:enterprise`.
-
-> **GitHub Personal Access Token authorization for use with SAML single sign-on**
->
-> If the GitHub organization you are planing on using to provision the environment uses SAML single sign-on (SSO) you must first authorize the token to access this organization. Follow this guide on how to do it: [Authorizing a personal access token for use with SAML single sign-on](https://docs.github.com/en/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on)
->
-> **Note** The deployment script uses a repository template from a Microsoft organization that has the SAML Signle Sign On enabled so you need to authorize your PAT for the Microsoft organization.
->
-> ![GH PAT SSQ](images/gh-pat-sso.png)
 
 Then set environment variable `GITHUB_TOKEN` with generated token.
 
