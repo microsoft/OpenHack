@@ -21,9 +21,9 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 Each OpenHack team will create **their own GitHub team within the GitHub organization that has already been created for all DevOps OpenHacks**.
 
-- Tech Lead should be added to the GitHub organization prior each OpenHack. This is managed by the OpenHack Program Team.
-- Coaches should be added to the GitHub organization prior each OpenHack. This is managed by the OpenHack Tech Lead.
-- Attendees should be added to the GitHub organization at the beginning on each OpenHack. This is managed by the OpenHack Team Coach.
+- **Tech Lead** should be added to the GitHub organization prior to each OpenHack by the Open Hack **Program Team**.
+- **Coaches** should be added to the GitHub organization prior each OpenHack by the OpenHack **Tech Lead**.
+- **Attendees** should be added to the GitHub organization at the beginning on each OpenHack by the **Coach**.
 
 Make sure your OpenHack team members are part of a dedicated GitHub organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
 
@@ -148,8 +148,8 @@ Add OpenHack team members to GitHub Team, follow guide: [Adding organization mem
 
 After OpenHack, clean up GitHub Organization by removing OpenHack team members from the GitHub Organization.
 
-- Attendees should be removed from the GitHub organization at the end of each OpenHack. This is managed by the OpenHack Team Coach.
-- Coaches should be removed from the GitHub organization after each OpenHack. This is managed by the OpenHack Tech Lead.
-- Tech Lead should be removed from the GitHub organization after each OpenHack. This is managed by the OpenHack Program Team.
+- **Attendees** should be removed from the GitHub organization at the end of each OpenHack by the **Coach**.
+- **Coaches** should be removed from the GitHub organization after each OpenHack by the OpenHack **Tech Lead**.
+- **Tech Lead** should be removed from the GitHub organization after each OpenHack by the OpenHack **Program Team**.
 
 Follow this guide on how to do it: [Removing a member from your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/removing-a-member-from-your-organization#revoking-the-users-membership)
