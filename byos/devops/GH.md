@@ -15,7 +15,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [GitHub CLI 2.4.0](https://cli.github.com/) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **not supported** for GitHub deployment scenario.
+> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for GitHub deployment scenario.
 
 ### GitHub Organization membership
 
@@ -96,6 +96,18 @@ export GITHUB_TOKEN="<GitHubPAT>"
 
 ### Deployment
 
+Clone GitHub repo with BYOS resources.
+
+```bash
+git clone https://github.com/microsoft/OpenHack.git
+```
+
+Go to DevOps OpenHack deployments scripts.
+
+```bash
+cd OpenHack/byos/devops/deploy
+```
+
 Make deployment script executable.
 
 ```bash
@@ -112,15 +124,14 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > **NOTE**
 >
 > For Azure Location, `koreasouth`, `westindia`, `australiacentral` are not supported!
-
-```bash
-./deploy-gh.sh -l <AzureLocation> [-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>]
-```
-
+>
 > **IMPORTANT!**
 >
-> Please keep default parameters (parameters mentioned in brackets []) for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
->
+> The deploy script contains optional parameters `-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>`. Please keep default parameters and do not set yours for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+
+```bash
+./deploy-gh.sh -l <AzureLocation>
+```
 
 > **Defaults for optional parameters**
 >
@@ -140,6 +151,8 @@ Add OpenHack team members to Azure Subscription with **Contributor** role, follo
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
 ### GitHub post-deployment steps
+
+Note your Team name - you can find it under deploy script summary like `Team Name: devopsoh12345`, where **12345** is a random number.
 
 Add OpenHack team members to GitHub Team, follow guide: [Adding organization members to a team
 ](https://docs.github.com/en/organizations/organizing-members-into-teams/adding-organization-members-to-a-team)

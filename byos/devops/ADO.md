@@ -97,6 +97,18 @@ export AZURE_DEVOPS_EXT_PAT="<AzureDevOpsPAT>"
 
 ### Deployment
 
+Clone GitHub repo with BYOS resources.
+
+```bash
+git clone https://github.com/microsoft/OpenHack.git
+```
+
+Go to DevOps OpenHack deployments scripts.
+
+```bash
+cd OpenHack/byos/devops/deploy
+```
+
 Make deployment script executable.
 
 ```bash
@@ -113,15 +125,14 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 > If you are unsure, go to the Organization Settings page and check Region value.
 >
 > Organization Settings page: `https://dev.azure.com/<YourAdoOrgName>/_settings`
-
-```bash
-./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName> [-t <TeamName> -a <AzureDeployment>]
-```
-
+>
 > **IMPORTANT!**
 >
-> Please keep default parameters (parameters mentioned in brackets []) for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
->
+> The deploy script contains optional parameters `-t <TeamName> -a <AzureDeployment>`. Please keep default parameters and do not set yours for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+
+```bash
+./deploy-ado.sh -l <AzureLocation> -o <AdoOrgName>
+```
 
 > **NOTES**
 >
