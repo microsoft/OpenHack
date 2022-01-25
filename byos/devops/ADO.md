@@ -14,7 +14,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [Azure CLI 2.32.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is supported for the Azure DevOps deployment scenario.
+> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for the Azure DevOps deployment scenario and it's recommended solution.
 
 > **NOTE:** If your team consists only Microsoft employees, and you have chosen Azure DevOps, then use only Microsoft tenant for new ADO organization
 
@@ -51,7 +51,7 @@ The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal cr
 
 ### Azure pre-deployment steps
 
-Login to your Azure Subscription.
+Login to your Azure Subscription (You can skip this step if you are using Cloud Shell for deployment).
 
 ```bash
 az login
