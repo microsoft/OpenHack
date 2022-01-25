@@ -15,7 +15,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [GitHub CLI 2.4.0](https://cli.github.com/) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for GitHub deployment scenario.
+> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for GitHub deployment scenario, and it's recomended solution.
 
 ### GitHub Organization membership
 
@@ -60,7 +60,7 @@ The `deploy-gh.sh` script creates `azuresp.json` file with Service Principal cre
 
 ### Azure pre-deployment steps
 
-Login to your Azure Subscription.
+Login to your Azure Subscription (You can skip this step if you are using Cloud Shell for deployment).
 
 ```bash
 az login
