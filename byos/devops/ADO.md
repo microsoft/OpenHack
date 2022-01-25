@@ -14,7 +14,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [Azure CLI 2.32.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
-> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for the Azure DevOps deployment scenario and it's recomended solution.
+> **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for the Azure DevOps deployment scenario and it's recommended solution.
 
 > **NOTE:** If your team consists only Microsoft employees, and you have chosen Azure DevOps, then use only Microsoft tenant for new ADO organization
 
