@@ -51,6 +51,10 @@ The `deploy-ado.sh` script creates `azuresp.json` file with Service Principal cr
 
 ### Azure pre-deployment steps
 
+Open Cloud Shell.
+
+Go to: [shell.azure.com](https://shell.azure.com)
+
 Login to your Azure Subscription (You can skip this step if you are using Cloud Shell for deployment).
 
 ```bash
