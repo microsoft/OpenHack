@@ -5,7 +5,7 @@ source _helpers.sh
 source _common.sh
 
 declare AZURE_LOCATION=""
-declare GITHUB_ORG_NAME="CSE-OpenHackContent"
+declare GITHUB_ORG_NAME="DevOpsOpenHack"
 declare TEAM_NAME=""
 declare AZURE_DEPLOYMENT=true
 

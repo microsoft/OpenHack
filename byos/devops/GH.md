@@ -21,6 +21,8 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 
 Each OpenHack team will create **their own GitHub team within the GitHub organization that has already been created for all DevOps OpenHacks**.
 
+Default GitHub Org for this OpenHack is: [DevOpsOpenHack](https://github.com/DevOpsOpenHack)
+
 - **Tech Lead** should be added to the GitHub organization prior to each OpenHack by the Open Hack **Program Team**.
 - **Coaches** should be added to the GitHub organization prior each OpenHack by the OpenHack **Tech Lead**.
 - **Attendees** should be added to the GitHub organization at the beginning on each OpenHack by the **Coach**.
@@ -176,7 +178,7 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **Defaults for optional parameters**
 >
-> -o GitHubOrgName = CSE-OpenHackContent
+> -o GitHubOrgName = DevOpsOpenHack
 >
 > -t TeamName = randomly generated number with 5 digits
 >
