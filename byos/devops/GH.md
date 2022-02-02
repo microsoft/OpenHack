@@ -127,7 +127,44 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
 >
-> For Azure Location, `koreasouth`, `westindia`, `australiacentral` are not supported!
+> For Azure Location, `koreasouth`, `westindia`, `australiacentral`, `australiacentral2`, `brazilsoutheast`, `francesouth`, `germanynorth`, `swedencentral`, `swedensouth`, `uaecentral`, `centraluseuap`, `eastus2euap`, `norwaywest`, `southafricawest`, `westcentralus` are not supported!
+>
+> Supported regions arguments for `AzureLocation` are:
+>
+> - eastus
+> - eastus2
+> - southcentralus
+> - westus
+> - westus2
+> - westus3
+> - australiaeast
+> - southeastasia
+> - northeurope
+> - uksouth
+> - westeurope
+> - centralus
+> - northcentralus
+> - southafricanorth
+> - centralindia
+> - eastasia
+> - japaneast
+> - jioindiawest
+> - koreacentral
+> - canadacentral
+> - southindia
+> - francecentral
+> - germanywestcentral
+> - norwayeast
+> - switzerlandnorth
+> - uaenorth
+> - brazilsouth
+> - australiasoutheast
+> - japanwest
+> - jioindiacentral
+> - outhindia
+> - canadaeast
+> - switzerlandwest
+> - ukwest
 >
 > **IMPORTANT!**
 >
