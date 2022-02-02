@@ -59,7 +59,7 @@ if [ ${#AZURE_LOCATION} -eq 0 ]; then
     exit 1
 fi
 
-declare -a unsupported_azure_regions=("koreasouth" "westindia" "australiacentral")
+declare -a unsupported_azure_regions=("koreasouth" "westindia" "australiacentral" "australiacentral2" "brazilsoutheast" "francesouth" "germanynorth" "swedencentral" "swedensouth" "uaecentral" "centraluseuap" "eastus2euap" "norwaywest" "westcentralus" "southafricawest")
 if [[ "${unsupported_azure_regions[*]}" =~ "${AZURE_LOCATION}" ]]; then
     _error "Provided region (${AZURE_LOCATION}) is not supported."
     _error "Unsupported regions:"
