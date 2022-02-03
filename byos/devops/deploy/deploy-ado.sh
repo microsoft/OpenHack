@@ -81,7 +81,7 @@ fi
 # Check for programs
 declare -a commands=("az" "jq")
 check_commands "${commands[@]}"
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.32.0"
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.33.0"
 
 _azdevopsver=$(az extension show --only-show-errors --name azure-devops --output tsv --query version)
 if [ "${#_azdevopsver}" -eq 0 ]; then
@@ -157,7 +157,11 @@ save_details() {
         --arg teamUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams" \
         --arg repoUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' >"${DETAILS_FILE}"
+        --arg TFSTATE_RESOURCES_GROUP_NAME "${UNIQUE_NAME}staterg" \
+        --arg TFSTATE_STORAGE_ACCOUNT_NAME "${UNIQUE_NAME}statest" \
+        --arg TFSTATE_STORAGE_CONTAINER_NAME "tfstate" \
+        --arg TFSTATE_KEY "terraform.tfstate" \
+        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState, TFSTATE_RESOURCES_GROUP_NAME: $TFSTATE_RESOURCES_GROUP_NAME, TFSTATE_STORAGE_ACCOUNT_NAME: $TFSTATE_STORAGE_ACCOUNT_NAME, TFSTATE_STORAGE_CONTAINER_NAME: $TFSTATE_STORAGE_CONTAINER_NAME, TFSTATE_KEY: $TFSTATE_KEY}' >"${DETAILS_FILE}"
 }
 
 # EXECUTE
