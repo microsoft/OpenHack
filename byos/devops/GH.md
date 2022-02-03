@@ -12,7 +12,7 @@ This lab deploys to a single resource group within an Azure subscription. To dep
 - [GitHub Organization](https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations) within [GitHub Enterprise Cloud](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-enterprise) with [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security)
 - Linux Bash ([Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) works too)
 - [Azure CLI 2.32.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux) or higher
-- [GitHub CLI 2.4.0](https://cli.github.com/) or higher
+- [GitHub CLI 2.5.0](https://cli.github.com/) or higher
 - [jq 1.5](https://stedolan.github.io/jq/download/) or higher
 
 > **NOTE** [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) is **supported** for GitHub deployment scenario, and it's recommended solution.

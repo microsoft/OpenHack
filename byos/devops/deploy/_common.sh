@@ -1,6 +1,23 @@
 check_azuresp_json() {
     if [ ! -f "${AZURE_SP_JSON}" ]; then
-        az ad sp create-for-rbac --sdk-auth --role Owner > "${AZURE_SP_JSON}"
+        az ad sp create-for-rbac --role Owner --output json >"${AZURE_SP_JSON}"
+
+        _azure_parse_json
+        export ARM_SUBSCRIPTION_ID=$(az account show --output tsv --query id)
+        # workaround for --sdk-auth deprecation to keep backwards compatibility
+        echo "${_azuresp_json}" | jq \
+            --arg clientId "$ARM_CLIENT_ID" \
+            --arg clientSecret "$ARM_CLIENT_SECRET" \
+            --arg subscriptionId "$ARM_SUBSCRIPTION_ID" \
+            --arg tenantId "$ARM_TENANT_ID" \
+            --arg activeDirectoryEndpointUrl "https://login.microsoftonline.com" \
+            --arg resourceManagerEndpointUrl "https://management.azure.com/" \
+            --arg activeDirectoryGraphResourceId "https://graph.windows.net/" \
+            --arg sqlManagementEndpointUrl "https://management.core.windows.net:8443/" \
+            --arg galleryEndpointUrl "https://gallery.azure.com/" \
+            --arg managementEndpointUrl "https://management.core.windows.net/" \
+            '.clientId = $clientId | .clientSecret = $clientSecret | .subscriptionId = $subscriptionId | .tenantId = $tenantId | .activeDirectoryEndpointUrl = $activeDirectoryEndpointUrl | .resourceManagerEndpointUrl = $resourceManagerEndpointUrl | .activeDirectoryGraphResourceId = $activeDirectoryGraphResourceId | .sqlManagementEndpointUrl = $sqlManagementEndpointUrl | .galleryEndpointUrl = $galleryEndpointUrl | .managementEndpointUrl = $managementEndpointUrl' >"${AZURE_SP_JSON}"
+
         # wait for the token to sync across aad
         sleep 60
     fi

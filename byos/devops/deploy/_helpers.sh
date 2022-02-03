@@ -52,8 +52,7 @@ check_tool_semver() {
 check_commands() {
     local _commands=("$@")
 
-    for _command in "${_commands[@]}"
-    do
+    for _command in "${_commands[@]}"; do
         _information "Checking ${_command} command ..."
         if ! [ -x "$(command -v ${_command})" ]; then
             _error "${_command} is not installed!"

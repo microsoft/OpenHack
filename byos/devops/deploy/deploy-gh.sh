@@ -197,7 +197,7 @@ _gh_create_repository_secret() {
     gh secret set "${_repository_secret_name}" -b "${_value}" --repo "${_repository_full_name}"
 }
 
-gh_create_repository_secrets(){
+gh_create_repository_secrets() {
     local _organization_repository_fullname="$1"
 
     _azure_parse_json
@@ -216,11 +216,11 @@ gh_create_repository_secrets(){
     _gh_create_repository_secret "ARM_TENANT_ID" "${_organization_repository_fullname}" "${ARM_TENANT_ID}"
 }
 
-gh_logout(){
+gh_logout() {
     export GITHUB_TOKEN=0
 }
 
-save_details(){
+save_details() {
     local _board_url="$1"
     local _team_url="$2"
     local _repo_url="$3"
@@ -232,7 +232,7 @@ save_details(){
         --arg teamUrl "${_team_url}" \
         --arg repoUrl "${_repo_url}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
+        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' >"${DETAILS_FILE}"
 }
 
 # EXECUTE

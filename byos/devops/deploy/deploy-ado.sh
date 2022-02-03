@@ -99,20 +99,20 @@ fi
 #     echo  "${AZURE_DEVOPS_EXT_PAT}" | az devops login --organization "${ADO_ENDPOINT}/${ADO_ORG_NAME}"
 # }
 
-ado_config_defaults(){
+ado_config_defaults() {
     az devops configure --defaults organization="${ADO_ENDPOINT}/${ADO_ORG_NAME}" project="${UNIQUE_NAME}"
 }
 
-ado_project_create(){
+ado_project_create() {
     az devops project create --name "${UNIQUE_NAME}" --visibility private --process Agile
 }
 
-ado_repo_import(){
+ado_repo_import() {
     az repos import create --repository "${UNIQUE_NAME}" --git-source-url "${REPO_TEMPLATE}"
     az repos update --repository "${UNIQUE_NAME}" --default-branch main
 }
 
-ado_extensions_install(){
+ado_extensions_install() {
     # az devops extension show --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform" --output tsv --query version --only-show-errors; echo "$?"
     az devops extension install --publisher-id "charleszipp" --extension-id "azure-pipelines-tasks-terraform"
     az devops extension install --publisher-id "mspremier" --extension-id "CreateWorkItem"
@@ -121,7 +121,7 @@ ado_extensions_install(){
     az devops extension install --publisher-id "sariftools" --extension-id "scans"
 }
 
-ado_serviceconnection_create(){
+ado_serviceconnection_create() {
     _azure_login
 
     ARM_SUBSCRIPTION_NAME=$(az account show --output tsv --query name)
@@ -132,7 +132,7 @@ ado_serviceconnection_create(){
     _azure_logout
 }
 
-ado_variablegroup_create(){
+ado_variablegroup_create() {
     az pipelines variable-group create --name "openhack" --variables \
         LOCATION="${AZURE_LOCATION}" \
         RESOURCES_PREFIX="${UNIQUE_NAME}"
@@ -143,12 +143,12 @@ ado_variablegroup_create(){
         TFSTATE_KEY="terraform.tfstate"
 }
 
-ado_logout(){
+ado_logout() {
     # az devops logout
     export AZURE_DEVOPS_EXT_PAT=0
 }
 
-save_details(){
+save_details() {
     jq -n \
         --arg teamName "${UNIQUE_NAME}" \
         --arg orgName "${ADO_ORG_NAME}" \
@@ -157,7 +157,7 @@ save_details(){
         --arg teamUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/${UNIQUE_NAME}/_settings/teams" \
         --arg repoUrl "${ADO_ENDPOINT}/${ADO_ORG_NAME}/_git/${UNIQUE_NAME}" \
         --arg azRgTfState "https://portal.azure.com/#resource/subscriptions/${ARM_SUBSCRIPTION_ID}/resourceGroups/${UNIQUE_NAME}staterg/overview" \
-        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' > "${DETAILS_FILE}"
+        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState}' >"${DETAILS_FILE}"
 }
 
 # EXECUTE
