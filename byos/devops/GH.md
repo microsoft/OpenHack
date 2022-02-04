@@ -23,9 +23,9 @@ Each OpenHack team will create **their own GitHub team within the GitHub organiz
 
 Default GitHub Org for this OpenHack is: [DevOpsOpenHack](https://github.com/DevOpsOpenHack)
 
-- **Tech Lead** should be added to the GitHub organization prior to each OpenHack by the Open Hack **Program Team**.
-- **Coaches** should be added to the GitHub organization prior each OpenHack by the OpenHack **Tech Lead**.
-- **Attendees** should be added to the GitHub organization at the beginning on each OpenHack by the **Coach**.
+- **Tech Lead** should be added to the GitHub organization prior to each OpenHack by the Open Hack **Program Team** with *Owner* role.
+- **Coaches** should be added to the GitHub organization prior each OpenHack by the OpenHack **Tech Lead** with *Owner* role.
+- **Attendees** should be added to the GitHub organization at the beginning on each OpenHack by the **Coach**  with *Member* role.
 
 Make sure your OpenHack team members are part of a dedicated GitHub organization. If not, then invite them. Follow this guide on how to do it: [Inviting users to join your organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
 
@@ -125,13 +125,11 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 
 > **NOTE**
 >
-> When running on Windows in WSL, ensure that all \*.sh files use correct line endings (`LF`), because the default behavior when cloning files on Windows is to switch to CRLF. That can cause issues when running the deployment script (`-bash: ./deploy-gh.sh: /bin/bash^M: bad interpreter: No such file or directory`).
-
-> **NOTE**
+> - When running on Windows in WSL, ensure that all \*.sh files use correct line endings (`LF`), because the default behavior when cloning files on Windows is to switch to CRLF. That can cause issues when running the deployment script (`-bash: ./deploy-gh.sh: /bin/bash^M: bad interpreter: No such file or directory`).
 >
-> For Azure Location, `koreasouth`, `westindia`, `australiacentral`, `australiacentral2`, `brazilsoutheast`, `francesouth`, `germanynorth`, `swedencentral`, `swedensouth`, `uaecentral`, `centraluseuap`, `eastus2euap`, `norwaywest`, `southafricawest`, `westcentralus` are not supported!
+> - For Azure Location, `koreasouth`, `westindia`, `australiacentral`, `australiacentral2`, `brazilsoutheast`, `francesouth`, `germanynorth`, `swedencentral`, `swedensouth`, `uaecentral`, `centraluseuap`, `eastus2euap`, `norwaywest`, `southafricawest`, `westcentralus` are not supported!
 >
-> Supported regions arguments for `AzureLocation` are:
+> - Supported regions arguments for `AzureLocation` are:
 >
 > - eastus
 > - eastus2
@@ -167,10 +165,8 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > - canadaeast
 > - switzerlandwest
 > - ukwest
->
-> **IMPORTANT!**
->
-> The deploy script contains optional parameters `-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>`. Please keep default parameters and do not set yours for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
+
+> **IMPORTANT!** The deploy script contains optional parameters `-o <GitHubOrgName> -t <TeamName> -a <AzureDeployment>`. Please keep default parameters and do not set yours for official OpenHack events. However, you can adjust them to your needs for self-paced independent runs.
 
 ```bash
 ./deploy-gh.sh -l <AzureLocation>
