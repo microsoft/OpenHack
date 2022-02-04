@@ -3,13 +3,13 @@
 # Includes
 source _helpers.sh
 source _common.sh
+source _gh.sh
 
 declare AZURE_LOCATION=""
 declare GITHUB_ORG_NAME="DevOpsOpenHack"
 declare TEAM_NAME=""
 declare AZURE_DEPLOYMENT=true
 
-declare -r GITHUB_API_ENDPOINT="https://api.github.com"
 declare -r GITHUB_TEMPLATE_OWNER="Microsoft-OpenHack"
 declare -r GITHUB_TEMPLATE_REPO="devops-artifacts"
 declare -r NAME_PREFIX="devopsoh"
@@ -83,37 +83,6 @@ fi
 declare -a commands=("az" "jq" "gh" "curl")
 check_commands "${commands[@]}"
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.32.0"
-
-# Call GitHub API helper
-_gh_call_api() {
-    local _api_request_type="$1"
-    local _api_uri="$2"
-    local _api_body="$3"
-    local _api_preview="$4"
-
-    if [ -n "${_api_preview}" ]; then
-        _accept_header="application/vnd.github.${_api_preview}+json"
-    else
-        _accept_header="application/vnd.github.v3+json"
-    fi
-
-    if [ "${_api_request_type}" == "GET" ]; then
-        _response=$(curl --silent --compressed --location --request "${_api_request_type}" \
-            --header "Accept: ${_accept_header}" \
-            --header 'Content-Type: application/json; charset=utf-8' \
-            --header "Authorization: token ${GITHUB_TOKEN}" \
-            "${_api_uri}")
-    else
-        _response=$(curl --silent --compressed --location --request "${_api_request_type}" \
-            --header "Accept: ${_accept_header}" \
-            --header 'Content-Type: application/json; charset=utf-8' \
-            --header "Authorization: token ${GITHUB_TOKEN}" \
-            "${_api_uri}" \
-            --data-raw "${_api_body}")
-    fi
-
-    echo "${_response}"
-}
 
 # CREATE AN ORGANIZATION REPOSITORY
 # https://docs.github.com/en/rest/reference/repos#create-a-repository-using-a-template
