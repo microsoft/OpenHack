@@ -79,7 +79,7 @@ if [ -z ${AZURE_DEVOPS_EXT_PAT+x} ]; then
 fi
 
 # Check for programs
-declare -a commands=("az" "jq")
+declare -a commands=("az" "jq" "ssh-keygen")
 check_commands "${commands[@]}"
 check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.32.0"
 
@@ -148,6 +148,29 @@ ado_logout() {
     export AZURE_DEVOPS_EXT_PAT=0
 }
 
+# ADO VMSS Agents
+
+deploy_adovmsswinagent() {
+    declare -r WINPASS=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:alnum:][:punct:]' | cut -c -16)
+    az deployment sub create --name "winagent${UNIQUER}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file adovmssagent/main.bicep --parameters uniquer="${UNIQUER}" os="win" adminPasswordOrKey="${WINPASS}"
+}
+
+deploy_adovmsslnxagent() {
+    prvKeyPath="$(pwd)/id_rsa"
+    pubKeyPath="$(pwd)/id_rsa.pub"
+
+    ssh-keygen -m PEM -t rsa -b 4096 -f "${prvKeyPath}" -N '' <<<$'\ny' >/dev/null 2>&1
+
+    if [ -f "${prvKeyPath}" ] && [ -f "${pubKeyPath}" ]; then
+        privateSshKey=$(<"${prvKeyPath}")
+        publicSshKey=$(<"${pubKeyPath}")
+    else
+        echo >&2 "Provate SSH key file or public SSH key file not exist, please check!"
+        exit 1
+    fi
+    az deployment sub create --name "lnxagent${UNIQUER}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file adovmssagent/main.bicep --parameters uniquer="${UNIQUER}" os="lnx" adminPasswordOrKey="${publicSshKey}"
+}
+
 save_details() {
     jq -n \
         --arg teamName "${UNIQUE_NAME}" \
@@ -161,7 +184,8 @@ save_details() {
         --arg TFSTATE_STORAGE_ACCOUNT_NAME "${UNIQUE_NAME}statest" \
         --arg TFSTATE_STORAGE_CONTAINER_NAME "tfstate" \
         --arg TFSTATE_KEY "terraform.tfstate" \
-        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState, TFSTATE_RESOURCES_GROUP_NAME: $TFSTATE_RESOURCES_GROUP_NAME, TFSTATE_STORAGE_ACCOUNT_NAME: $TFSTATE_STORAGE_ACCOUNT_NAME, TFSTATE_STORAGE_CONTAINER_NAME: $TFSTATE_STORAGE_CONTAINER_NAME, TFSTATE_KEY: $TFSTATE_KEY}' >"${DETAILS_FILE}"
+        --arg WINPASS "${WINPASS}" \
+        '{teamName: $teamName, orgName: $orgName, boardUrl: $boardUrl, projectUrl: $projectUrl, teamUrl: $teamUrl, repoUrl: $repoUrl, azRgTfState: $azRgTfState, TFSTATE_RESOURCES_GROUP_NAME: $TFSTATE_RESOURCES_GROUP_NAME, TFSTATE_STORAGE_ACCOUNT_NAME: $TFSTATE_STORAGE_ACCOUNT_NAME, TFSTATE_STORAGE_CONTAINER_NAME: $TFSTATE_STORAGE_CONTAINER_NAME, TFSTATE_KEY: $TFSTATE_KEY, WINPASS: $WINPASS}' >"${DETAILS_FILE}"
 }
 
 # EXECUTE
@@ -171,29 +195,35 @@ get_unique_name
 _information "Checking for ${AZURE_SP_JSON} file..."
 check_azuresp_json
 
-_information "Creating Azure resources..."
-create_azure_resources
+# _information "Creating Azure resources..."
+# create_azure_resources
 
-_information "Configuring ADO defaults..."
-ado_config_defaults
+# _information "Configuring ADO defaults..."
+# ado_config_defaults
 
-_information "Configuring ADO project..."
-ado_project_create
+# _information "Configuring ADO project..."
+# ado_project_create
 
-_information "Importing template repo..."
-ado_repo_import
+# _information "Importing template repo..."
+# ado_repo_import
 
-_information "instaling ADO extensions..."
-ado_extensions_install
+# _information "instaling ADO extensions..."
+# ado_extensions_install
 
-_information "Creating ADO service connecton..."
-ado_serviceconnection_create
+# _information "Creating ADO service connecton..."
+# ado_serviceconnection_create
 
-_information "Creating ADO variable groups..."
-ado_variablegroup_create
+# _information "Creating ADO variable groups..."
+# ado_variablegroup_create
 
-_information "ADO logout..."
-ado_logout
+# _information "ADO logout..."
+# ado_logout
+
+_information "Deploying ADO VMSS Windows Agent..."
+deploy_adovmsswinagent
+
+_information "Deploying ADO VMSS Linux Agent..."
+deploy_adovmsslnxagent
 
 _information "Saving details to ${DETAILS_FILE} file..."
 save_details

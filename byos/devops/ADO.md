@@ -168,6 +168,12 @@ Example end of the output from `deploy-ado.sh` script
 Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
+#### Setup Azure DevOps private agents (optional)
+
+Acording to Azure Pipelines Grant anoncments for [private](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-private-projects/) and [public](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-public-projects/) project, you may not be able to access hosted agents.
+
+If this is the case for you, the deployment script deploys private agents based on VM Scale Sets (Windows & Linux). So your role is just to create agent pools based on this guide: [Create the scale set agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/scale-set-agents?view=azure-devops#create-the-scale-set-agent-pool)
+
 ### Azure DevOps post-deployment steps
 
 Add OpenHack team members to Azure DevOps Project Team, follow guide: [Add users or groups to a team](https://docs.microsoft.com/en-us/azure/devops/organizations/security/add-users-team-project?view=azure-devops&tabs=preview-page#add-users-or-groups-to-a-team)
