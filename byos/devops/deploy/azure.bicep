@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-param uniquer string = uniqueString(newGuid())
+param uniquer string = toLower(substring(uniqueString(utcNow()),0, 5))
 param location string = deployment().location
 param resourcesPrefix string = ''
 param spPrincipalId string
@@ -17,8 +17,8 @@ module stateResourceGroup './azureResourceGroup.bicep' = {
   }
 }
 
-module stateStorageAccount './azureStorageAccounts.bicep' = {
-  name: 'storageAccountDeployment'
+module stateStorageAccount './azureStorageAccount.bicep' = {
+  name: '${resourcesPrefixCalculated}-storageAccountDeployment'
   params: {
     storageAccountName: '${resourcesPrefixCalculated}statest'
     spPrincipalId: spPrincipalId
