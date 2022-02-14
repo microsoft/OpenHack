@@ -195,29 +195,29 @@ get_unique_name
 _information "Checking for ${AZURE_SP_JSON} file..."
 check_azuresp_json
 
-# _information "Creating Azure resources..."
-# create_azure_resources
+_information "Creating Azure resources..."
+create_azure_resources
 
-# _information "Configuring ADO defaults..."
-# ado_config_defaults
+_information "Configuring ADO defaults..."
+ado_config_defaults
 
-# _information "Configuring ADO project..."
-# ado_project_create
+_information "Configuring ADO project..."
+ado_project_create
 
-# _information "Importing template repo..."
-# ado_repo_import
+_information "Importing template repo..."
+ado_repo_import
 
-# _information "instaling ADO extensions..."
-# ado_extensions_install
+_information "instaling ADO extensions..."
+ado_extensions_install
 
-# _information "Creating ADO service connecton..."
-# ado_serviceconnection_create
+_information "Creating ADO service connecton..."
+ado_serviceconnection_create
 
-# _information "Creating ADO variable groups..."
-# ado_variablegroup_create
+_information "Creating ADO variable groups..."
+ado_variablegroup_create
 
-# _information "ADO logout..."
-# ado_logout
+_information "ADO logout..."
+ado_logout
 
 _information "Deploying ADO VMSS Windows Agent..."
 deploy_adovmsswinagent
