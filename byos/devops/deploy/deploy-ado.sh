@@ -151,11 +151,17 @@ ado_logout() {
 # ADO VMSS Agents
 
 deploy_adovmsswinagent() {
+    _azure_login
+
     declare -r WINPASS=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:alnum:][:punct:]' | cut -c -16)
     az deployment sub create --name "winagent${UNIQUER}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file adovmssagent/main.bicep --parameters uniquer="${UNIQUER}" os="win" adminPasswordOrKey="${WINPASS}"
+
+    _azure_logout
 }
 
 deploy_adovmsslnxagent() {
+    _azure_login
+
     prvKeyPath="$(pwd)/id_rsa"
     pubKeyPath="$(pwd)/id_rsa.pub"
 
@@ -169,6 +175,8 @@ deploy_adovmsslnxagent() {
         exit 1
     fi
     az deployment sub create --name "lnxagent${UNIQUER}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file adovmssagent/main.bicep --parameters uniquer="${UNIQUER}" os="lnx" adminPasswordOrKey="${publicSshKey}"
+
+    _azure_logout
 }
 
 save_details() {
