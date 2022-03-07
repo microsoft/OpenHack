@@ -82,7 +82,7 @@ fi
 # Check for programs
 declare -a commands=("az" "jq" "gh" "curl")
 check_commands "${commands[@]}"
-check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.33.1"
+check_tool_semver "azure-cli" $(az version --output tsv --query \"azure-cli\") "2.34.1"
 
 # CREATE AN ORGANIZATION REPOSITORY
 # https://docs.github.com/en/rest/reference/repos#create-a-repository-using-a-template

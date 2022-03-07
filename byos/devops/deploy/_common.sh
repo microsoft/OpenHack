@@ -1,15 +1,19 @@
 check_azuresp_json() {
     if [ ! -f "${AZURE_SP_JSON}" ]; then
-        az ad sp create-for-rbac --role Owner --output json >"${AZURE_SP_JSON}"
-
-        _azure_parse_json
         export ARM_SUBSCRIPTION_ID=$(az account show --output tsv --query id)
+        az ad sp create-for-rbac --role Owner --scopes "/subscriptions/${ARM_SUBSCRIPTION_ID}" --output json >"${AZURE_SP_JSON}"
+
         # workaround for --sdk-auth deprecation to keep backwards compatibility
+        _azuresp_json=$(cat "${AZURE_SP_JSON}")
+        export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -c -r '.appId')
+        export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -c -r '.password')
+        export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -c -r '.tenant')
+
         echo "${_azuresp_json}" | jq \
-            --arg clientId "$ARM_CLIENT_ID" \
-            --arg clientSecret "$ARM_CLIENT_SECRET" \
-            --arg subscriptionId "$ARM_SUBSCRIPTION_ID" \
-            --arg tenantId "$ARM_TENANT_ID" \
+            --arg clientId "${ARM_CLIENT_ID}" \
+            --arg clientSecret "${ARM_CLIENT_SECRET}" \
+            --arg subscriptionId "${ARM_SUBSCRIPTION_ID}" \
+            --arg tenantId "${ARM_TENANT_ID}" \
             --arg activeDirectoryEndpointUrl "https://login.microsoftonline.com" \
             --arg resourceManagerEndpointUrl "https://management.azure.com/" \
             --arg activeDirectoryGraphResourceId "https://graph.windows.net/" \
