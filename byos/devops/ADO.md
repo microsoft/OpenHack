@@ -168,11 +168,17 @@ Example end of the output from `deploy-ado.sh` script
 Add OpenHack team members to Azure Subscription with **Contributor** role, follow guide: [Assign Azure roles using the Azure portal
 ](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
 
-#### Setup Azure DevOps private agents (optional)
+### Azure DevOps hosted agents aviability limitation
 
 Acording to Azure Pipelines Grant anoncments for [private](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-private-projects/) and [public](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-public-projects/) project, you may not be able to access hosted agents.
 
-If this is the case for you, the deployment script deploys private agents based on VM Scale Sets (Windows & Linux). So your role is just to create agent pools based on this guide: [Create the scale set agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/scale-set-agents?view=azure-devops#create-the-scale-set-agent-pool)
+#### Solution 1 - Purchase parallel jobs
+
+Setup [DevOps Organizational billing](https://docs.microsoft.com/en-us/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops) with your Azure Subscription, and [purchase parallel jobs](https://docs.microsoft.com/en-us/azure/devops/pipelines/licensing/concurrent-jobs?view=azure-devops&tabs=ms-hosted#how-do-i-buy-more-parallel-jobs) for your pipeline(s).
+
+#### Solution 2 - VM Scale Set
+
+The deployment script deploys private agents based on [VM Scale Set](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/scale-set-agents?view=azure-devops) (Windows & Linux). So your role is just to create agent pools, and attach provisioned VMSS based on this guide: [Create the scale set agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/scale-set-agents?view=azure-devops#create-the-scale-set-agent-pool)
 
 ### Azure DevOps post-deployment steps
 
