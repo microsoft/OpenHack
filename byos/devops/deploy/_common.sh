@@ -29,10 +29,10 @@ check_azuresp_json() {
 
 _azure_parse_json() {
     _azuresp_json=$(cat "${AZURE_SP_JSON}")
-    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -c -r '.clientId')
-    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -c -r '.clientSecret')
+    export ARM_CLIENT_ID=$(echo "${_azuresp_json}" | jq -c -r '.appId')
+    export ARM_CLIENT_SECRET=$(echo "${_azuresp_json}" | jq -c -r '.password')
     export ARM_SUBSCRIPTION_ID=$(echo "${_azuresp_json}" | jq -c -r '.subscriptionId')
-    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -c -r '.tenantId')
+    export ARM_TENANT_ID=$(echo "${_azuresp_json}" | jq -c -r '.tenant')
 }
 
 _azure_login() {
