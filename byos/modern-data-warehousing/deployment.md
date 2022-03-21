@@ -11,12 +11,14 @@ Attendees should have Azure subscription permissions which allow the creation of
 
 The following is a list of common Azure resources that are deployed and utilized during the OpenHack. 
 
-Ensure that these services are not blocked by Azure Policy.  As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptions with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
+Ensure that these services are not blocked by Azure Policy. As this is an OpenHack, the services that attendees can utilize are not limited to this list so subscriptions with a tightly controlled service catalog may run into issues if the service an attendee wishes to use is disabled via policy.
 
 | Azure resource           | Resource Providers |
 | ------------------------ | --------------------------------------- |
-| Azure Cosmos DB          | Microsoft.DocumentDB 
+| Azure Cosmos DB          | Microsoft.DocumentDB                    | 
 | Azure Data Factory       | Microsoft.DataFactory                   |
+| Azure Purview            | Microsoft.Purview                       |
+| Azure Synapse            | Microsoft.Synapse                       |
 | Azure Databricks         | Microsoft.Databricks                    |
 | Azure SQL Database       | Microsoft.SQL                           |
 | Azure Storage            | Microsoft.Storage                       |
