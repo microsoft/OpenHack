@@ -74,7 +74,7 @@ delete_azure_resources() {
 get_unique_name() {
     if [ ${#TEAM_NAME} -eq 0 ]; then
         # Generate unique name
-        UNIQUE_NAME=$(echo ${NAME_PREFIX}${RANDOM:0:5})
+        UNIQUE_NAME=$(echo ${NAME_PREFIX}$(($RANDOM + 10000)))
     else
         UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
     fi
