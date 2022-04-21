@@ -77,6 +77,6 @@ get_unique_name() {
         UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
         UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
     else
-        UNIQUE_NAME="${NAME_PREFIX}${TEAM_NAME}"
+        UNIQUE_NAME=$(echo ${NAME_PREFIX}${TEAM_NAME} | cut -c -24)
     fi
 }
