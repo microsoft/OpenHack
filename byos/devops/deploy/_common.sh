@@ -72,9 +72,10 @@ delete_azure_resources() {
 }
 
 get_unique_name() {
+    # Generate unique name
+    UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
+
     if [ ${#TEAM_NAME} -eq 0 ]; then
-        # Generate unique name
-        UNIQUER=$(head -3 /dev/urandom | LC_CTYPE=C tr -cd '[:digit:]' | cut -c -5)
         UNIQUE_NAME="${NAME_PREFIX}${UNIQUER}"
     else
         UNIQUE_NAME=$(echo ${NAME_PREFIX}${TEAM_NAME} | cut -c -24)
