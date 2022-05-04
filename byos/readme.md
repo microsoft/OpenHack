@@ -61,7 +61,9 @@ The following documents outline the permissions needed for each OpenHack, the mo
 - [AI-Powered Knowledge Mining](knowledge-mining/deployment.md)
 - [App Modernization with NoSQL](app-modernization-no-sql/deployment.md)
 - [Containers](containers/deployment.md)
-- [DevOps 2.0](devops-2.0/deployment.md)
+- DevOps
+    - [DevOps for GitHub](devops/GH.md)
+    - [DevOps for Azure DevOps](devops/ADO.md)
 - [DevOps for Data Science](devops-for-data-science/deployment.md) Retired as of June 30, 2021
 - [Dynamics 365 + Power Platform](power-platform/deployment.md) Retired as of June 30, 2021
 - [Iot Gateway Operations](iot-gatewayoperations/deployment.md) Retired as of June 30, 2021
