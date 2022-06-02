@@ -53,7 +53,11 @@ create_azure_resources() {
         _azure_login
 
         az bicep upgrade
-        _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query id --output tsv)
+        _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query objectId --output tsv)
+        if [ -z "$_sp_object_id" ]; then
+            _warning "objectId property not found, trying with id"
+            _sp_object_id=$(az ad sp show --id "${ARM_CLIENT_ID}" --query id --output tsv)
+        fi
         az deployment sub create --name "${UNIQUE_NAME}-${BUILD_ID}" --location "${AZURE_LOCATION}" --template-file azure.bicep --parameters resourcesPrefix="${UNIQUE_NAME}" spPrincipalId="${_sp_object_id}"
 
         _azure_logout
