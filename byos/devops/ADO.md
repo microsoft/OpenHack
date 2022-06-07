@@ -85,7 +85,20 @@ az role assignment list --assignee $(az account show --output tsv --query user.n
 
 > **NOTE** New Azure DevOps organization dedicated only for the OpenHack is highly recommended!
 
-Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: `Build:Read & execute; Code:Full; Extensions:Read & manage; Marketplace:Acquire; Project and Team:Read, write, & manage; Release: Read, write, execute, & manage; Service Connections:Read, query, & manage; Variable Groups:Read, create, & manage`. Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
+Login to your [Azure DevOps](https://dev.azure.com) organization and [Create a Personal Access Token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page#create-a-pat) with scope: 
+
+```
+Build: Read & execute
+Code: Full
+Extensions: Read & manage
+Marketplace: Acquire
+Project and Team: Read, write, & manage
+Release: Read, write, execute, & manage
+Service Connections: Read, query, & manage
+Variable Groups: Read, create, & manage
+```
+
+Then set environment variable `AZURE_DEVOPS_EXT_PAT` with the generated token.
 
 > **NOTE**
 >
