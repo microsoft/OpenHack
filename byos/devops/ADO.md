@@ -161,7 +161,6 @@ Run `deploy-ado.sh` bash script to start Azure & Azure DevOps configuration.
 > - southeastasia
 > - brazilsouth
 > - canadacentral
-> - southindia
 > - australiaeast
 > - westeurope
 > - westus2

@@ -151,7 +151,6 @@ Run `deploy-gh.sh` bash script to start Azure & GitHub configuration.
 > - jioindiawest
 > - koreacentral
 > - canadacentral
-> - southindia
 > - francecentral
 > - germanywestcentral
 > - norwayeast
