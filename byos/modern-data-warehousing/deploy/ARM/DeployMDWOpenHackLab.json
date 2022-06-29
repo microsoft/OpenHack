@@ -78,7 +78,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://openhackguides.blob.core.windows.net/mdw-templates-tmp/DeployMDWOpenHackLab.json",
+                    "uri": "https://openhackpublic.blob.core.windows.net/modern-data-warehousing/DeployMDWOpenHackLab.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
