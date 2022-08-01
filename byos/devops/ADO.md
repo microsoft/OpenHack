@@ -182,7 +182,7 @@ Add OpenHack team members to Azure Subscription with **Contributor** role, follo
 
 #### Azure DevOps hosted agents aviability limitation
 
-Acording to Azure Pipelines Grant anoncments for [private](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-private-projects/) and [public](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-public-projects/) project, you may not be able to access hosted agents.
+According to Azure Pipelines Grant announcements for [private](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-private-projects/) and [public](https://devblogs.microsoft.com/devops/change-in-azure-pipelines-grant-for-public-projects/) project, you may not be able to access hosted agents.
 
 ##### Solution 1 - Purchase parallel jobs
 
