@@ -1,0 +1,49 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "mocOnPremResourceGroup": {
+            "value": "cmc-on-prem"
+        },
+        "adminUserName": {
+            "value": "" 
+        },
+        "adminPassword": {
+            "value": "" 
+        },
+        "resourceGrouplocation": {
+            "value": "eastus"
+        },
+        "mocOnpremNetwork": {
+            "value": {
+                "name": "network-cmc-onprem",
+                "addressPrefix": "10.0.0.0/16",
+                "subnetName": "mgmt",
+                "subnetPrefix": "10.0.1.128/25"
+            }
+        },
+        "mocOnpremGateway": {
+            "value": {
+                "name": "vpn-gateway-cmc-onprem",
+                "subnetName": "GatewaySubnet",
+                "subnetPrefix": "10.0.255.224/27",
+                "publicIPAddressName": "pip-onprem-vpn-gateway"
+            }
+        },
+        "vmSize": {
+            "value": "Standard_A1_v2"
+        },
+        "configureSitetosite": {
+            "value": true
+        },
+        "localNetworkGateway": {
+            "value": "local-gateway-cmc-onprem"
+        },
+        "localGatewayIpAddress": {
+            "value": "0.0.0.0"
+        },
+       "azureCloudVnetPrefix": {
+            "value": "10.1.0.0/16"           
+       } 
+    }
+}
