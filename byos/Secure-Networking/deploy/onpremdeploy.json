@@ -1,0 +1,537 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUserName": {
+            "type": "string",
+            "defaultValue": "HackerAdmin",
+            "metadata": {
+                "description": "The admin user name for both the Windows and Linux virtual machines."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "demo!pass123",
+            "metadata": {
+                "description": "The admin password for both the Windows and Linux virtual machines."
+            }
+        },
+        "mocOnpremNetwork": {
+            "type": "object",
+            "defaultValue": {
+                "name": "network-cmc-onprem",
+                "addressPrefix": "10.0.0.0/16",
+                "subnetName": "mgmt",
+                "subnetPrefix": "10.0.1.128/25"
+            }
+        },
+        "mocOnpremGateway": {
+            "type": "object",
+            "defaultValue": {
+                "name": "vpn-gateway-cmc-onprem",
+                "subnetName": "GatewaySubnet",
+                "subnetPrefix": "10.0.255.224/27",
+                "publicIPAddressName": "pip-onprem-vpn-gateway"
+            }
+        },
+        "sqldatabase": {
+            "type": "object",
+            "defaultValue": {
+                "name": "sqlservervm",
+                "subnetName": "dataSubnet",
+                "subnetPrefix": "10.0.3.0/24"
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_A1_v2"
+        },
+        "configureSitetosite": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "eastus"
+        },
+        "localNetworkGateway": {
+            "type": "string",
+            "defaultValue": "local-gateway-cmc-onprem"
+        },
+        "localGatewayIpAddress": {
+            "type": "string",
+            "defaultValue": "0.0.0.0"
+        },
+        "VpnGwBgpAsn": {
+            "type": "int",
+            "defaultValue": 65001
+        },
+        "azureCloudVnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.1.0.0/16"
+        },
+        "virtualMachineName": {
+            "type": "string",
+            "defaultValue": "sqlservervm",
+            "metadata": {
+                "description": "The name of the VM"
+            }
+        },
+        "virtualMachineSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2s_v3",
+            "metadata": {
+                "description": "The virtual machine size."
+            }
+        },
+        "imageOffer": {
+            "type": "string",
+            "defaultValue": "sql2019-ws2019",
+            "allowedValues": [
+                "sql2019-ws2019",
+                "sql2017-ws2019",
+                "SQL2017-WS2016",
+                "SQL2016SP1-WS2016",
+                "SQL2016SP2-WS2016",
+                "SQL2014SP3-WS2012R2",
+                "SQL2014SP2-WS2012R2"
+            ],
+            "metadata": {
+                "description": "Windows Server and SQL Offer"
+            }
+        },
+        "sqlSku": {
+            "type": "string",
+            "defaultValue": "SQLDEV",
+            "allowedValues": [
+                "Standard",
+                "Enterprise",
+                "SQLDEV",
+                "Web",
+                "Express"
+            ],
+            "metadata": {
+                "description": "SQL Server Sku"
+            }
+        },
+        "sqladminUsername": {
+            "type": "string",
+            "defaultValue": "demouser",
+            "metadata": {
+                "description": "The admin user name of the SQL VM"
+            }
+        },
+        "sqladminPassword": {
+            "type": "securestring",
+            "defaultValue": "demo!pass123",
+            "metadata": {
+                "description": "The admin password of the SQL VM"
+            }
+        },
+        "storageWorkloadType": {
+            "type": "string",
+            "defaultValue": "General",
+            "allowedValues": [
+                "General",
+                "OLTP",
+                "DW"
+            ],
+            "metadata": {
+                "description": "SQL Server Workload Type"
+            }
+        },
+        "sqlDataDisksCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "maxValue": 8,
+            "minValue": 1,
+            "metadata": {
+                "description": "Amount of data disks (1TB each) for SQL Data files"
+            }
+        },
+        "dataPath": {
+            "type": "string",
+            "defaultValue": "F:\\SQLData",
+            "metadata": {
+                "description": "Path for SQL Data files. Please choose drive letter from F to Z, and other drives from A to E are reserved for system"
+            }
+        },
+        "sqlLogDisksCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "maxValue": 8,
+            "minValue": 1,
+            "metadata": {
+                "description": "Amount of data disks (1TB each) for SQL Log files"
+            }
+        },
+        "logPath": {
+            "type": "string",
+            "defaultValue": "G:\\SQLLog",
+            "metadata": {
+                "description": "Path for SQL Log files. Please choose drive letter from F to Z and different than the one used for SQL data. Drive letter from A to E are reserved for system"
+            }
+        }
+    },
+    "variables": {
+        "nicNameWindows": "vm-windows-nic",
+        "vmNameWindows": "vm-windows",
+        "windowsOSVersion": "2016-Datacenter",
+        "networkInterfaceName": "[format('{0}-nic', parameters('virtualMachineName'))]",
+        "networkSecurityGroupName": "[format('{0}-nsg', parameters('virtualMachineName'))]",
+        "networkSecurityGroupRules": [
+            {
+                "name": "RDP",
+                "properties": {
+                    "priority": 300,
+                    "protocol": "Tcp",
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "sourceAddressPrefix": "*",
+                    "sourcePortRange": "*",
+                    "destinationAddressPrefix": "*",
+                    "destinationPortRange": "3389"
+                }
+            }
+        ],
+        "publicIpAddressName": "[format('{0}-publicip-{1}', parameters('virtualMachineName'), uniqueString(parameters('virtualMachineName')))]",
+        "publicIpAddressType": "Dynamic",
+        "publicIpAddressSku": "Basic",
+        "diskConfigurationType": "NEW",
+        "nsgId": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "dataDisksLuns": "[array(range(0, parameters('sqlDataDisksCount')))]",
+        "logDisksLuns": "[array(range(parameters('sqlDataDisksCount'), parameters('sqlLogDisksCount')))]",
+        "dataDisks": {
+            "createOption": "Empty",
+            "caching": "ReadOnly",
+            "writeAcceleratorEnabled": false,
+            "storageAccountType": "Premium_LRS",
+            "diskSizeGB": 1023
+        },
+        "tempDbPath": "D:\\SQLTemp"
+    },
+    "resources": [
+
+        {
+            "comments": "Hub virtual network and diagnostic configuration",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('mocOnpremNetwork').name]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('mocOnpremNetwork').addressPrefix]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('mocOnpremNetwork').subnetName]",
+                        "properties": {
+                            "addressPrefix": "[parameters('mocOnpremNetwork').subnetPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('mocOnpremGateway').subnetName]",
+                        "properties": {
+                            "addressPrefix": "[parameters('mocOnpremGateway').subnetPrefix]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('sqldatabase').subnetName]",
+                        "properties": {
+                            "addressPrefix": "[parameters('sqldatabase').subnetPrefix]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "Public IP address for VPN Gateway",
+            "condition": "[parameters('configureSitetosite')]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2019-11-01",
+            "name": "[parameters('mocOnpremGateway').publicIPAddressName]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            }
+        },
+        {
+            "comments": "VPN Gateway",
+            "condition": "[parameters('configureSitetosite')]",
+            "type": "Microsoft.Network/virtualNetworkGateways",
+            "apiVersion": "2019-11-01",
+            "name": "[parameters('mocOnpremGateway').name]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('mocOnpremGateway').publicIPAddressName)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('mocOnpremNetwork').name, parameters('mocOnpremGateway').subnetName)]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('mocOnpremGateway').publicIPAddressName)]"
+                            }
+                        },
+                        "name": "vnetGatewayConfig"
+                    }
+                ],
+                "bgpSettings": {
+                    "asn": "[parameters('VpnGwBgpAsn')]"
+                },
+                "sku": {
+                        "name": "VpnGw1",
+                        "tier": "VpnGw1"
+                },
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "enableBgp": true
+            }
+        },
+        {
+            "comments": "Network interface for Windows VMs (optional)",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-05-01",
+            "name": "[variables('nicNameWindows')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('mocOnpremNetwork').name, parameters('mocOnpremNetwork').subnetName)]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "comments": "Windows VMs (optional)",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-07-01",
+            "name": "[variables('vmNameWindows')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicNameWindows'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmNameWindows')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "[variables('windowsOSVersion')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicNameWindows'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/localNetworkGateways",
+            "apiVersion": "2020-05-01",
+            "name": "[parameters('localNetworkGateway')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "localNetworkAddressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('azureCloudVnetPrefix')]"
+                    ]
+                },
+                "gatewayIpAddress": "[parameters('localGatewayIpAddress')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2021-08-01",
+            "name": "[variables('publicIpAddressName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]"
+            ],
+            "sku": {
+                "name": "[variables('publicIpAddressSku')]"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIpAddressType')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2021-08-01",
+            "name": "[variables('networkSecurityGroupName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]"
+            ],
+            "properties": {
+                "securityRules": "[variables('networkSecurityGroupRules')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2021-08-01",
+            "name": "[variables('networkInterfaceName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"                
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('mocOnpremNetwork').name, parameters('sqldatabase').subnetName)]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpAddressName'))]"
+                            }
+                        }
+                    }
+                ],
+                "enableAcceleratedNetworking": true,
+                "networkSecurityGroup": {
+                    "id": "[variables('nsgId')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-11-01",
+            "name": "[parameters('virtualMachineName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('virtualMachineSize')]"
+                },
+                "storageProfile": {
+                    "copy": [
+                        {
+                            "name": "dataDisks",
+                            "count": "[length(range(0, add(parameters('sqlDataDisksCount'), parameters('sqlLogDisksCount'))))]",
+                            "input": {
+                                "lun": "[range(0, add(parameters('sqlDataDisksCount'), parameters('sqlLogDisksCount')))[copyIndex('dataDisks')]]",
+                                "createOption": "[variables('dataDisks').createOption]",
+                                "caching": "[if(greaterOrEquals(range(0, add(parameters('sqlDataDisksCount'), parameters('sqlLogDisksCount')))[copyIndex('dataDisks')], parameters('sqlDataDisksCount')), 'None', variables('dataDisks').caching)]",
+                                "writeAcceleratorEnabled": "[variables('dataDisks').writeAcceleratorEnabled]",
+                                "diskSizeGB": "[variables('dataDisks').diskSizeGB]",
+                                "managedDisk": {
+                                    "storageAccountType": "[variables('dataDisks').storageAccountType]"
+                                }
+                            }
+                        }
+                    ],
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftSQLServer",
+                        "offer": "[parameters('imageOffer')]",
+                        "sku": "[parameters('sqlSku')]",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachineName')]",
+                    "adminUsername": "[parameters('sqladminUsername')]",
+                    "adminPassword": "[parameters('sqladminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVMAgent": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.SqlVirtualMachine/sqlVirtualMachines",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[parameters('virtualMachineName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('mocOnpremNetwork').name)]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
+            ],
+            "properties": {
+                "virtualMachineResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]",
+                "sqlManagement": "Full",
+                "sqlServerLicenseType": "PAYG",
+                "ServerConfigurationsManagementSettings": {
+                    "SQLConnectivityUpdateSettings": {
+                        "ConnectivityType": "Public",
+                        "Port": 1433,
+                        "SQLAuthUpdateUserName": "[parameters('sqladminUserName')]",
+                        "SQLAuthUpdatePassword": "[parameters('sqladminPassword')]"
+                    }
+                },
+                "storageConfigurationSettings": {
+                    "diskConfigurationType": "[variables('diskConfigurationType')]",
+                    "storageWorkloadType": "[parameters('storageWorkloadType')]",
+                    "sqlDataSettings": {
+                        "luns": "[variables('dataDisksLuns')]",
+                        "defaultFilePath": "[parameters('dataPath')]"
+                    },
+                    "sqlLogSettings": {
+                        "luns": "[variables('logDisksLuns')]",
+                        "defaultFilePath": "[parameters('logPath')]"
+                    },
+                    "sqlTempDbSettings": {
+                        "defaultFilePath": "[variables('tempDbPath')]"
+                    }
+                }
+            }
+        }
+    ]
+}
