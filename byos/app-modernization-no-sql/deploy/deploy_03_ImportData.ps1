@@ -1,6 +1,6 @@
 #
 #  Import data, run after ensure database
-#   Reuquies pre-defined variables: $sqlserverName, $databaseName, $sqlAdministratorLogin, $sqlAdministratorLoginPassword
+#   Requires pre-defined variables: $sqlserverName, $databaseName, $sqlAdministratorLogin, $sqlAdministratorLoginPassword
 #
 
 $importRequest = New-AzSqlDatabaseImport -ResourceGroupName $resourceGroup1Name `
@@ -20,6 +20,11 @@ while ($importStatus.Status -eq "InProgress") {
     $importStatus = Get-AzSqlDatabaseImportExportStatus -OperationStatusLink $importRequest.OperationStatusLink
     [Console]::Write(".")
     Start-Sleep -s 10
+}
+
+if($importStatus.Status -ne 'Succeeded') {
+    Write-Error "Failed to import database $databaseName for server $sqlServerName"
+    Write-Debug $importStatus
 }
 
 [Console]::WriteLine("")
