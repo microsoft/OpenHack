@@ -3,6 +3,7 @@
 # requires variables for $resourceGroup1Name, $location1, $resourceGroup2Name, $location2
 #                           , $sqlserverName, $sqlAdministratorLogin, $sqlAdministratorLoginPassword
 #                           , $suffix, $suffix2
+Import-Module Az.Websites
 $templateUri = "https://openhackguides.blob.core.windows.net/openhack-common-deploy/app-modernization-no-sql/azuredeploy.json"
 
 $outputs = New-AzResourceGroupDeployment `
@@ -51,6 +52,9 @@ else
 {
     throw "Could not validate existence of deployed sql server: $sqlserverName";
 }
+#Add firewall rule to SQL SERVER to  AllowAllAzureServices 
+Write-Output "Add firewall rule to SQL SERVER to  AllowAllAzureServices";
+New-AzSqlServerFirewallRule -ResourceGroupName $resourceGroup1Name -ServerName $sqlserverName -AllowAllAzureIPs -Verbose
 
 #validate AppService Plan
 $aspPlanName = "openhackplan-$suffix";
