@@ -25,9 +25,9 @@ In this task, you will create a new Microsoft account and use that account to si
 
 1. Record your new Microsoft account username and password, and then store them in a safe place.
 
-1. Using the same tab or a new tab in the same browser session, browse to [https://products.office.com/en-us/business/compare-more-office-365-for-business-plans](https://products.office.com/en-us/business/compare-more-office-365-for-business-plans).
+1. Using the same tab or a new tab in the same browser session, browse to [https://www.microsoft.com/en-us/microsoft-365/enterprise/compare-office-365-plans](https://www.microsoft.com/en-us/microsoft-365/enterprise/compare-office-365-plans).
 
-1. On the Office 365 Enterprise page, select **Try for free**.
+1. On the Office 365 Enterprise page, select **Try for free** beside the **Office 365 E5** option.
 
 1. Set up your trial using the Microsoft account you just created.
    Use the following information along with your own information to complete signing up for the trial:
