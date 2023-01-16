@@ -10,7 +10,7 @@ To deploy this lab environment, you will need an Azure account that has at least
 
 If you plan on adding another user to the resource group after provisioning (for example, if you will be working together with someone else), you will need the [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner) or [User Access Administrator](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#user-access-administrator) role.
 
-#### Permissions for Challenge 4
+#### Permissions for Challenge 3
 
 The challenge expects two new user accounts created in Azure AD: webdev and apidev to complete the challenge requirements. To add users, you will need the [User Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#user-administrator) or [Global Administrator](https://docs.microsoft.com/en-us/azure/active-directory/roles/permissions-reference#global-administrator) role.
 
@@ -69,7 +69,7 @@ The deployment script expects to be run from the [`byos/containers/deploy`](./de
 | `-p` | Azure password - not necessary if you are logged in to `az` | `""` |
 | `-t` | Azure tenant ID - not necessary if you are logged in to `az`; only required for service principal login | `""` |
 | `-s` | Azure subscription ID - not necessary if you have selected the intended subscription with `az account set` | `""` |
-| `-a` | Append in order to create Azure users `api-dev` and `web-dev` used in Challenge 4 | false |
+| `-a` | Append in order to create Azure users `api-dev` and `web-dev` used in Challenge 3 | false |
 
 ### Example Usage
 
