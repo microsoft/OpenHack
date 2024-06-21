@@ -271,7 +271,7 @@ fi
 
 if "$createAdUsers"; then
     if [[ -z "$azureUserName" ]]; then
-        azureUserName=$(az account show --query user.name -o tsv)
+        azureUserName=$(az ad signed-in-user show --query 'userPrincipalName' -o tsv )
     fi
     domain=$(cut -d "@" -f 2 <<< $azureUserName)
 
