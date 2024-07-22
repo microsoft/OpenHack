@@ -19,7 +19,7 @@ declare -r SQL_PASSWORD="demo@pass123"
 declare -r DATABASENAME="mydrivingDB"
 declare -r JENKINS_USERNAME="demouser"
 declare -r JENKINS_PASSWORD="demo@pass123"
-declare -r BINGMAPSKEY="Ar6iuHZYgX1BrfJs6SRJaXWbpU_HKdoe7G-OO9b2kl3rWvcawYx235GGx5FPM76O"
+declare -r BINGMAPSKEY="..."
 declare -r SQLFWRULENAME="SetupAccountFWIP"
 declare -r BASEIMAGETAG="changeme"
 
