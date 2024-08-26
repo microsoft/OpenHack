@@ -93,6 +93,6 @@ while ($null -eq ($userMailbox = Get-Mailbox "RainerS$msolDomainSPN" -ErrorActio
 Add-DistributionGroupMember -Identity "General Staff" -Member "LarryZ$msolDomainSPN"
 Add-DistributionGroupMember -Identity "Financial Systems Access" -Member "KatieJ$msolDomainSPN"
 Add-DistributionGroupMember -Identity "Human Resources" -Member "RainerS$msolDomainSPN"
-Add-DistributionGroupMember -Identity "Help Desk" -Member "LarryZ$msolDomainSPN"
+Add-DistributionGroupMember -Identity "Help Desk-OH" -Member "LarryZ$msolDomainSPN"
 
 Get-PSSession | Remove-PSSession
