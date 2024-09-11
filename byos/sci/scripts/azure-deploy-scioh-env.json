@@ -627,7 +627,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/LODSContent/Tom-Demo/master/ohinstall.ps1"
+                        "https://raw.githubusercontent.com/microsoft/OpenHack/main/byos/sci/scripts/scripts/ohinstall.ps1"
                     ]
                 },
                 "protectedSettings": {
