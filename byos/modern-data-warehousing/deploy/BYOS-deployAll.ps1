@@ -2,8 +2,8 @@
 
 param(
     [string]$teamCount = "1",
-    [string]$DeploymentTemplateFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.json",
-    [string]$DeploymentParameterFile = "$PSScriptRoot\ARM\DeployMDWOpenHackLab.parameters.json",
+    [string]$DeploymentTemplateFile = (Join-Path -Path $PSScriptRoot -ChildPath "\ARM\DeployMDWOpenHackLab.json"),
+    [string]$DeploymentParameterFile = (Join-Path -Path $PSScriptRoot -ChildPath "\ARM\DeployMDWOpenHackLab.parameters.json"),
     [string]$Location = "eastus",
     [securestring]$SqlAdminLoginPassword,
     [securestring]$VMAdminPassword
