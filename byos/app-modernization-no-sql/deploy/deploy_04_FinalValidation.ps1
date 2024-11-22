@@ -12,5 +12,5 @@ if($availabilityResult.StatusCode -eq 200) {
     Write-Output ("Website is available")
 }
 else {
-    Write-Output("Website availability check failed for team: " + $teamName)
+    Write-Error("Website availability check failed for team: " + $teamName)
 }

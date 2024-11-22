@@ -10,6 +10,7 @@ $sqlAdministratorLogin = "openhackadmin"
 # Enter the SQL Server password (i.e. Password123)
 $sqlAdministratorLoginPassword = "Password123"
 
+[int]$failedEnvironments = 0
 for ($i = 1; $i -le $teamCount; $i++)
 {
     try 
@@ -34,9 +35,6 @@ for ($i = 1; $i -le $teamCount; $i++)
 
         $rg1 = Get-AzResourceGroup -Name $resourceGroup1Name;
         $rg2 = Get-AzResourceGroup -Name $resourceGroup2Name;
-
-        # Write-Output $rg1;
-        # Write-Output $rg2;
         
         if ($rg1 -ne $null -and $rg2 -ne $null -and $rg1.Name -ne '' -and $rg2.Name -ne '')
         {
@@ -71,14 +69,21 @@ for ($i = 1; $i -le $teamCount; $i++)
         else
         {
             #report error for incorrect RG deployment
-            Write-Output("Deployment failed for team: " + $teamName + ". Resource Groups could not be found.");
+            $failedEnvironments += 1
+            Write-Error("Deployment failed for team: " + $teamName + ". Resource Groups could not be found.");
         }
     }
     catch {
         #report error, team deployment failure
-        Write-Output "An error was encountered, script could not complete:  $($PSItem.ToString())";
+        $failedEnvironments += 1
+        Write-Error "An error was encountered, script could not complete:  $($PSItem.ToString())";
     }
 }
 
 #report operation completed
-Write-Output "All resources are deployed.  Enjoy the OpenHack!";
+if($failedEnvironments -eq 0) {
+    Write-Output "All resources are deployed.  Enjoy the OpenHack!";
+}
+else {
+    Write-Error "$failedEnvironments environments failed either provisioning or validation. Please check output for more details"
+}
