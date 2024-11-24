@@ -52,6 +52,9 @@ if [[ -z "$sqlDBName" ]]; then
     read sqlDBName
 fi
 
+echo "Creating the database"
+/opt/mssql-tools/bin/sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -Q "Create Database $sqlDBName"
+
 echo "Updating schema"
 /opt/mssql-tools/bin/sqlcmd -U $sqlServerUsername -P $sqlPassword -S $sqlServerFQDN -d $sqlDBName -i MYDrivingDB.sql -e
 
